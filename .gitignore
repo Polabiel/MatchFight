@@ -30,6 +30,7 @@ build
 # misc
 .DS_Store
 *.pem
+.opencode/
 
 # debug
 npm-debug.log*
