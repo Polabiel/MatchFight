@@ -9,14 +9,15 @@
     }
   },
   "license": "MIT",
-  "scripts": {
-    "build": "tsc",
-    "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "dev": "tsc",
-    "format": "prettier --check . --ignore-path ../../.gitignore",
-    "lint": "eslint --flag unstable_native_nodejs_ts_config",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
-  },
+"scripts": {
+     "build": "tsc",
+     "clean": "git clean -xdf .cache .turbo dist node_modules",
+     "dev": "tsc",
+     "format": "prettier --check . --ignore-path ../../.gitignore",
+     "lint": "eslint",
+     "test": "vitest run",
+     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+   },
   "dependencies": {
     "@acme/auth": "workspace:*",
     "@acme/db": "workspace:*",
@@ -31,7 +32,8 @@
     "@acme/tsconfig": "workspace:*",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   },
   "prettier": "@acme/prettier-config"
 }

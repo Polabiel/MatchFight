@@ -4,10 +4,10 @@ export const user = pgTable("user", (t) => ({
   id: t.text().primaryKey(),
   name: t.text().notNull(),
   email: t.text().notNull().unique(),
-  emailVerified: t.boolean().notNull(),
+  emailVerified: t.boolean('email_verified').notNull(),
   image: t.text(),
-  createdAt: t.timestamp().notNull(),
-  updatedAt: t.timestamp().notNull(),
+  createdAt: t.timestamp('created_at').notNull(),
+  updatedAt: t.timestamp('updated_at').notNull(),
 }));
 
 export const session = pgTable("session", (t) => ({

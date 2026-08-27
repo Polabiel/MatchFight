@@ -43,10 +43,15 @@
     "ui-add": {
       "cache": false,
       "interactive": true
+    },
+    "test": {
+      "dependsOn": ["^topo"],
+      "cache": false
     }
   },
   "globalEnv": [
     "POSTGRES_URL",
+    "TEST_POSTGRES_URL",
     "AUTH_DISCORD_ID",
     "AUTH_DISCORD_SECRET",
     "AUTH_REDIRECT_PROXY_URL",

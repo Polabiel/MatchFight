@@ -1,0 +1,129 @@
+import { describe, beforeAll, afterAll, it, expect } from 'vitest';
+import { runMigrations, db as testDb } from './test/db';
+import { seedDatabase } from './seed';
+import * as schema from './schema';
+import { eq } from 'drizzle-orm';
+
+describe('Seed', () => {
+  beforeAll(async () => {
+    await runMigrations();
+  });
+
+  afterAll(async () => {
+    await testDb.$client.end();
+  });
+
+  it('should migrate schema cleanly', async () => {
+    // We can check that the tables exist by querying the schema
+    const result = await testDb.select().from(schema.user);
+    // We don't expect any users yet, but the query should not throw
+    expect(result).toBeInstanceOf(Array);
+  });
+
+  it('should create 15 fighters and 3 judges', async () => {
+    await seedDatabase(testDb);
+
+    const users = await testDb.select().from(schema.user);
+    expect(users).toHaveLength(18); // 15 fighters + 3 judges
+
+    const profiles = await testDb.select().from(schema.Profile);
+    expect(profiles).toHaveLength(18);
+
+    // Check that we have 15 fighters and 3 judges based on role
+    const fighters = profiles.filter((p) => p.role === 'fighter');
+    const judges = profiles.filter((p) => p.role === 'judge');
+    expect(fighters).toHaveLength(15);
+    expect(judges).toHaveLength(3);
+  });
+
+  it('should ensure Profile.userId is unique', async () => {
+    // Try to insert a duplicate userId
+    const userId = 'duplicate-user';
+    await testDb.insert(schema.user).values({
+      id: userId,
+      name: 'Test User',
+      email: 'test@example.com',
+      emailVerified: true,
+      image: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    await testDb.insert(schema.Profile).values({
+      userId,
+      nickname: 'TestNick',
+      role: 'fighter',
+      weightClass: 'flyweight',
+      wins: 0,
+      losses: 0,
+      location: 'Test Location',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    // Attempt to insert another profile with the same userId should fail
+    await expect(
+      testDb.insert(schema.Profile).values({
+        userId,
+        nickname: 'TestNick2',
+        role: 'judge',
+        weightClass: undefined,
+        wins: 0,
+        losses: 0,
+        location: 'Test Location 2',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+    ).rejects.toThrow();
+  });
+
+  it('should ensure Swipe has unique (swiperId, targetId) and FK cascade works', async () => {
+    // Create two users
+    const user1Id = 'user1';
+    const user2Id = 'user2';
+    await testDb.insert(schema.user).values([
+      {
+        id: user1Id,
+        name: 'User 1',
+        email: 'user1@example.com',
+        emailVerified: true,
+        image: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: user2Id,
+        name: 'User 2',
+        email: 'user2@example.com',
+        emailVerified: true,
+        image: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ]);
+
+    // Insert a swipe
+    await testDb.insert(schema.Swipe).values({
+      swiperId: user1Id,
+      targetId: user2Id,
+      choice: 'like',
+      createdAt: new Date(),
+    });
+
+    // Attempt to insert another swipe with the same swiperId and targetId should fail
+    await expect(
+      testDb.insert(schema.Swipe).values({
+        swiperId: user1Id,
+        targetId: user2Id,
+        choice: 'pass',
+        createdAt: new Date(),
+      })
+    ).rejects.toThrow();
+
+    // Delete user1 and verify that the swipe is deleted (cascade)
+    await testDb.delete(schema.user).where(eq(schema.user.id, user1Id));
+
+    const swipes = await testDb.select().from(schema.Swipe);
+    expect(swipes).toHaveLength(0);
+  });
+});
