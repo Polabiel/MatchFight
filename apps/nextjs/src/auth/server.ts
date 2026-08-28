@@ -27,7 +27,6 @@ export const auth = initAuth({
   discordClientSecret: env.AUTH_DISCORD_SECRET,
   extraPlugins: [nextCookies()],
 });
-
 export const getSession = cache(async () =>
   auth.api.getSession({ headers: await headers() }),
 );
