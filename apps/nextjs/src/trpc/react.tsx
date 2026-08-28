@@ -64,7 +64,11 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
 
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return window.location.origin;
-  if (env.VERCEL_URL) return `https://${env.VERCEL_URL}`;
-  // eslint-disable-next-line no-restricted-properties
-  return "http://dev.chatvolt.ai:3000";
+  if (env.VERCEL_URL) {
+    // VERCEL_URL pode vir com ou sem protocolo
+    return env.VERCEL_URL.startsWith("http")
+      ? env.VERCEL_URL
+      : `https://${env.VERCEL_URL}`;
+  }
+  return "http://localhost:3000";
 };
