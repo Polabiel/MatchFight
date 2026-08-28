@@ -26,6 +26,14 @@ const createContext = cache(async () => {
 
 const getQueryClient = cache(createQueryClient);
 
+/**
+ * Server-side tRPC caller for direct procedure calls in Server Components.
+ */
+export const getCaller = cache(async () => {
+  const ctx = await createContext();
+  return appRouter.createCaller(ctx);
+});
+
 export const trpc = createTRPCOptionsProxy<AppRouter>({
   router: appRouter,
   ctx: createContext,

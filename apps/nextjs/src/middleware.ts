@@ -6,6 +6,7 @@ import { NextResponse } from "next/server";
  * Rotas públicas (/, /sign-in, /sign-up, /api/*) não entram na lista.
  */
 const protectedRoutes = [
+  "/onboarding",
   "/swipe",
   "/fights",
   "/fights/new",

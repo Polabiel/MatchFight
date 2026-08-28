@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link, Stack } from "expo-router";
+import { Link, Stack, useRouter } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { trpc } from "~/utils/api";
@@ -21,6 +21,21 @@ const weightClasses = [
 
 function AuthGate({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = authClient.useSession();
+  const router = useRouter();
+
+  // Check if user is authenticated but has no profile (first time)
+  const profileQuery = useQuery({
+    ...trpc.profile.getMe.queryOptions(),
+    enabled: !!session,
+  });
+
+  const isFirstTime = !!session && !profileQuery.isLoading && !profileQuery.data;
+
+  useEffect(() => {
+    if (isFirstTime) {
+      router.replace("/onboarding");
+    }
+  }, [isFirstTime, router]);
 
   if (isPending) {
     return (
@@ -51,6 +66,11 @@ function AuthGate({ children }: { children: React.ReactNode }) {
         </Pressable>
       </View>
     );
+  }
+
+  // If authenticated but no profile, redirect to onboarding
+  if (isFirstTime) {
+    return null; // Avoid flash while useEffect performs the redirect
   }
 
   return <>{children}</>;
