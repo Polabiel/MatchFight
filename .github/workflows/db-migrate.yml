@@ -43,7 +43,9 @@ jobs:
 
       - name: Run database migrations
         shell: bash
-        run: pnpm --filter @acme/db push
+        run: |
+          cd packages/db
+          pnpm with-env drizzle-kit push --force
 
   validate-schema:
     runs-on: ubuntu-latest
