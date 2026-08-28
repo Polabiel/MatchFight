@@ -1,10 +1,11 @@
-import { describe, beforeAll, afterAll, it, expect } from 'vitest';
-import { runMigrations, db as testDb } from './test/db';
-import { seedDatabase } from './seed';
-import * as schema from './schema';
-import { eq } from 'drizzle-orm';
+import { eq } from "drizzle-orm";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-describe('Seed', () => {
+import * as schema from "./schema";
+import { seedDatabase } from "./seed";
+import { runMigrations, db as testDb } from "./test/db";
+
+describe("Seed", () => {
   beforeAll(async () => {
     await runMigrations();
   });
@@ -13,14 +14,14 @@ describe('Seed', () => {
     await testDb.$client.end();
   });
 
-  it('should migrate schema cleanly', async () => {
+  it("should migrate schema cleanly", async () => {
     // We can check that the tables exist by querying the schema
     const result = await testDb.select().from(schema.user);
     // We don't expect any users yet, but the query should not throw
     expect(result).toBeInstanceOf(Array);
   });
 
-  it('should create 15 fighters and 3 judges', async () => {
+  it("should create 15 fighters and 3 judges", async () => {
     await seedDatabase(testDb);
 
     const users = await testDb.select().from(schema.user);
@@ -30,19 +31,19 @@ describe('Seed', () => {
     expect(profiles).toHaveLength(18);
 
     // Check that we have 15 fighters and 3 judges based on role
-    const fighters = profiles.filter((p) => p.role === 'fighter');
-    const judges = profiles.filter((p) => p.role === 'judge');
+    const fighters = profiles.filter((p) => p.role === "fighter");
+    const judges = profiles.filter((p) => p.role === "judge");
     expect(fighters).toHaveLength(15);
     expect(judges).toHaveLength(3);
   });
 
-  it('should ensure Profile.userId is unique', async () => {
+  it("should ensure Profile.userId is unique", async () => {
     // Try to insert a duplicate userId
-    const userId = 'duplicate-user';
+    const userId = "duplicate-user";
     await testDb.insert(schema.user).values({
       id: userId,
-      name: 'Test User',
-      email: 'test@example.com',
+      name: "Test User",
+      email: "test@example.com",
       emailVerified: true,
       image: null,
       createdAt: new Date(),
@@ -51,12 +52,12 @@ describe('Seed', () => {
 
     await testDb.insert(schema.Profile).values({
       userId,
-      nickname: 'TestNick',
-      role: 'fighter',
-      weightClass: 'flyweight',
+      nickname: "TestNick",
+      role: "fighter",
+      weightClass: "flyweight",
       wins: 0,
       losses: 0,
-      location: 'Test Location',
+      location: "Test Location",
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -65,27 +66,27 @@ describe('Seed', () => {
     await expect(
       testDb.insert(schema.Profile).values({
         userId,
-        nickname: 'TestNick2',
-        role: 'judge',
+        nickname: "TestNick2",
+        role: "judge",
         weightClass: undefined,
         wins: 0,
         losses: 0,
-        location: 'Test Location 2',
+        location: "Test Location 2",
         createdAt: new Date(),
         updatedAt: new Date(),
-      })
+      }),
     ).rejects.toThrow();
   });
 
-  it('should ensure Swipe has unique (swiperId, targetId) and FK cascade works', async () => {
+  it("should ensure Swipe has unique (swiperId, targetId) and FK cascade works", async () => {
     // Create two users
-    const user1Id = 'user1';
-    const user2Id = 'user2';
+    const user1Id = "user1";
+    const user2Id = "user2";
     await testDb.insert(schema.user).values([
       {
         id: user1Id,
-        name: 'User 1',
-        email: 'user1@example.com',
+        name: "User 1",
+        email: "user1@example.com",
         emailVerified: true,
         image: null,
         createdAt: new Date(),
@@ -93,8 +94,8 @@ describe('Seed', () => {
       },
       {
         id: user2Id,
-        name: 'User 2',
-        email: 'user2@example.com',
+        name: "User 2",
+        email: "user2@example.com",
         emailVerified: true,
         image: null,
         createdAt: new Date(),
@@ -106,7 +107,7 @@ describe('Seed', () => {
     await testDb.insert(schema.Swipe).values({
       swiperId: user1Id,
       targetId: user2Id,
-      choice: 'like',
+      choice: "like",
       createdAt: new Date(),
     });
 
@@ -115,9 +116,9 @@ describe('Seed', () => {
       testDb.insert(schema.Swipe).values({
         swiperId: user1Id,
         targetId: user2Id,
-        choice: 'pass',
+        choice: "pass",
         createdAt: new Date(),
-      })
+      }),
     ).rejects.toThrow();
 
     // Delete user1 and verify that the swipe is deleted (cascade)

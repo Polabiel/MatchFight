@@ -46,7 +46,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
           }
           className="bg-primary flex items-center rounded-md px-6 py-3"
         >
-          <Text className="font-semibold text-primary-foreground">
+          <Text className="text-primary-foreground font-semibold">
             Sign in with Discord
           </Text>
         </Pressable>
@@ -161,7 +161,9 @@ function SwipeCard() {
           <Pressable
             onPress={() => {
               setIndex(0);
-              void queryClient.invalidateQueries(trpc.swipe.candidates.pathFilter());
+              void queryClient.invalidateQueries(
+                trpc.swipe.candidates.pathFilter(),
+              );
             }}
             className="bg-muted rounded-md px-4 py-2"
           >
@@ -170,10 +172,10 @@ function SwipeCard() {
         </View>
       ) : (
         <>
-          <View className="w-full overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
-            <View className="h-64 w-full bg-muted">
+          <View className="border-border bg-card w-full overflow-hidden rounded-2xl border shadow-lg">
+            <View className="bg-muted h-64 w-full">
               {current.image ? (
-                <Text className="p-4 text-muted-foreground text-sm">
+                <Text className="text-muted-foreground p-4 text-sm">
                   {current.name}
                 </Text>
               ) : null}
@@ -227,7 +229,7 @@ function SwipeCard() {
                   disabled={pass.isPending || like.isPending}
                   className="bg-primary h-14 w-14 items-center justify-center rounded-full"
                 >
-                  <Text className="text-xl text-primary-foreground">✓</Text>
+                  <Text className="text-primary-foreground text-xl">✓</Text>
                 </Pressable>
               </View>
             </View>
@@ -237,13 +239,13 @@ function SwipeCard() {
 
       {/* Match modal */}
       {matched ? (
-        <View className="bg-black/70 absolute inset-0 z-50 items-center justify-center p-4">
-          <View className="w-full max-w-sm items-center gap-4 rounded-2xl border border-border bg-card p-8">
+        <View className="absolute inset-0 z-50 items-center justify-center bg-black/70 p-4">
+          <View className="border-border bg-card w-full max-w-sm items-center gap-4 rounded-2xl border p-8">
             <Text className="text-6xl">🎉</Text>
             <Text className="text-3xl font-extrabold">It's a Match!</Text>
             <Text className="text-muted-foreground text-center">
               You and{" "}
-              <Text className="font-semibold text-foreground">
+              <Text className="text-foreground font-semibold">
                 {matched.name}
               </Text>{" "}
               ({matched.nickname}) liked each other.
@@ -252,7 +254,7 @@ function SwipeCard() {
               href={`/fights/${matched.fightId}`}
               className="bg-primary w-full items-center rounded-md py-2"
             >
-              <Text className="font-semibold text-primary-foreground">
+              <Text className="text-primary-foreground font-semibold">
                 View fight
               </Text>
             </Link>

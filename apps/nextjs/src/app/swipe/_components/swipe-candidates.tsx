@@ -1,31 +1,48 @@
-'use client';
+"use client";
 
-import { useMutation, useSuspenseQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
-import { useTRPC } from '~/trpc/react';
-import { Button } from '@acme/ui/button';
-import { toast } from '@acme/ui/toast';
+import { useState } from "react";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+
+import { Button } from "@acme/ui/button";
+import { toast } from "@acme/ui/toast";
+
+import { useTRPC } from "~/trpc/react";
 
 const weightClasses = [
-  { value: '', label: 'All weight classes' },
-  { value: 'flyweight', label: 'Flyweight' },
-  { value: 'bantamweight', label: 'Bantamweight' },
-  { value: 'featherweight', label: 'Featherweight' },
-  { value: 'lightweight', label: 'Lightweight' },
-  { value: 'welterweight', label: 'Welterweight' },
-  { value: 'middleweight', label: 'Middleweight' },
-  { value: 'light_heavyweight', label: 'Light Heavyweight' },
-  { value: 'heavyweight', label: 'Heavyweight' },
+  { value: "", label: "All weight classes" },
+  { value: "flyweight", label: "Flyweight" },
+  { value: "bantamweight", label: "Bantamweight" },
+  { value: "featherweight", label: "Featherweight" },
+  { value: "lightweight", label: "Lightweight" },
+  { value: "welterweight", label: "Welterweight" },
+  { value: "middleweight", label: "Middleweight" },
+  { value: "light_heavyweight", label: "Light Heavyweight" },
+  { value: "heavyweight", label: "Heavyweight" },
 ] as const;
 
 export function SwipeCandidates() {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const [weightClass, setWeightClass] = useState<
-    'flyweight' | 'bantamweight' | 'featherweight' | 'lightweight' | 'welterweight' | 'middleweight' | 'light_heavyweight' | 'heavyweight' | undefined
+    | "flyweight"
+    | "bantamweight"
+    | "featherweight"
+    | "lightweight"
+    | "welterweight"
+    | "middleweight"
+    | "light_heavyweight"
+    | "heavyweight"
+    | undefined
   >(undefined);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [matchUser, setMatchUser] = useState<{ name: string; nickname: string } | null>(null);
+  const [matchUser, setMatchUser] = useState<{
+    name: string;
+    nickname: string;
+  } | null>(null);
 
   const { data: candidates } = useSuspenseQuery(
     trpc.swipe.candidates.queryOptions({ weightClass }),
@@ -41,7 +58,7 @@ export function SwipeCandidates() {
         setCurrentIndex((i) => i + 1);
       },
       onError: (error) => {
-        toast.error(error.message || 'Failed to like candidate');
+        toast.error(error.message || "Failed to like candidate");
       },
     }),
   );
@@ -52,7 +69,7 @@ export function SwipeCandidates() {
         setCurrentIndex((i) => i + 1);
       },
       onError: (error) => {
-        toast.error(error.message || 'Failed to pass candidate');
+        toast.error(error.message || "Failed to pass candidate");
       },
     }),
   );
@@ -66,7 +83,9 @@ export function SwipeCandidates() {
 
   return (
     <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-2xl flex-col items-center justify-center gap-6 p-6">
-      <h1 className="text-3xl font-extrabold tracking-tight">Find your opponent</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">
+        Find your opponent
+      </h1>
 
       {/* Weight class filter */}
       <div className="w-full max-w-md">
@@ -76,7 +95,7 @@ export function SwipeCandidates() {
             setWeightClass((e.target.value || undefined) as typeof weightClass);
             setCurrentIndex(0);
           }}
-          className="block w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
+          className="border-input focus-visible:border-ring focus-visible:ring-ring/50 block w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] focus-visible:ring-[3px]"
           aria-label="Filter by weight class"
         >
           {weightClasses.map((wc) => (
@@ -89,13 +108,13 @@ export function SwipeCandidates() {
 
       {!current ? (
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-muted text-4xl">
+          <div className="bg-muted flex h-24 w-24 items-center justify-center rounded-full text-4xl">
             🥊
           </div>
           <h2 className="text-2xl font-bold">No more candidates</h2>
-          <p className="max-w-md text-muted-foreground">
-            You've seen everyone in this weight class. Check back later for new fighters or adjust
-            your filter.
+          <p className="text-muted-foreground max-w-md">
+            You've seen everyone in this weight class. Check back later for new
+            fighters or adjust your filter.
           </p>
           <Button onClick={refresh} variant="outline">
             Refresh
@@ -104,8 +123,8 @@ export function SwipeCandidates() {
       ) : (
         <>
           {/* Candidate card */}
-          <div className="flex w-full max-w-md flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
-            <div className="relative h-64 w-full bg-muted">
+          <div className="border-border bg-card flex w-full max-w-md flex-col overflow-hidden rounded-2xl border shadow-lg">
+            <div className="bg-muted relative h-64 w-full">
               {current.image ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -119,25 +138,33 @@ export function SwipeCandidates() {
                 </div>
               )}
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 pt-12">
-                <h2 className="text-2xl font-bold text-white">{current.name}</h2>
-                <p className="text-sm font-medium text-white/90">"{current.nickname}"</p>
+                <h2 className="text-2xl font-bold text-white">
+                  {current.name}
+                </h2>
+                <p className="text-sm font-medium text-white/90">
+                  "{current.nickname}"
+                </p>
               </div>
             </div>
 
             <div className="flex flex-col gap-3 p-5">
-              {current.bio && <p className="text-sm text-muted-foreground">{current.bio}</p>}
+              {current.bio && (
+                <p className="text-muted-foreground text-sm">{current.bio}</p>
+              )}
 
               <div className="flex flex-wrap gap-2 text-sm">
                 {current.weightClass && (
-                  <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-                    {current.weightClass.replace('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+                  <span className="bg-primary/10 text-primary inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
+                    {current.weightClass
+                      .replace("_", " ")
+                      .replace(/\b\w/g, (c) => c.toUpperCase())}
                   </span>
                 )}
-                <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium">
+                <span className="bg-muted inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
                   {current.wins}-{current.losses}
                 </span>
                 {current.location && (
-                  <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium">
+                  <span className="bg-muted inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
                     📍 {current.location}
                   </span>
                 )}
@@ -174,12 +201,16 @@ export function SwipeCandidates() {
       {/* Match modal */}
       {matchUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="flex w-full max-w-sm flex-col items-center gap-4 rounded-2xl border border-border bg-card p-8 text-center shadow-2xl">
+          <div className="border-border bg-card flex w-full max-w-sm flex-col items-center gap-4 rounded-2xl border p-8 text-center shadow-2xl">
             <div className="text-6xl">🎉</div>
             <h2 className="text-3xl font-extrabold">It&apos;s a Match!</h2>
             <p className="text-muted-foreground">
-              You and <span className="font-semibold text-foreground">{matchUser.name}</span> (
-              {matchUser.nickname}) liked each other. Time to schedule your fight.
+              You and{" "}
+              <span className="text-foreground font-semibold">
+                {matchUser.name}
+              </span>{" "}
+              ({matchUser.nickname}) liked each other. Time to schedule your
+              fight.
             </p>
             <div className="flex w-full flex-col gap-2">
               <Button

@@ -83,7 +83,9 @@ export default function ProfileEdit() {
 
   return (
     <SafeAreaView className="bg-background flex-1">
-      <Stack.Screen options={{ title: isEditMode ? "Edit Profile" : "Create Profile" }} />
+      <Stack.Screen
+        options={{ title: isEditMode ? "Edit Profile" : "Create Profile" }}
+      />
       <ScrollView className="bg-background flex-1">
         <View className="gap-4 p-4">
           <Text className="text-2xl font-bold">
@@ -188,7 +190,7 @@ export default function ProfileEdit() {
             disabled={update.isPending || !nickname.trim()}
             className="bg-primary items-center rounded-md py-3"
           >
-            <Text className="font-semibold text-primary-foreground">
+            <Text className="text-primary-foreground font-semibold">
               {update.isPending
                 ? "Saving..."
                 : isEditMode

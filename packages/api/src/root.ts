@@ -1,9 +1,9 @@
 import { authRouter } from "./router/auth";
+import { chatRouter } from "./router/chat";
+import { fightRouter } from "./router/fight";
 import { postRouter } from "./router/post";
 import { profileRouter } from "./router/profile";
 import { swipeRouter } from "./router/swipe";
-import { fightRouter } from "./router/fight";
-import { chatRouter } from "./router/chat";
 import { createTRPCRouter } from "./trpc";
 
 export const appRouter = createTRPCRouter({

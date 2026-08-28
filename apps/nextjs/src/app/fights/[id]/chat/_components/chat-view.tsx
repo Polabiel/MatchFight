@@ -1,19 +1,25 @@
-'use client';
+"use client";
 
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { useRef, useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useTRPC } from '~/trpc/react';
-import { useSession } from '~/auth/hooks';
-import { Button } from '@acme/ui/button';
-import { Input } from '@acme/ui/input';
-import { toast } from '@acme/ui/toast';
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+
+import { Button } from "@acme/ui/button";
+import { Input } from "@acme/ui/input";
+import { toast } from "@acme/ui/toast";
+
+import { useSession } from "~/auth/hooks";
+import { useTRPC } from "~/trpc/react";
 
 export function ChatView({ fightId }: { fightId: string }) {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const { session } = useSession();
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const { data: messages } = useSuspenseQuery(
@@ -23,10 +29,10 @@ export function ChatView({ fightId }: { fightId: string }) {
   const send = useMutation(
     trpc.chat.send.mutationOptions({
       onSuccess: async () => {
-        setContent('');
+        setContent("");
         await queryClient.invalidateQueries(trpc.chat.pathFilter());
       },
-      onError: (e) => toast.error(e.message || 'Failed to send message'),
+      onError: (e) => toast.error(e.message || "Failed to send message"),
     }),
   );
 
@@ -49,7 +55,7 @@ export function ChatView({ fightId }: { fightId: string }) {
       <div className="mb-4 flex items-center justify-between">
         <Link
           href={`/fights/${fightId}`}
-          className="text-sm text-muted-foreground hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground text-sm"
         >
           ← Back to fight
         </Link>
@@ -60,12 +66,12 @@ export function ChatView({ fightId }: { fightId: string }) {
       {/* Messages */}
       <div
         ref={scrollRef}
-        className="flex flex-1 flex-col gap-3 overflow-y-auto rounded-2xl border border-border bg-card p-4"
+        className="border-border bg-card flex flex-1 flex-col gap-3 overflow-y-auto rounded-2xl border p-4"
       >
         {messages.length === 0 ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center text-muted-foreground">
+          <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-2 text-center">
             <div className="text-4xl">💬</div>
-            <p className="font-semibold text-foreground">No messages yet</p>
+            <p className="text-foreground font-semibold">No messages yet</p>
             <p className="text-sm">
               Send the first message to coordinate your fight.
             </p>
@@ -76,21 +82,23 @@ export function ChatView({ fightId }: { fightId: string }) {
             return (
               <div
                 key={msg.id}
-                className={`flex flex-col ${mine ? 'items-end' : 'items-start'}`}
+                className={`flex flex-col ${mine ? "items-end" : "items-start"}`}
               >
                 <div
                   className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
                     mine
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted text-foreground'
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-foreground"
                   }`}
                 >
-                  <p className="whitespace-pre-wrap break-words">{msg.content}</p>
+                  <p className="break-words whitespace-pre-wrap">
+                    {msg.content}
+                  </p>
                 </div>
-                <span className="mt-1 px-1 text-xs text-muted-foreground">
+                <span className="text-muted-foreground mt-1 px-1 text-xs">
                   {new Date(msg.createdAt).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })}
                 </span>
               </div>
@@ -111,7 +119,7 @@ export function ChatView({ fightId }: { fightId: string }) {
           className="flex-1"
         />
         <Button type="submit" disabled={send.isPending || !content.trim()}>
-          {send.isPending ? 'Sending...' : 'Send'}
+          {send.isPending ? "Sending..." : "Send"}
         </Button>
       </form>
     </div>

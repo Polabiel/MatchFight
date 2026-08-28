@@ -69,12 +69,8 @@
           "name": "chat_message_fight_id_fight_id_fk",
           "tableFrom": "chat_message",
           "tableTo": "fight",
-          "columnsFrom": [
-            "fight_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["fight_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -82,12 +78,8 @@
           "name": "chat_message_sender_id_user_id_fk",
           "tableFrom": "chat_message",
           "tableTo": "user",
-          "columnsFrom": [
-            "sender_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sender_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -238,12 +230,8 @@
           "name": "fight_fighter1_id_user_id_fk",
           "tableFrom": "fight",
           "tableTo": "user",
-          "columnsFrom": [
-            "fighter1_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["fighter1_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -251,12 +239,8 @@
           "name": "fight_fighter2_id_user_id_fk",
           "tableFrom": "fight",
           "tableTo": "user",
-          "columnsFrom": [
-            "fighter2_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["fighter2_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -264,12 +248,8 @@
           "name": "fight_judge_id_user_id_fk",
           "tableFrom": "fight",
           "tableTo": "user",
-          "columnsFrom": [
-            "judge_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["judge_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -277,12 +257,8 @@
           "name": "fight_winner_id_user_id_fk",
           "tableFrom": "fight",
           "tableTo": "user",
-          "columnsFrom": [
-            "winner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["winner_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -290,12 +266,8 @@
           "name": "fight_created_by_id_user_id_fk",
           "tableFrom": "fight",
           "tableTo": "user",
-          "columnsFrom": [
-            "created_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["created_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -434,12 +406,8 @@
           "name": "profile_user_id_user_id_fk",
           "tableFrom": "profile",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -449,9 +417,7 @@
         "profile_user_id_unique": {
           "name": "profile_user_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "user_id"
-          ]
+          "columns": ["user_id"]
         }
       },
       "policies": {},
@@ -539,12 +505,8 @@
           "name": "swipe_swiper_id_user_id_fk",
           "tableFrom": "swipe",
           "tableTo": "user",
-          "columnsFrom": [
-            "swiper_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["swiper_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -552,12 +514,8 @@
           "name": "swipe_target_id_user_id_fk",
           "tableFrom": "swipe",
           "tableTo": "user",
-          "columnsFrom": [
-            "target_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["target_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -657,12 +615,8 @@
           "name": "account_user_id_user_id_fk",
           "tableFrom": "account",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -732,12 +686,8 @@
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -747,9 +697,7 @@
         "session_token_unique": {
           "name": "session_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -810,9 +758,7 @@
         "user_email_unique": {
           "name": "user_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -873,29 +819,17 @@
     "public.fight_status": {
       "name": "fight_status",
       "schema": "public",
-      "values": [
-        "pending",
-        "scheduled",
-        "completed",
-        "cancelled"
-      ]
+      "values": ["pending", "scheduled", "completed", "cancelled"]
     },
     "public.role": {
       "name": "role",
       "schema": "public",
-      "values": [
-        "fighter",
-        "judge",
-        "both"
-      ]
+      "values": ["fighter", "judge", "both"]
     },
     "public.swipe_choice": {
       "name": "swipe_choice",
       "schema": "public",
-      "values": [
-        "like",
-        "pass"
-      ]
+      "values": ["like", "pass"]
     },
     "public.weight_class": {
       "name": "weight_class",

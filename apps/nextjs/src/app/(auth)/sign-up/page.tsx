@@ -1,22 +1,24 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useSession } from '~/auth/hooks';
-import { authClient } from '~/auth/client';
-import { Button } from '@acme/ui/button';
-import { Input } from '@acme/ui/input';
-import { Field, FieldLabel, FieldContent } from '@acme/ui/field';
-import { Separator } from '@acme/ui/separator';
-import { toast } from '@acme/ui/toast';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { Button } from "@acme/ui/button";
+import { Field, FieldContent, FieldLabel } from "@acme/ui/field";
+import { Input } from "@acme/ui/input";
+import { Separator } from "@acme/ui/separator";
+import { toast } from "@acme/ui/toast";
+
+import { authClient } from "~/auth/client";
+import { useSession } from "~/auth/hooks";
 
 export default function SignUpPage() {
   const router = useRouter();
   const { isPending: sessionPending } = useSession();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Redirect if already authenticated
@@ -30,7 +32,7 @@ export default function SignUpPage() {
 
     // Basic validation
     if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error("Passwords do not match");
       setIsSubmitting(false);
       return;
     }
@@ -43,18 +45,22 @@ export default function SignUpPage() {
       })) as unknown as { error?: { message?: string } | null };
 
       if (result.error) {
-        const errorMessage = typeof result.error.message === 'string'
-          ? result.error.message
-          : 'Failed to create account. Please try again.';
+        const errorMessage =
+          typeof result.error.message === "string"
+            ? result.error.message
+            : "Failed to create account. Please try again.";
         throw new Error(errorMessage);
       }
 
       // Redirect to profile edit page for onboarding
-      router.push('/profile/edit');
+      router.push("/profile/edit");
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to create account. Please try again.';
+      const message =
+        err instanceof Error
+          ? err.message
+          : "Failed to create account. Please try again.";
       toast.error(message);
-      console.error('Sign up error:', err);
+      console.error("Sign up error:", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -62,15 +68,13 @@ export default function SignUpPage() {
 
   return (
     <>
-      <h1 className="mb-6 text-3xl font-bold text-center">
+      <h1 className="mb-6 text-center text-3xl font-bold">
         Create your MatchFight account
       </h1>
-      
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <Field>
-          <FieldLabel>
-            Name
-          </FieldLabel>
+          <FieldLabel>Name</FieldLabel>
           <FieldContent>
             <Input
               type="text"
@@ -84,9 +88,7 @@ export default function SignUpPage() {
         </Field>
 
         <Field>
-          <FieldLabel>
-            Email
-          </FieldLabel>
+          <FieldLabel>Email</FieldLabel>
           <FieldContent>
             <Input
               type="email"
@@ -100,9 +102,7 @@ export default function SignUpPage() {
         </Field>
 
         <Field>
-          <FieldLabel>
-            Password
-          </FieldLabel>
+          <FieldLabel>Password</FieldLabel>
           <FieldContent>
             <Input
               type="password"
@@ -117,9 +117,7 @@ export default function SignUpPage() {
         </Field>
 
         <Field>
-          <FieldLabel>
-            Confirm Password
-          </FieldLabel>
+          <FieldLabel>Confirm Password</FieldLabel>
           <FieldContent>
             <Input
               type="password"
@@ -139,31 +137,29 @@ export default function SignUpPage() {
           className="w-full"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Creating account...' : 'Create Account'}
+          {isSubmitting ? "Creating account..." : "Create Account"}
         </Button>
       </form>
 
-      <div className="text-center space-y-4">
-        <p className="text-sm text-muted-foreground">
-          Already have an account?{' '}
+      <div className="space-y-4 text-center">
+        <p className="text-muted-foreground text-sm">
+          Already have an account?{" "}
           <a
             href="/sign-in"
-            className="font-medium text-primary hover:underline"
+            className="text-primary font-medium hover:underline"
           >
             Sign in
           </a>
         </p>
 
         <Separator orientation="horizontal" className="my-4">
-          <span className="px-2 text-sm text-muted-foreground">
-            or
-          </span>
+          <span className="text-muted-foreground px-2 text-sm">or</span>
         </Separator>
 
         <Button
           variant="outline"
           className="w-full"
-          onClick={() => authClient.signIn.social({ provider: 'discord' })}
+          onClick={() => authClient.signIn.social({ provider: "discord" })}
           disabled={isSubmitting}
         >
           Sign up with Discord

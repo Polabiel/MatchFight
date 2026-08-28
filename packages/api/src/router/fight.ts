@@ -1,9 +1,11 @@
-import { z } from 'zod';
-import { eq } from 'drizzle-orm';
-import { createTRPCRouter, protectedProcedure } from '../trpc';
-import { TRPCError } from '@trpc/server';
-import * as schema from '@acme/db/schema';
-import { fightSchemas } from '@acme/validators';
+import { TRPCError } from "@trpc/server";
+import { eq } from "drizzle-orm";
+import { z } from "zod";
+
+import * as schema from "@acme/db/schema";
+import { fightSchemas } from "@acme/validators";
+
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 // Workaround: Drizzle não infere nested `with: { profile: true }` para `one` dentro de `one`
 // (user.profile). O runtime retorna o profile, mas o tipo não. Este cast é seguro.
@@ -14,27 +16,24 @@ interface UserWithProfile {
   profile: { nickname: string | null } | null;
 }
 
-
-
-
-
 export const fightRouter = createTRPCRouter({
   my: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
 
-const fights = await ctx.db.query.Fight.findMany({
-       where: (fight, { eq, or }) => or(
-         eq(fight.fighter1Id, userId),
-         eq(fight.fighter2Id, userId),
-         eq(fight.judgeId, userId),
-       ),
-       with: {
-         fighter1: { with: { profile: true } },
-         fighter2: { with: { profile: true } },
-         judge: { with: { profile: true } },
-       },
-       orderBy: (fight, { desc }) => desc(fight.updatedAt),
-     });
+    const fights = await ctx.db.query.Fight.findMany({
+      where: (fight, { eq, or }) =>
+        or(
+          eq(fight.fighter1Id, userId),
+          eq(fight.fighter2Id, userId),
+          eq(fight.judgeId, userId),
+        ),
+      with: {
+        fighter1: { with: { profile: true } },
+        fighter2: { with: { profile: true } },
+        judge: { with: { profile: true } },
+      },
+      orderBy: (fight, { desc }) => desc(fight.updatedAt),
+    });
 
     return fights.map((fight) => ({
       id: fight.id,
@@ -50,26 +49,32 @@ const fights = await ctx.db.query.Fight.findMany({
       updatedAt: fight.updatedAt,
       createdById: fight.createdById,
       winnerId: fight.winnerId,
-fighter1: {
-         id: fight.fighter1.id,
-         name: fight.fighter1.name,
-         image: fight.fighter1.image,
-nickname: (fight.fighter1 as unknown as UserWithProfile).profile?.nickname ?? null,
-       },
-fighter2: {
-         id: fight.fighter2.id,
-         name: fight.fighter2.name,
-         image: fight.fighter2.image,
-          nickname: (fight.fighter2 as unknown as UserWithProfile).profile?.nickname ?? null,
-       },
-judge: fight.judge
-   ? {
-       id: fight.judge.id,
-       name: fight.judge.name,
-       image: fight.judge.image,
-        nickname: (fight.judge as unknown as UserWithProfile).profile?.nickname ?? null,
-     }
-   : null,
+      fighter1: {
+        id: fight.fighter1.id,
+        name: fight.fighter1.name,
+        image: fight.fighter1.image,
+        nickname:
+          (fight.fighter1 as unknown as UserWithProfile).profile?.nickname ??
+          null,
+      },
+      fighter2: {
+        id: fight.fighter2.id,
+        name: fight.fighter2.name,
+        image: fight.fighter2.image,
+        nickname:
+          (fight.fighter2 as unknown as UserWithProfile).profile?.nickname ??
+          null,
+      },
+      judge: fight.judge
+        ? {
+            id: fight.judge.id,
+            name: fight.judge.name,
+            image: fight.judge.image,
+            nickname:
+              (fight.judge as unknown as UserWithProfile).profile?.nickname ??
+              null,
+          }
+        : null,
     }));
   }),
   byId: protectedProcedure
@@ -88,7 +93,7 @@ judge: fight.judge
       });
 
       if (!fight) {
-        throw new TRPCError({ code: 'NOT_FOUND' });
+        throw new TRPCError({ code: "NOT_FOUND" });
       }
 
       // Authorization: user must be fighter1, fighter2, or judge
@@ -97,7 +102,7 @@ judge: fight.judge
         fight.fighter2Id !== userId &&
         fight.judgeId !== userId
       ) {
-        throw new TRPCError({ code: 'FORBIDDEN' });
+        throw new TRPCError({ code: "FORBIDDEN" });
       }
 
       return {
@@ -114,38 +119,41 @@ judge: fight.judge
         updatedAt: fight.updatedAt,
         createdById: fight.createdById,
         winnerId: fight.winnerId,
-fighter1: {
-         id: fight.fighter1.id,
-         name: fight.fighter1.name,
-         image: fight.fighter1.image,
-nickname: (fight.fighter1 as unknown as UserWithProfile).profile?.nickname ?? null,
-       },
-fighter2: {
-         id: fight.fighter2.id,
-         name: fight.fighter2.name,
-         image: fight.fighter2.image,
-          nickname: (fight.fighter2 as unknown as UserWithProfile).profile?.nickname ?? null,
-       },
-judge: fight.judge
-   ? {
-       id: fight.judge.id,
-       name: fight.judge.name,
-       image: fight.judge.image,
-        nickname: (fight.judge as unknown as UserWithProfile).profile?.nickname ?? null,
-     }
-   : null,
+        fighter1: {
+          id: fight.fighter1.id,
+          name: fight.fighter1.name,
+          image: fight.fighter1.image,
+          nickname:
+            (fight.fighter1 as unknown as UserWithProfile).profile?.nickname ??
+            null,
+        },
+        fighter2: {
+          id: fight.fighter2.id,
+          name: fight.fighter2.name,
+          image: fight.fighter2.image,
+          nickname:
+            (fight.fighter2 as unknown as UserWithProfile).profile?.nickname ??
+            null,
+        },
+        judge: fight.judge
+          ? {
+              id: fight.judge.id,
+              name: fight.judge.name,
+              image: fight.judge.image,
+              nickname:
+                (fight.judge as unknown as UserWithProfile).profile?.nickname ??
+                null,
+            }
+          : null,
       };
     }),
-forJudge: protectedProcedure.query(async ({ ctx }) => {
-
+  forJudge: protectedProcedure.query(async ({ ctx }) => {
     const fights = await ctx.db.query.Fight.findMany({
-      where: (fight, { eq, and, or, isNull }) => and(
-        or(
-          eq(fight.status, 'pending'),
-          eq(fight.status, 'scheduled')
+      where: (fight, { eq, and, or, isNull }) =>
+        and(
+          or(eq(fight.status, "pending"), eq(fight.status, "scheduled")),
+          isNull(fight.judgeId),
         ),
-        isNull(fight.judgeId)
-      ),
       with: {
         fighter1: { with: { profile: true } },
         fighter2: { with: { profile: true } },
@@ -162,23 +170,27 @@ forJudge: protectedProcedure.query(async ({ ctx }) => {
       judgeId: fight.judgeId,
       location: fight.location,
       lat: fight.lat,
-lng: fight.lng,
-       scheduledAt: fight.scheduledAt,
-       createdAt: fight.createdAt,
-       updatedAt: fight.updatedAt,
-fighter1: {
-id: fight.fighter1.id,
-          name: fight.fighter1.name,
-          image: fight.fighter1.image,
-          nickname: (fight.fighter1 as unknown as UserWithProfile).profile?.nickname ?? null
-        },
-        fighter2: {
-          id: fight.fighter2.id,
-          name: fight.fighter2.name,
-          image: fight.fighter2.image,
-          nickname: (fight.fighter2 as unknown as UserWithProfile).profile?.nickname ?? null
-        },
-     }));
+      lng: fight.lng,
+      scheduledAt: fight.scheduledAt,
+      createdAt: fight.createdAt,
+      updatedAt: fight.updatedAt,
+      fighter1: {
+        id: fight.fighter1.id,
+        name: fight.fighter1.name,
+        image: fight.fighter1.image,
+        nickname:
+          (fight.fighter1 as unknown as UserWithProfile).profile?.nickname ??
+          null,
+      },
+      fighter2: {
+        id: fight.fighter2.id,
+        name: fight.fighter2.name,
+        image: fight.fighter2.image,
+        nickname:
+          (fight.fighter2 as unknown as UserWithProfile).profile?.nickname ??
+          null,
+      },
+    }));
   }),
   acceptJudge: protectedProcedure
     .input(fightSchemas.acceptJudge)
@@ -192,11 +204,11 @@ id: fight.fighter1.id,
       });
 
       if (!profile) {
-        throw new TRPCError({ code: 'NOT_FOUND' });
+        throw new TRPCError({ code: "NOT_FOUND" });
       }
 
-      if (!(profile.role === 'judge' || profile.role === 'both')) {
-        throw new TRPCError({ code: 'FORBIDDEN' });
+      if (!(profile.role === "judge" || profile.role === "both")) {
+        throw new TRPCError({ code: "FORBIDDEN" });
       }
 
       const fight = await ctx.db.query.Fight.findFirst({
@@ -204,11 +216,11 @@ id: fight.fighter1.id,
       });
 
       if (!fight) {
-        throw new TRPCError({ code: 'NOT_FOUND' });
+        throw new TRPCError({ code: "NOT_FOUND" });
       }
 
-      if (!(fight.status === 'pending' || fight.status === 'scheduled')) {
-        throw new TRPCError({ code: 'CONFLICT' });
+      if (!(fight.status === "pending" || fight.status === "scheduled")) {
+        throw new TRPCError({ code: "CONFLICT" });
       }
 
       if (fight.judgeId !== null) {
@@ -217,7 +229,7 @@ id: fight.fighter1.id,
           return fight;
         } else {
           // Another judge already accepted
-          throw new TRPCError({ code: 'CONFLICT' });
+          throw new TRPCError({ code: "CONFLICT" });
         }
       }
 
@@ -245,15 +257,15 @@ id: fight.fighter1.id,
       });
 
       if (!fight) {
-        throw new TRPCError({ code: 'NOT_FOUND' });
+        throw new TRPCError({ code: "NOT_FOUND" });
       }
 
       if (fight.fighter1Id !== userId && fight.fighter2Id !== userId) {
-        throw new TRPCError({ code: 'FORBIDDEN' });
+        throw new TRPCError({ code: "FORBIDDEN" });
       }
 
-      if (fight.status !== 'pending') {
-        throw new TRPCError({ code: 'CONFLICT' });
+      if (fight.status !== "pending") {
+        throw new TRPCError({ code: "CONFLICT" });
       }
 
       // Update the fight with the proposal details
@@ -283,28 +295,28 @@ id: fight.fighter1.id,
       });
 
       if (!fight) {
-        throw new TRPCError({ code: 'NOT_FOUND' });
+        throw new TRPCError({ code: "NOT_FOUND" });
       }
 
       // Check if the user is fighter1 or fighter2
       if (fight.fighter1Id !== userId && fight.fighter2Id !== userId) {
-        throw new TRPCError({ code: 'FORBIDDEN' });
+        throw new TRPCError({ code: "FORBIDDEN" });
       }
 
-      if (fight.status !== 'pending') {
-        throw new TRPCError({ code: 'CONFLICT' });
+      if (fight.status !== "pending") {
+        throw new TRPCError({ code: "CONFLICT" });
       }
 
       // The user must not be the one who created the fight (createdById)
       if (fight.createdById === userId) {
-        throw new TRPCError({ code: 'FORBIDDEN' });
+        throw new TRPCError({ code: "FORBIDDEN" });
       }
 
       // Confirm the fight: set status to scheduled
       const [updatedFight] = await ctx.db
         .update(schema.Fight)
         .set({
-          status: 'scheduled',
+          status: "scheduled",
           updatedAt: new Date(),
         })
         .where(eq(schema.Fight.id, fightId))
@@ -323,7 +335,7 @@ id: fight.fighter1.id,
       });
 
       if (!fight) {
-        throw new TRPCError({ code: 'NOT_FOUND' });
+        throw new TRPCError({ code: "NOT_FOUND" });
       }
 
       // Check if the user is fighter1, fighter2, or judge
@@ -332,16 +344,16 @@ id: fight.fighter1.id,
         fight.fighter2Id !== userId &&
         fight.judgeId !== userId
       ) {
-        throw new TRPCError({ code: 'FORBIDDEN' });
+        throw new TRPCError({ code: "FORBIDDEN" });
       }
 
-      if (fight.status !== 'scheduled') {
-        throw new TRPCError({ code: 'CONFLICT' });
+      if (fight.status !== "scheduled") {
+        throw new TRPCError({ code: "CONFLICT" });
       }
 
       // Check if the winner is one of the fighters
       if (winnerId !== fight.fighter1Id && winnerId !== fight.fighter2Id) {
-        throw new TRPCError({ code: 'BAD_REQUEST' });
+        throw new TRPCError({ code: "BAD_REQUEST" });
       }
 
       // Complete the fight
@@ -349,7 +361,7 @@ id: fight.fighter1.id,
         .update(schema.Fight)
         .set({
           winnerId,
-          status: 'completed',
+          status: "completed",
           updatedAt: new Date(),
         })
         .where(eq(schema.Fight.id, fightId))
@@ -368,7 +380,7 @@ id: fight.fighter1.id,
       });
 
       if (!fight) {
-        throw new TRPCError({ code: 'NOT_FOUND' });
+        throw new TRPCError({ code: "NOT_FOUND" });
       }
 
       // Check if the user is fighter1, fighter2, or judge
@@ -377,23 +389,23 @@ id: fight.fighter1.id,
         fight.fighter2Id !== userId &&
         fight.judgeId !== userId
       ) {
-        throw new TRPCError({ code: 'FORBIDDEN' });
+        throw new TRPCError({ code: "FORBIDDEN" });
       }
 
-      if (!(fight.status === 'pending' || fight.status === 'scheduled')) {
-        throw new TRPCError({ code: 'CONFLICT' });
+      if (!(fight.status === "pending" || fight.status === "scheduled")) {
+        throw new TRPCError({ code: "CONFLICT" });
       }
 
       // Cancel the fight
       const [updatedFight] = await ctx.db
         .update(schema.Fight)
         .set({
-          status: 'cancelled',
+          status: "cancelled",
           updatedAt: new Date(),
         })
         .where(eq(schema.Fight.id, fightId))
         .returning();
 
       return updatedFight;
-    })
+    }),
 });

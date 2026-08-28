@@ -85,13 +85,20 @@ export default function FightChat() {
                   </Text>
                 </View>
               }
-              renderItem={({ item }: { item: { id: string; senderId: string; content: string; createdAt: Date } }) => {
+              renderItem={({
+                item,
+              }: {
+                item: {
+                  id: string;
+                  senderId: string;
+                  content: string;
+                  createdAt: Date;
+                };
+              }) => {
                 const mine = item.senderId === session?.user.id;
                 return (
                   <View
-                    className={`flex-col ${
-                      mine ? "items-end" : "items-start"
-                    }`}
+                    className={`flex-col ${mine ? "items-end" : "items-start"}`}
                   >
                     <View
                       className={`max-w-[80%] rounded-2xl px-4 py-2 shadow-sm ${
@@ -131,7 +138,7 @@ export default function FightChat() {
               disabled={send.isPending || !content.trim()}
               className="bg-primary items-center justify-center rounded-md px-4"
             >
-              <Text className="font-semibold text-primary-foreground">
+              <Text className="text-primary-foreground font-semibold">
                 {send.isPending ? "..." : "Send"}
               </Text>
             </Pressable>

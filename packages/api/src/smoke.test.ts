@@ -1,8 +1,9 @@
-import { describe, it, expect } from 'vitest';
-import { appRouter } from './index';
+import { describe, expect, it } from "vitest";
 
-describe('API Smoke Test', () => {
-  it('should have an appRouter', () => {
+import { appRouter } from "./index";
+
+describe("API Smoke Test", () => {
+  it("should have an appRouter", () => {
     expect(appRouter).toBeDefined();
   });
 });

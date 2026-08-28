@@ -1,25 +1,29 @@
-import { z } from 'zod';
-import { eq, and, or, not, isNull, desc } from 'drizzle-orm';
-import { createTRPCRouter, protectedProcedure } from '../trpc';
-import { TRPCError } from '@trpc/server';
-import * as schema from '@acme/db/schema';
-import { swipeSchemas } from '@acme/validators';
+import { TRPCError } from "@trpc/server";
+import { and, desc, eq, isNull, not, or } from "drizzle-orm";
+import { z } from "zod";
+
+import * as schema from "@acme/db/schema";
+import { swipeSchemas } from "@acme/validators";
+
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const swipeRouter = createTRPCRouter({
   candidates: protectedProcedure
     .input(
       z.object({
-        weightClass: z.enum([
-          'flyweight',
-          'bantamweight',
-          'featherweight',
-          'lightweight',
-          'welterweight',
-          'middleweight',
-          'light_heavyweight',
-          'heavyweight',
-        ]).optional(),
-      })
+        weightClass: z
+          .enum([
+            "flyweight",
+            "bantamweight",
+            "featherweight",
+            "lightweight",
+            "welterweight",
+            "middleweight",
+            "light_heavyweight",
+            "heavyweight",
+          ])
+          .optional(),
+      }),
     )
     .query(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
@@ -27,7 +31,7 @@ export const swipeRouter = createTRPCRouter({
 
       const conditions = [
         not(eq(schema.Profile.userId, userId)), // exclude self
-        or(eq(schema.Profile.role, 'fighter'), eq(schema.Profile.role, 'both')), // role fighter or both
+        or(eq(schema.Profile.role, "fighter"), eq(schema.Profile.role, "both")), // role fighter or both
         // Exclude users we have already swiped (any choice)
         isNull(
           ctx.db
@@ -36,10 +40,10 @@ export const swipeRouter = createTRPCRouter({
             .where(
               and(
                 eq(schema.Swipe.swiperId, userId),
-                eq(schema.Swipe.targetId, schema.Profile.userId)
-              )
+                eq(schema.Swipe.targetId, schema.Profile.userId),
+              ),
             )
-            .limit(1)
+            .limit(1),
         ),
         // Exclude users who are in an active fight with us (status pending or scheduled)
         isNull(
@@ -50,20 +54,20 @@ export const swipeRouter = createTRPCRouter({
               and(
                 or(
                   eq(schema.Fight.fighter1Id, userId),
-                  eq(schema.Fight.fighter2Id, userId)
+                  eq(schema.Fight.fighter2Id, userId),
                 ),
                 or(
                   eq(schema.Fight.fighter1Id, schema.Profile.userId),
-                  eq(schema.Fight.fighter2Id, schema.Profile.userId)
+                  eq(schema.Fight.fighter2Id, schema.Profile.userId),
                 ),
                 or(
-                  eq(schema.Fight.status, 'pending'),
-                  eq(schema.Fight.status, 'scheduled')
-                )
-              )
+                  eq(schema.Fight.status, "pending"),
+                  eq(schema.Fight.status, "scheduled"),
+                ),
+              ),
             )
-            .limit(1)
-        )
+            .limit(1),
+        ),
       ];
 
       if (weightClass !== undefined) {
@@ -99,7 +103,7 @@ export const swipeRouter = createTRPCRouter({
 
       // Cannot self-like
       if (userId === targetId) {
-        throw new TRPCError({ code: 'FORBIDDEN' });
+        throw new TRPCError({ code: "FORBIDDEN" });
       }
 
       // Check if target has a profile with role fighter or both
@@ -108,20 +112,23 @@ export const swipeRouter = createTRPCRouter({
       });
 
       if (!targetProfile) {
-        throw new TRPCError({ code: 'NOT_FOUND' });
+        throw new TRPCError({ code: "NOT_FOUND" });
       }
 
-      if (!(targetProfile.role === 'fighter' || targetProfile.role === 'both')) {
-        throw new TRPCError({ code: 'NOT_FOUND' });
+      if (
+        !(targetProfile.role === "fighter" || targetProfile.role === "both")
+      ) {
+        throw new TRPCError({ code: "NOT_FOUND" });
       }
 
       return await ctx.db.transaction(async (tx) => {
         // Upsert the swipe (choice 'like') with onConflictDoNothing
-        await tx.insert(schema.Swipe)
+        await tx
+          .insert(schema.Swipe)
           .values({
             swiperId: userId,
             targetId: targetId,
-            choice: 'like',
+            choice: "like",
             createdAt: new Date(),
           })
           .onConflictDoNothing({
@@ -134,7 +141,7 @@ export const swipeRouter = createTRPCRouter({
             and(
               eq(table.swiperId, targetId),
               eq(table.targetId, userId),
-              eq(table.choice, 'like')
+              eq(table.choice, "like"),
             ),
         });
 
@@ -143,39 +150,33 @@ export const swipeRouter = createTRPCRouter({
           const existingFight = await tx.query.Fight.findFirst({
             where: (table, { eq }) =>
               and(
-                or(
-                  eq(table.fighter1Id, userId),
-                  eq(table.fighter2Id, userId)
-                ),
+                or(eq(table.fighter1Id, userId), eq(table.fighter2Id, userId)),
                 or(
                   eq(table.fighter1Id, targetId),
-                  eq(table.fighter2Id, targetId)
+                  eq(table.fighter2Id, targetId),
                 ),
-                or(
-                  eq(table.status, 'pending'),
-                  eq(table.status, 'scheduled')
-                )
+                or(eq(table.status, "pending"), eq(table.status, "scheduled")),
               ),
           });
 
           if (!existingFight) {
             // Create a new fight
-const [fight] = await tx
-                .insert(schema.Fight)
-                .values({
-                  fighter1Id: userId,
-                  fighter2Id: targetId,
-                  status: 'pending',
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
-                })
-                .returning();
+            const [fight] = await tx
+              .insert(schema.Fight)
+              .values({
+                fighter1Id: userId,
+                fighter2Id: targetId,
+                status: "pending",
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              })
+              .returning();
 
-           if (!fight) {
-             throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
-           }
+            if (!fight) {
+              throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+            }
 
-           return { matched: true, fightId: fight.id };
+            return { matched: true, fightId: fight.id };
           } else {
             // Fight already exists
             return { matched: true, fightId: existingFight.id };
@@ -195,7 +196,7 @@ const [fight] = await tx
 
       // Cannot self-pass
       if (userId === targetId) {
-        throw new TRPCError({ code: 'FORBIDDEN' });
+        throw new TRPCError({ code: "FORBIDDEN" });
       }
 
       // Upsert the swipe (choice 'pass') with onConflictDoNothing
@@ -204,7 +205,7 @@ const [fight] = await tx
         .values({
           swiperId: userId,
           targetId: targetId,
-          choice: 'pass',
+          choice: "pass",
           createdAt: new Date(),
         })
         .onConflictDoNothing({

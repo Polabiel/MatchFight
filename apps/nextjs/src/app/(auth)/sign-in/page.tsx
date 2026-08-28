@@ -1,24 +1,25 @@
-'use client';
+"use client";
 
-import { Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
-import { useSession } from '~/auth/hooks';
-import { authClient } from '~/auth/client';
-import { Button } from '@acme/ui/button';
-import { Input } from '@acme/ui/input';
-import { Field, FieldLabel, FieldContent } from '@acme/ui/field';
-import { Separator } from '@acme/ui/separator';
-import { toast } from '@acme/ui/toast';
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+
+import { Button } from "@acme/ui/button";
+import { Field, FieldContent, FieldLabel } from "@acme/ui/field";
+import { Input } from "@acme/ui/input";
+import { Separator } from "@acme/ui/separator";
+import { toast } from "@acme/ui/toast";
+
+import { authClient } from "~/auth/client";
+import { useSession } from "~/auth/hooks";
 
 function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isPending: sessionPending } = useSession();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const callbackUrl = searchParams.get('callbackUrl') ?? '/swipe';
+  const callbackUrl = searchParams.get("callbackUrl") ?? "/swipe";
 
   // Redirect if already authenticated
   if (!sessionPending) {
@@ -36,18 +37,22 @@ function SignInForm() {
       })) as unknown as { error?: { message?: string } | null };
 
       if (result.error) {
-        const errorMessage = typeof result.error.message === 'string'
-          ? result.error.message
-          : 'Failed to sign in. Please check your credentials and try again.';
+        const errorMessage =
+          typeof result.error.message === "string"
+            ? result.error.message
+            : "Failed to sign in. Please check your credentials and try again.";
         throw new Error(errorMessage);
       }
 
       // Redirect to callbackUrl or default to /swipe
       router.push(callbackUrl);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to sign in. Please try again.';
+      const message =
+        err instanceof Error
+          ? err.message
+          : "Failed to sign in. Please try again.";
       toast.error(message);
-      console.error('Sign in error:', err);
+      console.error("Sign in error:", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -55,15 +60,13 @@ function SignInForm() {
 
   return (
     <>
-      <h1 className="mb-6 text-3xl font-bold text-center">
+      <h1 className="mb-6 text-center text-3xl font-bold">
         Sign in to MatchFight
       </h1>
-      
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <Field>
-          <FieldLabel>
-            Email
-          </FieldLabel>
+          <FieldLabel>Email</FieldLabel>
           <FieldContent>
             <Input
               type="email"
@@ -77,9 +80,7 @@ function SignInForm() {
         </Field>
 
         <Field>
-          <FieldLabel>
-            Password
-          </FieldLabel>
+          <FieldLabel>Password</FieldLabel>
           <FieldContent>
             <Input
               type="password"
@@ -98,40 +99,38 @@ function SignInForm() {
           className="w-full"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Signing in...' : 'Sign In'}
+          {isSubmitting ? "Signing in..." : "Sign In"}
         </Button>
       </form>
 
-      <div className="text-center space-y-4">
-        <p className="text-sm text-muted-foreground">
-          Don't have an account?{' '}
+      <div className="space-y-4 text-center">
+        <p className="text-muted-foreground text-sm">
+          Don't have an account?{" "}
           <a
             href="/sign-up"
-            className="font-medium text-primary hover:underline"
+            className="text-primary font-medium hover:underline"
           >
             Sign up
           </a>
         </p>
 
         <Separator orientation="horizontal" className="my-4">
-          <span className="px-2 text-sm text-muted-foreground">
-            or
-          </span>
+          <span className="text-muted-foreground px-2 text-sm">or</span>
         </Separator>
 
         <Button
           variant="outline"
           className="w-full"
-          onClick={() => authClient.signIn.social({ provider: 'discord' })}
+          onClick={() => authClient.signIn.social({ provider: "discord" })}
           disabled={isSubmitting}
         >
           Sign in with Discord
         </Button>
 
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           <a
             href="/forgot-password"
-            className="font-medium text-primary hover:underline"
+            className="text-primary font-medium hover:underline"
           >
             Forgot password?
           </a>

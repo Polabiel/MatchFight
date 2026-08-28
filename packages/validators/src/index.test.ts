@@ -1,9 +1,10 @@
 import { describe, expect, test } from "vitest";
+
 import {
+  chatSchemas,
+  fightSchemas,
   profileSchemas,
   swipeSchemas,
-  fightSchemas,
-  chatSchemas,
 } from "./index";
 
 describe("profileSchemas", () => {
@@ -31,7 +32,7 @@ describe("profileSchemas", () => {
           wins: 10,
           losses: 5,
           location: "City",
-        })
+        }),
       ).toThrow();
     });
 
@@ -45,7 +46,7 @@ describe("profileSchemas", () => {
           wins: 10,
           losses: 5,
           location: "City",
-        })
+        }),
       ).toThrow();
     });
 
@@ -59,7 +60,7 @@ describe("profileSchemas", () => {
           wins: 10,
           losses: 5,
           location: "City",
-        })
+        }),
       ).toThrow();
     });
 
@@ -73,7 +74,7 @@ describe("profileSchemas", () => {
           wins: 10,
           losses: 5,
           location: "City",
-        })
+        }),
       ).toThrow();
     });
 
@@ -87,7 +88,7 @@ describe("profileSchemas", () => {
           wins: -1,
           losses: 5,
           location: "City",
-        })
+        }),
       ).toThrow();
     });
   });
@@ -109,7 +110,7 @@ describe("profileSchemas", () => {
       expect(() =>
         profileSchemas.updateProfile.parse({
           nickname: "",
-        })
+        }),
       ).toThrow();
     });
 
@@ -117,7 +118,7 @@ describe("profileSchemas", () => {
       expect(() =>
         profileSchemas.updateProfile.parse({
           role: "invalid",
-        })
+        }),
       ).toThrow();
     });
   });
@@ -137,7 +138,9 @@ describe("swipeSchemas", () => {
     test("rejects invalid uuid? Actually targetId is TEXT, not uuid, so we only check length", () => {
       // We are not validating uuid, just string length 1-64
       expect(() => swipeSchemas.like.parse({ targetId: "" })).toThrow();
-      expect(() => swipeSchemas.like.parse({ targetId: "a".repeat(65) })).toThrow();
+      expect(() =>
+        swipeSchemas.like.parse({ targetId: "a".repeat(65) }),
+      ).toThrow();
     });
   });
 
@@ -157,7 +160,7 @@ describe("swipeSchemas", () => {
 
     test("rejects targetId with 65 chars", () => {
       expect(() =>
-        swipeSchemas.pass.parse({ targetId: "a".repeat(65) })
+        swipeSchemas.pass.parse({ targetId: "a".repeat(65) }),
       ).toThrow();
     });
   });
@@ -191,7 +194,7 @@ describe("fightSchemas", () => {
         fightSchemas.propose.parse({
           location: "Arena",
           scheduledAt: pastDate,
-        })
+        }),
       ).toThrow();
     });
 
@@ -200,7 +203,7 @@ describe("fightSchemas", () => {
         fightSchemas.propose.parse({
           location: "",
           scheduledAt: futureDate,
-        })
+        }),
       ).toThrow();
     });
 
@@ -209,7 +212,7 @@ describe("fightSchemas", () => {
         fightSchemas.propose.parse({
           location: "a".repeat(257),
           scheduledAt: futureDate,
-        })
+        }),
       ).toThrow();
     });
 
@@ -219,7 +222,7 @@ describe("fightSchemas", () => {
           location: "Arena",
           lat: 12.34,
           scheduledAt: futureDate,
-        })
+        }),
       ).toThrow();
     });
 
@@ -229,7 +232,7 @@ describe("fightSchemas", () => {
           location: "Arena",
           lng: 56.78,
           scheduledAt: futureDate,
-        })
+        }),
       ).toThrow();
     });
   });
@@ -246,7 +249,7 @@ describe("fightSchemas", () => {
 
     test("rejects invalid uuid", () => {
       expect(() =>
-        fightSchemas.confirm.parse({ fightId: "not-a-uuid" })
+        fightSchemas.confirm.parse({ fightId: "not-a-uuid" }),
       ).toThrow();
     });
   });
@@ -263,7 +266,7 @@ describe("fightSchemas", () => {
 
     test("rejects invalid uuid", () => {
       expect(() =>
-        fightSchemas.acceptJudge.parse({ fightId: "not-a-uuid" })
+        fightSchemas.acceptJudge.parse({ fightId: "not-a-uuid" }),
       ).toThrow();
     });
   });
@@ -279,7 +282,7 @@ describe("fightSchemas", () => {
 
     test("rejects missing fightId", () => {
       expect(() =>
-        fightSchemas.complete.parse({ winnerId: "winner-id" })
+        fightSchemas.complete.parse({ winnerId: "winner-id" }),
       ).toThrow();
     });
 
@@ -287,7 +290,7 @@ describe("fightSchemas", () => {
       expect(() =>
         fightSchemas.complete.parse({
           fightId: "123e4567-e89b-12d3-a456-426614174000",
-        })
+        }),
       ).toThrow();
     });
 
@@ -296,7 +299,7 @@ describe("fightSchemas", () => {
         fightSchemas.complete.parse({
           fightId: "not-a-uuid",
           winnerId: "winner-id",
-        })
+        }),
       ).toThrow();
     });
 
@@ -305,7 +308,7 @@ describe("fightSchemas", () => {
         fightSchemas.complete.parse({
           fightId: "123e4567-e89b-12d3-a456-426614174000",
           winnerId: "",
-        })
+        }),
       ).toThrow();
     });
 
@@ -314,7 +317,7 @@ describe("fightSchemas", () => {
         fightSchemas.complete.parse({
           fightId: "123e4567-e89b-12d3-a456-426614174000",
           winnerId: "a".repeat(65),
-        })
+        }),
       ).toThrow();
     });
   });
@@ -331,7 +334,7 @@ describe("fightSchemas", () => {
 
     test("rejects invalid uuid", () => {
       expect(() =>
-        fightSchemas.cancel.parse({ fightId: "not-a-uuid" })
+        fightSchemas.cancel.parse({ fightId: "not-a-uuid" }),
       ).toThrow();
     });
   });
@@ -349,7 +352,7 @@ describe("chatSchemas", () => {
 
     test("rejects missing fightId", () => {
       expect(() =>
-        chatSchemas.sendMessage.parse({ content: "Hello" })
+        chatSchemas.sendMessage.parse({ content: "Hello" }),
       ).toThrow();
     });
 
@@ -357,7 +360,7 @@ describe("chatSchemas", () => {
       expect(() =>
         chatSchemas.sendMessage.parse({
           fightId: "123e4567-e89b-12d3-a456-426614174000",
-        })
+        }),
       ).toThrow();
     });
 
@@ -366,7 +369,7 @@ describe("chatSchemas", () => {
         chatSchemas.sendMessage.parse({
           fightId: "123e4567-e89b-12d3-a456-426614174000",
           content: "",
-        })
+        }),
       ).toThrow();
     });
 
@@ -375,7 +378,7 @@ describe("chatSchemas", () => {
         chatSchemas.sendMessage.parse({
           fightId: "123e4567-e89b-12d3-a456-426614174000",
           content: "a".repeat(2001),
-        })
+        }),
       ).toThrow();
     });
   });

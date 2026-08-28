@@ -1,9 +1,11 @@
-import { z } from 'zod';
-import { eq, and, desc, gt } from 'drizzle-orm';
-import { createTRPCRouter, protectedProcedure } from '../trpc';
-import { TRPCError } from '@trpc/server';
-import * as schema from '@acme/db/schema';
-import { chatSchemas } from '@acme/validators';
+import { TRPCError } from "@trpc/server";
+import { and, desc, eq, gt } from "drizzle-orm";
+import { z } from "zod";
+
+import * as schema from "@acme/db/schema";
+import { chatSchemas } from "@acme/validators";
+
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const chatRouter = createTRPCRouter({
   list: protectedProcedure
@@ -12,7 +14,7 @@ export const chatRouter = createTRPCRouter({
         fightId: z.string(),
         limit: z.number().int().positive().max(100).default(50),
         after: z.string().datetime().optional(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const { fightId, limit, after } = input;
@@ -24,7 +26,7 @@ export const chatRouter = createTRPCRouter({
       });
 
       if (!fight) {
-        throw new TRPCError({ code: 'NOT_FOUND' });
+        throw new TRPCError({ code: "NOT_FOUND" });
       }
 
       const isParticipant =
@@ -33,7 +35,7 @@ export const chatRouter = createTRPCRouter({
         fight.judgeId === userId;
 
       if (!isParticipant) {
-        throw new TRPCError({ code: 'FORBIDDEN' });
+        throw new TRPCError({ code: "FORBIDDEN" });
       }
 
       // Build the query for messages
@@ -73,7 +75,7 @@ export const chatRouter = createTRPCRouter({
       });
 
       if (!fight) {
-        throw new TRPCError({ code: 'NOT_FOUND' });
+        throw new TRPCError({ code: "NOT_FOUND" });
       }
 
       const isParticipant =
@@ -82,7 +84,7 @@ export const chatRouter = createTRPCRouter({
         fight.judgeId === userId;
 
       if (!isParticipant) {
-        throw new TRPCError({ code: 'FORBIDDEN' });
+        throw new TRPCError({ code: "FORBIDDEN" });
       }
 
       // Insert the message

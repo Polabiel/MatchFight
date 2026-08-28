@@ -5,7 +5,7 @@ import * as schema from "./schema";
 
 const postgresUrl = process.env.POSTGRES_URL;
 if (!postgresUrl) {
-  throw new Error('POSTGRES_URL is not defined');
+  throw new Error("POSTGRES_URL is not defined");
 }
 const client = postgres(postgresUrl, {
   // postgres.js maps ssl per URL params; local Docker has none

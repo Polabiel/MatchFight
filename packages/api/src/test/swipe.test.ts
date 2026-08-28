@@ -1,18 +1,20 @@
-import { describe, it, expect, beforeAll } from 'vitest';
-import { runTestMigrations, createTestUser, createTestCaller } from './helpers';
-import { db as testDb } from '@acme/db/test';
+import { beforeAll, describe, expect, it } from "vitest";
 
-describe('Swipe Router', () => {
+import { db as testDb } from "@acme/db/test";
+
+import { createTestCaller, createTestUser, runTestMigrations } from "./helpers";
+
+describe("Swipe Router", () => {
   beforeAll(async () => {
     await runTestMigrations();
   });
 
-  it('should create a match when likes are mutual', async () => {
+  it("should create a match when likes are mutual", async () => {
     // Create user A
     const { userId: userIdA } = await createTestUser({
       profile: {
-        nickname: 'UserA',
-        role: 'fighter',
+        nickname: "UserA",
+        role: "fighter",
       },
     });
     const callerA = createTestCaller(userIdA);
@@ -20,8 +22,8 @@ describe('Swipe Router', () => {
     // Create user B
     const { userId: userIdB } = await createTestUser({
       profile: {
-        nickname: 'UserB',
-        role: 'fighter',
+        nickname: "UserB",
+        role: "fighter",
       },
     });
     const callerB = createTestCaller(userIdB);
@@ -45,27 +47,31 @@ describe('Swipe Router', () => {
 
     expect(fight).toMatchObject({
       id: fightId,
-      status: 'pending',
+      status: "pending",
       fighter1Id: expect.any(String),
       fighter2Id: expect.any(String),
     });
   });
 
-  it('should return candidates excluding self and already-swiped users, and support weight class filter', async () => {
+  it("should return candidates excluding self and already-swiped users, and support weight class filter", async () => {
     // Create user A (fighter)
     const { userId: userIdA } = await createTestUser({
-      profile: { nickname: 'FighterA', role: 'fighter' },
+      profile: { nickname: "FighterA", role: "fighter" },
     });
     const callerA = createTestCaller(userIdA);
 
     // Create user B (fighter, no weight class)
     const { userId: userIdB } = await createTestUser({
-      profile: { nickname: 'FighterB', role: 'fighter' },
+      profile: { nickname: "FighterB", role: "fighter" },
     });
 
     // Create user C (fighter, heavyweight)
     const { userId: userIdC } = await createTestUser({
-      profile: { nickname: 'FighterC', role: 'fighter', weightClass: 'heavyweight' },
+      profile: {
+        nickname: "FighterC",
+        role: "fighter",
+        weightClass: "heavyweight",
+      },
     });
 
     // A's candidates should include B and C, exclude A
@@ -84,19 +90,21 @@ describe('Swipe Router', () => {
     expect(afterLikeIds).toContain(userIdC);
 
     // Filter by weight class: only C (heavyweight) should appear; A and B should not
-    const heavyCandidates = await callerA.swipe.candidates({ weightClass: 'heavyweight' });
+    const heavyCandidates = await callerA.swipe.candidates({
+      weightClass: "heavyweight",
+    });
     const heavyIds = heavyCandidates.map((c) => c.id);
     expect(heavyIds).toContain(userIdC);
     expect(heavyIds).not.toContain(userIdA);
     expect(heavyIds).not.toContain(userIdB);
   });
 
-  it('should exclude users in active fights from candidates', async () => {
+  it("should exclude users in active fights from candidates", async () => {
     const { userId: userIdA } = await createTestUser({
-      profile: { nickname: 'ActiveA', role: 'fighter' },
+      profile: { nickname: "ActiveA", role: "fighter" },
     });
     const { userId: userIdB } = await createTestUser({
-      profile: { nickname: 'ActiveB', role: 'fighter' },
+      profile: { nickname: "ActiveB", role: "fighter" },
     });
     const callerA = createTestCaller(userIdA);
     const callerB = createTestCaller(userIdB);
@@ -111,18 +119,18 @@ describe('Swipe Router', () => {
     expect(ids).not.toContain(userIdB);
   });
 
-  it('should reject self-like', async () => {
+  it("should reject self-like", async () => {
     const { userId } = await createTestUser({
-      profile: { nickname: 'Self', role: 'fighter' },
+      profile: { nickname: "Self", role: "fighter" },
     });
     const caller = createTestCaller(userId);
 
     await expect(caller.swipe.like({ targetId: userId })).rejects.toThrow();
   });
 
-  it('should reject like on target without profile', async () => {
+  it("should reject like on target without profile", async () => {
     const { userId: userIdA } = await createTestUser({
-      profile: { nickname: 'A', role: 'fighter' },
+      profile: { nickname: "A", role: "fighter" },
     });
     const { userId: userIdB } = await createTestUser(); // no profile
     const callerA = createTestCaller(userIdA);
@@ -130,24 +138,26 @@ describe('Swipe Router', () => {
     await expect(callerA.swipe.like({ targetId: userIdB })).rejects.toThrow();
   });
 
-  it('should reject like on target with role judge only', async () => {
+  it("should reject like on target with role judge only", async () => {
     const { userId: userIdA } = await createTestUser({
-      profile: { nickname: 'A', role: 'fighter' },
+      profile: { nickname: "A", role: "fighter" },
     });
     const { userId: userIdJudge } = await createTestUser({
-      profile: { nickname: 'Judge', role: 'judge' },
+      profile: { nickname: "Judge", role: "judge" },
     });
     const callerA = createTestCaller(userIdA);
 
-    await expect(callerA.swipe.like({ targetId: userIdJudge })).rejects.toThrow();
+    await expect(
+      callerA.swipe.like({ targetId: userIdJudge }),
+    ).rejects.toThrow();
   });
 
-  it('should record a pass and exclude from candidates, not create a fight', async () => {
+  it("should record a pass and exclude from candidates, not create a fight", async () => {
     const { userId: userIdA } = await createTestUser({
-      profile: { nickname: 'A', role: 'fighter' },
+      profile: { nickname: "A", role: "fighter" },
     });
     const { userId: userIdB } = await createTestUser({
-      profile: { nickname: 'B', role: 'fighter' },
+      profile: { nickname: "B", role: "fighter" },
     });
     const callerA = createTestCaller(userIdA);
 
@@ -158,10 +168,7 @@ describe('Swipe Router', () => {
     // Verify no fight exists between A and B
     const fights = await testDb.query.Fight.findMany({
       where: (table, { eq, or }) =>
-        or(
-          eq(table.fighter1Id, userIdA),
-          eq(table.fighter2Id, userIdA),
-        ),
+        or(eq(table.fighter1Id, userIdA), eq(table.fighter2Id, userIdA)),
     });
     const fightWithB = fights.find(
       (f) => f.fighter1Id === userIdB || f.fighter2Id === userIdB,

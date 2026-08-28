@@ -36,24 +36,32 @@ export const pass = z.object({
 });
 
 // Fight schemas
-export const propose = z.object({
-  location: z.string().min(1).max(256),
-  lat: z.number().optional(),
-  lng: z.number().optional(),
-  scheduledAt: z.string().datetime({ offset: true }).refine((date) => {
-    return new Date(date) > new Date();
-  }, { message: "scheduledAt must be in the future" })
-}).superRefine((val, ctx) => {
-  const hasLat = val.lat !== undefined;
-  const hasLng = val.lng !== undefined;
-  if (hasLat !== hasLng) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Both lat and lng must be provided together",
-      path: ["lat", "lng"],
-    });
-  }
-});
+export const propose = z
+  .object({
+    location: z.string().min(1).max(256),
+    lat: z.number().optional(),
+    lng: z.number().optional(),
+    scheduledAt: z
+      .string()
+      .datetime({ offset: true })
+      .refine(
+        (date) => {
+          return new Date(date) > new Date();
+        },
+        { message: "scheduledAt must be in the future" },
+      ),
+  })
+  .superRefine((val, ctx) => {
+    const hasLat = val.lat !== undefined;
+    const hasLng = val.lng !== undefined;
+    if (hasLat !== hasLng) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Both lat and lng must be provided together",
+        path: ["lat", "lng"],
+      });
+    }
+  });
 
 export const confirm = z.object({
   fightId: z.string().uuid(),

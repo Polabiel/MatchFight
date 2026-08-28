@@ -1,54 +1,54 @@
-import { db } from './client';
-import { close } from './client';
-import * as schema from './schema';
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+
+import { close, db } from "./client";
+import * as schema from "./schema";
 
 const fighterNames = [
-  { name: 'Silva Santos', nickname: 'Silva' },
-  { name: 'Pereira Lima', nickname: 'Pereira' },
-  { name: 'Costa Oliveira', nickname: 'Costa' },
-  { name: 'Almeida Ferreira', nickname: 'Almeida' },
-  { name: 'Gomes Rocha', nickname: 'Gomes' },
-  { name: 'Martins Alves', nickname: 'Martins' },
-  { name: 'Moreira Diniz', nickname: 'Moreira' },
-  { name: 'Barros Castro', nickname: 'Barros' },
-  { name: 'Moraes Ramos', nickname: 'Moraes' },
-  { name: 'Vargas Lopes', nickname: 'Vargas' },
-  { name: 'Nunes Mendes', nickname: 'Nunes' },
-  { name: 'Carvalho Araujo', nickname: 'Carvalho' },
-  { name: 'Freitas Barbosa', nickname: 'Freitas' },
-  { name: 'Monteiro Paiva', nickname: 'Monteiro' },
-  { name: 'Cavalcanti Ximenes', nickname: 'Cavalcanti' },
+  { name: "Silva Santos", nickname: "Silva" },
+  { name: "Pereira Lima", nickname: "Pereira" },
+  { name: "Costa Oliveira", nickname: "Costa" },
+  { name: "Almeida Ferreira", nickname: "Almeida" },
+  { name: "Gomes Rocha", nickname: "Gomes" },
+  { name: "Martins Alves", nickname: "Martins" },
+  { name: "Moreira Diniz", nickname: "Moreira" },
+  { name: "Barros Castro", nickname: "Barros" },
+  { name: "Moraes Ramos", nickname: "Moraes" },
+  { name: "Vargas Lopes", nickname: "Vargas" },
+  { name: "Nunes Mendes", nickname: "Nunes" },
+  { name: "Carvalho Araujo", nickname: "Carvalho" },
+  { name: "Freitas Barbosa", nickname: "Freitas" },
+  { name: "Monteiro Paiva", nickname: "Monteiro" },
+  { name: "Cavalcanti Ximenes", nickname: "Cavalcanti" },
 ];
 
 const judgeNames = [
-  { name: 'Juiz Silva', nickname: 'Juiz Silva' },
-  { name: 'Juiz Pereira', nickname: 'Juiz Pereira' },
-  { name: 'Juiz Costa', nickname: 'Juiz Costa' },
+  { name: "Juiz Silva", nickname: "Juiz Silva" },
+  { name: "Juiz Pereira", nickname: "Juiz Pereira" },
+  { name: "Juiz Costa", nickname: "Juiz Costa" },
 ];
 
 const weightClasses = [
-  'flyweight',
-  'bantamweight',
-  'featherweight',
-  'lightweight',
-  'welterweight',
-  'middleweight',
-  'light_heavyweight',
-  'heavyweight',
+  "flyweight",
+  "bantamweight",
+  "featherweight",
+  "lightweight",
+  "welterweight",
+  "middleweight",
+  "light_heavyweight",
+  "heavyweight",
 ] as const;
 
 const locations = [
-  'São Paulo, SP',
-  'Rio de Janeiro, RJ',
-  'Belo Horizonte, MG',
-  'Salvador, BA',
-  'Fortaleza, CE',
-  'Brasília, DF',
-  'Manaus, AM',
-  'Curitiba, PR',
-  'Recife, PE',
-  'Porto Alegre, RS',
+  "São Paulo, SP",
+  "Rio de Janeiro, RJ",
+  "Belo Horizonte, MG",
+  "Salvador, BA",
+  "Fortaleza, CE",
+  "Brasília, DF",
+  "Manaus, AM",
+  "Curitiba, PR",
+  "Recife, PE",
+  "Porto Alegre, RS",
 ];
 
 function randomWeightClass() {
@@ -91,7 +91,7 @@ export async function seedDatabase(db: PostgresJsDatabase<typeof schema>) {
       userId,
       nickname,
       bio: `Bio de ${nickname}`,
-      role: 'fighter',
+      role: "fighter",
       weightClass: randomWeightClass(),
       wins: randomWinLoss(),
       losses: randomWinLoss(),
@@ -122,7 +122,7 @@ export async function seedDatabase(db: PostgresJsDatabase<typeof schema>) {
       userId,
       nickname,
       bio: `Bio de ${nickname}`,
-      role: 'judge',
+      role: "judge",
       weightClass: undefined, // Judges don't have weight class
       wins: 0,
       losses: 0,
@@ -136,13 +136,13 @@ export async function seedDatabase(db: PostgresJsDatabase<typeof schema>) {
 // Main function to run the seed
 async function main() {
   await seedDatabase(db);
-  console.log('Database seeded successfully');
+  console.log("Database seeded successfully");
   await close();
 }
 
-if (process.argv[1]?.endsWith('seed.ts')) {
+if (process.argv[1]?.endsWith("seed.ts")) {
   main().catch((err) => {
-    console.error('Error seeding database:', err);
+    console.error("Error seeding database:", err);
     process.exit(1);
   });
 }

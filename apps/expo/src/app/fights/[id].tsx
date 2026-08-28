@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { ActivityIndicator, Pressable, Text, TextInput, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -106,7 +112,9 @@ export default function FightDetail() {
       <View className="bg-background h-full w-full gap-5 p-4">
         <View className="flex-row items-center justify-between">
           <Text className="text-3xl font-extrabold">Fight</Text>
-          <Text className={`rounded-full px-3 py-1 text-sm font-medium ${style}`}>
+          <Text
+            className={`rounded-full px-3 py-1 text-sm font-medium ${style}`}
+          >
             {statusLabels[fight.status] ?? fight.status}
           </Text>
         </View>
@@ -126,7 +134,7 @@ export default function FightDetail() {
               ) : null}
             </View>
           ))}
-          <Text className="text-2xl font-bold text-muted-foreground">VS</Text>
+          <Text className="text-muted-foreground text-2xl font-bold">VS</Text>
         </View>
 
         {/* Details */}
@@ -171,7 +179,7 @@ export default function FightDetail() {
                     onPress={() => setShowPropose((v) => !v)}
                     className="bg-primary items-center rounded-md py-2.5"
                   >
-                    <Text className="font-semibold text-primary-foreground">
+                    <Text className="text-primary-foreground font-semibold">
                       Propose fight details
                     </Text>
                   </Pressable>
@@ -197,7 +205,7 @@ export default function FightDetail() {
                       disabled={propose.isPending}
                       className="bg-primary items-center rounded-md py-2.5"
                     >
-                      <Text className="font-semibold text-primary-foreground">
+                      <Text className="text-primary-foreground font-semibold">
                         {propose.isPending ? "Sending..." : "Send proposal"}
                       </Text>
                     </Pressable>
@@ -210,7 +218,7 @@ export default function FightDetail() {
                     disabled={confirm.isPending}
                     className="bg-primary items-center rounded-md py-2.5"
                   >
-                    <Text className="font-semibold text-primary-foreground">
+                    <Text className="text-primary-foreground font-semibold">
                       {confirm.isPending ? "Confirming..." : "Confirm fight"}
                     </Text>
                   </Pressable>
@@ -223,7 +231,9 @@ export default function FightDetail() {
                     className="bg-muted items-center rounded-md py-2.5"
                   >
                     <Text className="font-medium">
-                      {acceptJudge.isPending ? "Accepting..." : "Accept as judge"}
+                      {acceptJudge.isPending
+                        ? "Accepting..."
+                        : "Accept as judge"}
                     </Text>
                   </Pressable>
                 ) : null}
@@ -245,7 +255,7 @@ export default function FightDetail() {
                         disabled={complete.isPending}
                         className="bg-primary flex-1 items-center rounded-md py-2.5"
                       >
-                        <Text className="font-semibold text-primary-foreground">
+                        <Text className="text-primary-foreground font-semibold">
                           {fight.fighter1.name} wins
                         </Text>
                       </Pressable>
@@ -259,7 +269,7 @@ export default function FightDetail() {
                         disabled={complete.isPending}
                         className="bg-primary flex-1 items-center rounded-md py-2.5"
                       >
-                        <Text className="font-semibold text-primary-foreground">
+                        <Text className="text-primary-foreground font-semibold">
                           {fight.fighter2.name} wins
                         </Text>
                       </Pressable>
@@ -278,7 +288,7 @@ export default function FightDetail() {
               </>
             ) : null}
 
-            {(fight.status === "pending" || fight.status === "scheduled") ? (
+            {fight.status === "pending" || fight.status === "scheduled" ? (
               <Pressable
                 onPress={() => cancel.mutate({ fightId: fight.id })}
                 disabled={cancel.isPending}

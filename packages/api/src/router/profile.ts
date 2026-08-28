@@ -1,7 +1,9 @@
-import { z } from 'zod';
-import { eq } from 'drizzle-orm';
-import { createTRPCRouter, publicProcedure, protectedProcedure } from '../trpc';
-import * as schema from '@acme/db/schema';
+import { eq } from "drizzle-orm";
+import { z } from "zod";
+
+import * as schema from "@acme/db/schema";
+
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const profileRouter = createTRPCRouter({
   getByUser: publicProcedure
@@ -60,25 +62,28 @@ export const profileRouter = createTRPCRouter({
       z.object({
         nickname: z.string().min(1),
         bio: z.string().optional(),
-        role: z.enum(['fighter', 'judge', 'both']),
-        weightClass: z.enum([
-          'flyweight',
-          'bantamweight',
-          'featherweight',
-          'lightweight',
-          'welterweight',
-          'middleweight',
-          'light_heavyweight',
-          'heavyweight',
-        ]).optional(),
+        role: z.enum(["fighter", "judge", "both"]),
+        weightClass: z
+          .enum([
+            "flyweight",
+            "bantamweight",
+            "featherweight",
+            "lightweight",
+            "welterweight",
+            "middleweight",
+            "light_heavyweight",
+            "heavyweight",
+          ])
+          .optional(),
         wins: z.number().int().nonnegative().default(0),
         losses: z.number().int().nonnegative().default(0),
         location: z.string().optional(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
-      const { nickname, bio, role, weightClass, wins, losses, location } = input;
+      const { nickname, bio, role, weightClass, wins, losses, location } =
+        input;
 
       // Check if profile exists
       const existingProfile = await ctx.db.query.Profile.findFirst({

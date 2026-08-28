@@ -38,8 +38,11 @@ export default function Profile() {
             <Text className="text-muted-foreground text-center">
               Create your profile to get started on MatchFight.
             </Text>
-            <Link href="/profile/edit" className="bg-primary rounded-md px-4 py-2">
-              <Text className="font-semibold text-primary-foreground">
+            <Link
+              href="/profile/edit"
+              className="bg-primary rounded-md px-4 py-2"
+            >
+              <Text className="text-primary-foreground font-semibold">
                 Create your profile
               </Text>
             </Link>
@@ -76,9 +79,7 @@ export default function Profile() {
                 <Text className="font-semibold">Details</Text>
                 {profile.weightClass ? (
                   <View className="flex-row justify-between">
-                    <Text className="text-muted-foreground">
-                      Weight class:
-                    </Text>
+                    <Text className="text-muted-foreground">Weight class:</Text>
                     <Text className="font-medium">
                       {weightLabel(profile.weightClass)}
                     </Text>
@@ -99,7 +100,10 @@ export default function Profile() {
               </View>
             </View>
 
-            <Link href="/profile/edit" className="bg-muted items-center rounded-md py-2.5">
+            <Link
+              href="/profile/edit"
+              className="bg-muted items-center rounded-md py-2.5"
+            >
               <Text className="font-medium">Edit Profile</Text>
             </Link>
           </>

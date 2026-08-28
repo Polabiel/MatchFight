@@ -47,7 +47,9 @@ function FightRow({
             {fighter1Name} <Text className="text-muted-foreground">vs</Text>{" "}
             {fighter2Name}
           </Text>
-          <Text className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${style}`}>
+          <Text
+            className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${style}`}
+          >
             {statusLabels[status] ?? status}
           </Text>
         </View>
@@ -135,13 +137,11 @@ export default function Fights() {
               <Text className="text-4xl">🥊</Text>
               <Text className="font-semibold">No fights yet</Text>
               <Text className="text-muted-foreground text-center text-sm">
-                Swipe and match with other fighters to schedule your first fight.
+                Swipe and match with other fighters to schedule your first
+                fight.
               </Text>
-              <Link
-                href="/"
-                className="bg-primary mt-2 rounded-md px-4 py-2"
-              >
-                <Text className="font-semibold text-primary-foreground">
+              <Link href="/" className="bg-primary mt-2 rounded-md px-4 py-2">
+                <Text className="text-primary-foreground font-semibold">
                   Find opponents
                 </Text>
               </Link>
