@@ -25,7 +25,7 @@ export const getBaseUrl = () => {
   // If hostUri is available, use it; otherwise fall back to localhost:3000
   // Users can set BASE_URL env var or override this function for production
   if (!localhost) {
-    const envBaseUrl = process?.env?.BASE_URL;
+    const envBaseUrl = process.env.BASE_URL;
     if (envBaseUrl) {
       return envBaseUrl;
     }

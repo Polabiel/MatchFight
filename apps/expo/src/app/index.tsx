@@ -1,171 +1,292 @@
 import { useState } from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link, Stack } from "expo-router";
-import { LegendList } from "@legendapp/list";
+import { Link, Stack, useRouter } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import type { RouterOutputs } from "~/utils/api";
 import { trpc } from "~/utils/api";
 import { authClient } from "~/utils/auth";
 
-function PostCard(props: {
-  post: RouterOutputs["post"]["all"][number];
-  onDelete: () => void;
-}) {
-  return (
-    <View className="bg-muted flex flex-row rounded-lg p-4">
-      <View className="grow">
-        <Link
-          asChild
-          href={{
-            pathname: "/post/[id]",
-            params: { id: props.post.id },
-          }}
-        >
-          <Pressable className="">
-            <Text className="text-primary text-xl font-semibold">
-              {props.post.title}
-            </Text>
-            <Text className="text-foreground mt-2">{props.post.content}</Text>
-          </Pressable>
-        </Link>
+const weightClasses = [
+  { value: "", label: "All" },
+  { value: "flyweight", label: "Flyweight" },
+  { value: "bantamweight", label: "Bantamweight" },
+  { value: "featherweight", label: "Featherweight" },
+  { value: "lightweight", label: "Lightweight" },
+  { value: "welterweight", label: "Welterweight" },
+  { value: "middleweight", label: "Middleweight" },
+  { value: "light_heavyweight", label: "Light Heavyweight" },
+  { value: "heavyweight", label: "Heavyweight" },
+] as const;
+
+function AuthGate({ children }: { children: React.ReactNode }) {
+  const { data: session, isPending } = authClient.useSession();
+  const router = useRouter();
+
+  if (isPending) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator />
       </View>
-      <Pressable onPress={props.onDelete}>
-        <Text className="text-primary font-bold uppercase">Delete</Text>
-      </Pressable>
-    </View>
-  );
+    );
+  }
+
+  if (!session) {
+    return (
+      <View className="flex-1 items-center justify-center gap-6 p-6">
+        <Text className="text-5xl font-extrabold">
+          Match<span className="text-primary">Fight</span>
+        </Text>
+        <Text className="text-muted-foreground text-center">
+          Find your next opponent. Swipe, match, fight.
+        </Text>
+        <Pressable
+          onPress={() =>
+            authClient.signIn.social({ provider: "discord", callbackURL: "/" })
+          }
+          className="bg-primary flex items-center rounded-md px-6 py-3"
+        >
+          <Text className="font-semibold text-primary-foreground">
+            Sign in with Discord
+          </Text>
+        </Pressable>
+        <Pressable onPress={() => router.push("/profile/edit")}>
+          <Text className="text-primary underline">Continue with email</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
+  return <>{children}</>;
 }
 
-function CreatePost() {
+function SwipeCard() {
   const queryClient = useQueryClient();
+  const [weightClass, setWeightClass] = useState<
+    (typeof weightClasses)[number]["value"] | undefined
+  >(undefined);
+  const [index, setIndex] = useState(0);
+  const [matched, setMatched] = useState<{
+    name: string;
+    nickname: string;
+    fightId: string;
+  } | null>(null);
 
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const candidatesQuery = useQuery(
+    trpc.swipe.candidates.queryOptions({
+      weightClass: weightClass === "" ? undefined : weightClass,
+    }),
+  );
 
-  const { mutate, error } = useMutation(
-    trpc.post.create.mutationOptions({
-      async onSuccess() {
-        setTitle("");
-        setContent("");
-        await queryClient.invalidateQueries(trpc.post.all.queryFilter());
+  const like = useMutation(
+    trpc.swipe.like.mutationOptions({
+      onSuccess: (data) => {
+        const candidate = candidatesQuery.data?.[index];
+        if (data.matched && data.fightId && candidate) {
+          setMatched({
+            name: candidate.name,
+            nickname: candidate.nickname,
+            fightId: data.fightId,
+          });
+        } else {
+          setIndex((i) => i + 1);
+        }
       },
     }),
   );
 
-  return (
-    <View className="mt-4 flex gap-2">
-      <TextInput
-        className="border-input bg-background text-foreground items-center rounded-md border px-3 text-lg leading-tight"
-        value={title}
-        onChangeText={setTitle}
-        placeholder="Title"
-      />
-      {error?.data?.zodError?.fieldErrors.title && (
-        <Text className="text-destructive mb-2">
-          {error.data.zodError.fieldErrors.title}
-        </Text>
-      )}
-      <TextInput
-        className="border-input bg-background text-foreground items-center rounded-md border px-3 text-lg leading-tight"
-        value={content}
-        onChangeText={setContent}
-        placeholder="Content"
-      />
-      {error?.data?.zodError?.fieldErrors.content && (
-        <Text className="text-destructive mb-2">
-          {error.data.zodError.fieldErrors.content}
-        </Text>
-      )}
-      <Pressable
-        className="bg-primary flex items-center rounded-sm p-2"
-        onPress={() => {
-          mutate({
-            title,
-            content,
-          });
-        }}
-      >
-        <Text className="text-foreground">Create</Text>
-      </Pressable>
-      {error?.data?.code === "UNAUTHORIZED" && (
-        <Text className="text-destructive mt-2">
-          You need to be logged in to create a post
-        </Text>
-      )}
-    </View>
+  const pass = useMutation(
+    trpc.swipe.pass.mutationOptions({
+      onSuccess: () => setIndex((i) => i + 1),
+    }),
   );
-}
 
-function MobileAuth() {
-  const { data: session } = authClient.useSession();
+  const candidates = candidatesQuery.data ?? [];
+  const current = candidates[index];
+
+  if (candidatesQuery.isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
+  if (candidatesQuery.isError) {
+    return (
+      <View className="flex-1 items-center justify-center p-6">
+        <Text className="text-destructive text-center">
+          Failed to load candidates
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <>
-      <Text className="text-foreground pb-2 text-center text-xl font-semibold">
-        {session?.user.name ? `Hello, ${session.user.name}` : "Not logged in"}
-      </Text>
-      <Pressable
-        onPress={() =>
-          session
-            ? authClient.signOut()
-            : authClient.signIn.social({
-                provider: "discord",
-                callbackURL: "/",
-              })
-        }
-        className="bg-primary flex items-center rounded-sm p-2"
-      >
-        <Text>{session ? "Sign Out" : "Sign In With Discord"}</Text>
-      </Pressable>
+      {/* Weight filter chips */}
+      <View className="flex-row flex-wrap gap-2">
+        {weightClasses.map((wc) => {
+          const active = (weightClass ?? "") === wc.value;
+          return (
+            <Pressable
+              key={wc.value}
+              onPress={() => {
+                setWeightClass(wc.value || undefined);
+                setIndex(0);
+              }}
+              className={`rounded-full px-3 py-1 ${
+                active ? "bg-primary" : "bg-muted"
+              }`}
+            >
+              <Text
+                className={`text-xs font-medium ${
+                  active ? "text-primary-foreground" : "text-foreground"
+                }`}
+              >
+                {wc.label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
+
+      {!current ? (
+        <View className="flex-1 items-center justify-center gap-4 p-6">
+          <Text className="text-4xl">🥊</Text>
+          <Text className="text-xl font-bold">No more candidates</Text>
+          <Text className="text-muted-foreground text-center">
+            You've seen everyone in this weight class.
+          </Text>
+          <Pressable
+            onPress={() => {
+              setIndex(0);
+              void queryClient.invalidateQueries(trpc.swipe.candidates.pathFilter());
+            }}
+            className="bg-muted rounded-md px-4 py-2"
+          >
+            <Text className="font-medium">Refresh</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <>
+          <View className="w-full overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
+            <View className="h-64 w-full bg-muted">
+              {current.image ? (
+                <Text className="p-4 text-muted-foreground text-sm">
+                  {current.name}
+                </Text>
+              ) : null}
+              <View className="h-full items-center justify-center">
+                <Text className="text-6xl">🥊</Text>
+              </View>
+              <View className="absolute inset-x-0 bottom-0 bg-black/70 p-4">
+                <Text className="text-2xl font-bold text-white">
+                  {current.name}
+                </Text>
+                <Text className="text-sm text-white/90">
+                  "{current.nickname}"
+                </Text>
+              </View>
+            </View>
+
+            <View className="gap-3 p-5">
+              {current.bio ? (
+                <Text className="text-muted-foreground text-sm">
+                  {current.bio}
+                </Text>
+              ) : null}
+              <View className="flex-row flex-wrap gap-2">
+                {current.weightClass ? (
+                  <Text className="bg-primary/10 text-primary rounded-full px-2.5 py-0.5 text-xs font-medium">
+                    {current.weightClass
+                      .replace("_", " ")
+                      .replace(/\b\w/g, (c) => c.toUpperCase())}
+                  </Text>
+                ) : null}
+                <Text className="bg-muted rounded-full px-2.5 py-0.5 text-xs font-medium">
+                  {current.wins}-{current.losses}
+                </Text>
+                {current.location ? (
+                  <Text className="bg-muted rounded-full px-2.5 py-0.5 text-xs font-medium">
+                    📍 {current.location}
+                  </Text>
+                ) : null}
+              </View>
+
+              <View className="mt-2 flex-row items-center justify-center gap-8">
+                <Pressable
+                  onPress={() => pass.mutate({ targetId: current.id })}
+                  disabled={pass.isPending || like.isPending}
+                  className="bg-muted h-14 w-14 items-center justify-center rounded-full"
+                >
+                  <Text className="text-xl">✕</Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => like.mutate({ targetId: current.id })}
+                  disabled={pass.isPending || like.isPending}
+                  className="bg-primary h-14 w-14 items-center justify-center rounded-full"
+                >
+                  <Text className="text-xl text-primary-foreground">✓</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </>
+      )}
+
+      {/* Match modal */}
+      {matched ? (
+        <View className="bg-black/70 absolute inset-0 z-50 items-center justify-center p-4">
+          <View className="w-full max-w-sm items-center gap-4 rounded-2xl border border-border bg-card p-8">
+            <Text className="text-6xl">🎉</Text>
+            <Text className="text-3xl font-extrabold">It's a Match!</Text>
+            <Text className="text-muted-foreground text-center">
+              You and{" "}
+              <Text className="font-semibold text-foreground">
+                {matched.name}
+              </Text>{" "}
+              ({matched.nickname}) liked each other.
+            </Text>
+            <Link
+              href={`/fights/${matched.fightId}`}
+              className="bg-primary w-full items-center rounded-md py-2"
+            >
+              <Text className="font-semibold text-primary-foreground">
+                View fight
+              </Text>
+            </Link>
+            <Pressable onPress={() => setMatched(null)}>
+              <Text className="text-muted-foreground">Keep swiping</Text>
+            </Pressable>
+          </View>
+        </View>
+      ) : null}
     </>
   );
 }
 
 export default function Index() {
-  const queryClient = useQueryClient();
-
-  const postQuery = useQuery(trpc.post.all.queryOptions());
-
-  const deletePostMutation = useMutation(
-    trpc.post.delete.mutationOptions({
-      onSettled: () =>
-        queryClient.invalidateQueries(trpc.post.all.queryFilter()),
-    }),
-  );
-
   return (
-    <SafeAreaView className="bg-background">
-      {/* Changes page title visible on the header */}
-      <Stack.Screen options={{ title: "Home Page" }} />
-      <View className="bg-background h-full w-full p-4">
-        <Text className="text-foreground pb-2 text-center text-5xl font-bold">
-          Create <Text className="text-primary">T3</Text> Turbo
-        </Text>
-
-        <MobileAuth />
-
-        <View className="py-2">
-          <Text className="text-primary font-semibold italic">
-            Press on a post
+    <SafeAreaView className="bg-background flex-1">
+      <Stack.Screen options={{ title: "Find your opponent" }} />
+      <View className="bg-background h-full w-full gap-4 p-4">
+        <View className="flex-row items-center justify-between">
+          <Text className="text-2xl font-extrabold">
+            Match<span className="text-primary">Fight</span>
           </Text>
+          <View className="flex-row gap-4">
+            <Link href="/fights">
+              <Text className="text-primary font-medium">Fights</Text>
+            </Link>
+            <Link href="/profile">
+              <Text className="text-primary font-medium">Profile</Text>
+            </Link>
+          </View>
         </View>
-
-        <LegendList
-          data={postQuery.data ?? []}
-          estimatedItemSize={20}
-          keyExtractor={(item) => item.id}
-          ItemSeparatorComponent={() => <View className="h-2" />}
-          renderItem={(p) => (
-            <PostCard
-              post={p.item}
-              onDelete={() => deletePostMutation.mutate(p.item.id)}
-            />
-          )}
-        />
-
-        <CreatePost />
+        <AuthGate>
+          <SwipeCard />
+        </AuthGate>
       </View>
     </SafeAreaView>
   );

@@ -1,0 +1,203 @@
+import { useState } from "react";
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack, useRouter } from "expo-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { trpc } from "~/utils/api";
+
+const roles = [
+  { value: "fighter", label: "Fighter" },
+  { value: "judge", label: "Judge" },
+  { value: "both", label: "Both" },
+] as const;
+
+const inputClass =
+  "border-input bg-background text-foreground rounded-md border px-3 py-2";
+
+export default function ProfileEdit() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const profileQuery = useQuery(trpc.profile.getMe.queryOptions());
+  const profile = profileQuery.data;
+
+  const [nickname, setNickname] = useState(profile?.nickname ?? "");
+  const [bio, setBio] = useState(profile?.bio ?? "");
+  const [role, setRole] = useState<string>(profile?.role ?? "fighter");
+  const [weightClass, setWeightClass] = useState<string>(
+    profile?.weightClass ?? "",
+  );
+  const [wins, setWins] = useState(String(profile?.wins ?? 0));
+  const [losses, setLosses] = useState(String(profile?.losses ?? 0));
+  const [location, setLocation] = useState(profile?.location ?? "");
+
+  const update = useMutation(
+    trpc.profile.update.mutationOptions({
+      onSuccess: () => {
+        void queryClient.invalidateQueries(trpc.profile.pathFilter());
+        router.back();
+      },
+    }),
+  );
+
+  if (profileQuery.isLoading) {
+    return (
+      <SafeAreaView className="bg-background flex-1">
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator />
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  const isEditMode = !!profile;
+
+  const handleSubmit = () => {
+    if (!nickname.trim()) return;
+    update.mutate({
+      nickname: nickname.trim(),
+      bio: bio || undefined,
+      role: role as "fighter" | "judge" | "both",
+      weightClass: (weightClass || undefined) as
+        | "flyweight"
+        | "bantamweight"
+        | "featherweight"
+        | "lightweight"
+        | "welterweight"
+        | "middleweight"
+        | "light_heavyweight"
+        | "heavyweight"
+        | undefined,
+      wins: parseInt(wins, 10) || 0,
+      losses: parseInt(losses, 10) || 0,
+      location: location || undefined,
+    });
+  };
+
+  return (
+    <SafeAreaView className="bg-background flex-1">
+      <Stack.Screen options={{ title: isEditMode ? "Edit Profile" : "Create Profile" }} />
+      <ScrollView className="bg-background flex-1">
+        <View className="gap-4 p-4">
+          <Text className="text-2xl font-bold">
+            {isEditMode ? "Edit Profile" : "Create Profile"}
+          </Text>
+
+          <View className="gap-1">
+            <Text className="text-sm font-medium">Nickname *</Text>
+            <TextInput
+              className={inputClass}
+              value={nickname}
+              onChangeText={setNickname}
+              placeholder="Enter your nickname"
+            />
+          </View>
+
+          <View className="gap-1">
+            <Text className="text-sm font-medium">Bio</Text>
+            <TextInput
+              className={`${inputClass} h-24`}
+              value={bio}
+              onChangeText={setBio}
+              placeholder="Tell us about yourself..."
+              multiline
+            />
+          </View>
+
+          <View className="gap-1">
+            <Text className="text-sm font-medium">Role</Text>
+            <View className="flex-row gap-2">
+              {roles.map((r) => {
+                const active = role === r.value;
+                return (
+                  <Pressable
+                    key={r.value}
+                    onPress={() => setRole(r.value)}
+                    className={`rounded-full px-3 py-1.5 ${
+                      active ? "bg-primary" : "bg-muted"
+                    }`}
+                  >
+                    <Text
+                      className={`text-sm font-medium ${
+                        active ? "text-primary-foreground" : "text-foreground"
+                      }`}
+                    >
+                      {r.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
+
+          <View className="gap-1">
+            <Text className="text-sm font-medium">Weight Class</Text>
+            <TextInput
+              className={inputClass}
+              value={weightClass}
+              onChangeText={setWeightClass}
+              placeholder="e.g. lightweight, heavyweight"
+              autoCapitalize="none"
+            />
+            <Text className="text-muted-foreground text-xs">
+              flyweight, bantamweight, featherweight, lightweight, welterweight,
+              middleweight, light_heavyweight, heavyweight
+            </Text>
+          </View>
+
+          <View className="flex-row gap-3">
+            <View className="flex-1 gap-1">
+              <Text className="text-sm font-medium">Wins</Text>
+              <TextInput
+                className={inputClass}
+                value={wins}
+                onChangeText={setWins}
+                keyboardType="number-pad"
+              />
+            </View>
+            <View className="flex-1 gap-1">
+              <Text className="text-sm font-medium">Losses</Text>
+              <TextInput
+                className={inputClass}
+                value={losses}
+                onChangeText={setLosses}
+                keyboardType="number-pad"
+              />
+            </View>
+          </View>
+
+          <View className="gap-1">
+            <Text className="text-sm font-medium">Location</Text>
+            <TextInput
+              className={inputClass}
+              value={location}
+              onChangeText={setLocation}
+              placeholder="City, Country"
+            />
+          </View>
+
+          <Pressable
+            onPress={handleSubmit}
+            disabled={update.isPending || !nickname.trim()}
+            className="bg-primary items-center rounded-md py-3"
+          >
+            <Text className="font-semibold text-primary-foreground">
+              {update.isPending
+                ? "Saving..."
+                : isEditMode
+                  ? "Update Profile"
+                  : "Create Profile"}
+            </Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
