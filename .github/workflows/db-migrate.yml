@@ -1,0 +1,79 @@
+name: Database Migrate
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to migrate"
+        type: choice
+        default: "production"
+        options:
+          - production
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/db/src/schema.ts"
+      - "packages/db/src/auth-schema.ts"
+      - "packages/db/drizzle/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  FORCE_COLOR: 3
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup
+        uses: ./tooling/github/setup
+
+      - name: Create env file
+        shell: bash
+        run: |
+          cat > .env << 'EOF'
+          POSTGRES_URL="${{ secrets.POSTGRES_URL }}"
+          EOF
+
+      - name: Run database migrations
+        shell: bash
+        run: pnpm --filter @acme/db db:migrate
+
+      - name: Push schema changes
+        shell: bash
+        run: pnpm --filter @acme/db push
+
+  validate-schema:
+    runs-on: ubuntu-latest
+    needs: migrate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup
+        uses: ./tooling/github/setup
+
+      - name: Create env file
+        shell: bash
+        run: |
+          cat > .env << 'EOF'
+          POSTGRES_URL="${{ secrets.POSTGRES_URL }}"
+          EOF
+
+      - name: Generate migration diff check
+        shell: bash
+        run: |
+          cd packages/db
+          pnpm with-env drizzle-kit generate --name ci_sync_check
+          # Exit with error if there are uncommitted migration changes
+          if ! git diff --quiet -- 'packages/db/drizzle' 'packages/db/src'; then
+            echo "::error::Migration files are out of sync with schema. Run pnpm --filter @acme/db db:generate and commit the changes."
+            git diff --stat
+            exit 1
+          fi

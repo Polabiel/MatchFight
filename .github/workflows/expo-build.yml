@@ -1,0 +1,87 @@
+name: Expo Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "EAS build profile"
+        type: choice
+        default: "preview"
+        options:
+          - preview
+          - production
+      platform:
+        description: "Platform(s) to build"
+        type: choice
+        default: "all"
+        options:
+          - all
+          - ios
+          - android
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/expo/**"
+      - "packages/api/**"
+      - "packages/validators/**"
+      - "packages/db/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FORCE_COLOR: 3
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/expo
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup
+        uses: ./tooling/github/setup
+
+      - name: Resolve build inputs
+        id: inputs
+        shell: bash
+        run: |
+          PROFILE="${{ github.event.inputs.profile || 'preview' }}"
+          PLATFORM="${{ github.event.inputs.platform || 'all' }}"
+          echo "profile=$PROFILE" >> "$GITHUB_OUTPUT"
+          echo "platform=$PLATFORM" >> "$GITHUB_OUTPUT"
+
+      - name: Set EAS project ID
+        shell: bash
+        run: |
+          echo "EAS_PROJECT_ID=${{ secrets.EAS_PROJECT_ID }}" >> "$GITHUB_ENV"
+
+      - name: Build iOS (EAS)
+        if: steps.inputs.outputs.platform == 'all' || steps.inputs.outputs.platform == 'ios'
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: npx eas build --platform ios --profile ${{ steps.inputs.outputs.profile }} --non-interactive --no-wait
+
+      - name: Build Android (EAS)
+        if: steps.inputs.outputs.platform == 'all' || steps.inputs.outputs.platform == 'android'
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: npx eas build --platform android --profile ${{ steps.inputs.outputs.profile }} --non-interactive --no-wait
+
+  notify:
+    needs: build
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check build status
+        shell: bash
+        run: |
+          if [ "${{ needs.build.result }}" != "success" ]; then
+            echo "::error::Expo build failed. Check the EAS dashboard for details."
+            exit 1
+          fi
+          echo "Expo build submitted successfully."
