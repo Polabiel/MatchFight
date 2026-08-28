@@ -5,9 +5,10 @@ export function authEnv() {
   return createEnv({
     server: {
       // Discord é um provider social opcional — o app funciona com email/password
-      // sem ele. Se não configurado, o botão de Discord simplesmente não aparece.
-      AUTH_DISCORD_ID: z.string().min(1).optional(),
-      AUTH_DISCORD_SECRET: z.string().min(1).optional(),
+      // sem ele. Aceita undefined ou vazio; o initAuth registra o provider apenas
+      // quando as duas credenciais são truthy.
+      AUTH_DISCORD_ID: z.string().optional(),
+      AUTH_DISCORD_SECRET: z.string().optional(),
       AUTH_SECRET:
         process.env.NODE_ENV === "production"
           ? z.string().min(1)
