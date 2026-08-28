@@ -22,9 +22,10 @@ const productionUrl = env.VERCEL_PROJECT_PRODUCTION_URL
 export const auth = initAuth({
   baseUrl,
   productionUrl,
-  secret: env.AUTH_SECRET,
-  discordClientId: env.AUTH_DISCORD_ID,
-  discordClientSecret: env.AUTH_DISCORD_SECRET,
+  secret: env.AUTH_SECRET ?? env.BETTER_AUTH_SECRET,
+  // Suporta ambos os namings: AUTH_DISCORD_* (padrão) e DISCORD_CLIENT_* (legado Vercel)
+  discordClientId: env.AUTH_DISCORD_ID ?? env.DISCORD_CLIENT_ID,
+  discordClientSecret: env.AUTH_DISCORD_SECRET ?? env.DISCORD_CLIENT_SECRET,
   extraPlugins: [nextCookies()],
 });
 export const getSession = cache(async () =>
