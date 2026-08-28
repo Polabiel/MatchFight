@@ -60,17 +60,21 @@ jobs:
         run: |
           echo "EAS_PROJECT_ID=${{ secrets.EAS_PROJECT_ID }}" >> "$GITHUB_ENV"
 
+      - name: Install EAS CLI
+        shell: bash
+        run: npm install -g eas-cli
+
       - name: Build iOS (EAS)
         if: steps.inputs.outputs.platform == 'all' || steps.inputs.outputs.platform == 'ios'
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: npx eas build --platform ios --profile ${{ steps.inputs.outputs.profile }} --non-interactive --no-wait
+        run: eas build --platform ios --profile ${{ steps.inputs.outputs.profile }} --non-interactive --no-wait
 
       - name: Build Android (EAS)
         if: steps.inputs.outputs.platform == 'all' || steps.inputs.outputs.platform == 'android'
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: npx eas build --platform android --profile ${{ steps.inputs.outputs.profile }} --non-interactive --no-wait
+        run: eas build --platform android --profile ${{ steps.inputs.outputs.profile }} --non-interactive --no-wait
 
   notify:
     needs: build

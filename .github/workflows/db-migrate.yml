@@ -43,10 +43,6 @@ jobs:
 
       - name: Run database migrations
         shell: bash
-        run: pnpm --filter @acme/db db:migrate
-
-      - name: Push schema changes
-        shell: bash
         run: pnpm --filter @acme/db push
 
   validate-schema:
