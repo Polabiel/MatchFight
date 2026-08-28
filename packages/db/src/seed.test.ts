@@ -8,6 +8,13 @@ import { runMigrations, db as testDb } from "./test/db";
 describe("Seed", () => {
   beforeAll(async () => {
     await runMigrations();
+    // O turbo roda os testes de @acme/api e @acme/db em paralelo contra o mesmo
+    // banco de teste. Truncar garante estado determinístico (18 users, 0 swipes).
+    await testDb.delete(schema.ChatMessage);
+    await testDb.delete(schema.Swipe);
+    await testDb.delete(schema.Fight);
+    await testDb.delete(schema.Profile);
+    await testDb.delete(schema.user);
   });
 
   afterAll(async () => {
