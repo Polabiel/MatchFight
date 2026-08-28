@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link, Stack, useRouter } from "expo-router";
+import { Link, Stack } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { trpc } from "~/utils/api";
@@ -21,7 +21,6 @@ const weightClasses = [
 
 function AuthGate({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = authClient.useSession();
-  const router = useRouter();
 
   if (isPending) {
     return (
@@ -49,9 +48,6 @@ function AuthGate({ children }: { children: React.ReactNode }) {
           <Text className="text-primary-foreground font-semibold">
             Sign in with Discord
           </Text>
-        </Pressable>
-        <Pressable onPress={() => router.push("/profile/edit")}>
-          <Text className="text-primary underline">Continue with email</Text>
         </Pressable>
       </View>
     );

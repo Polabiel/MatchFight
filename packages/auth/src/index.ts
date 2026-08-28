@@ -23,12 +23,6 @@ export function initAuth<
     }),
     baseURL: options.baseUrl,
     secret: options.secret,
-    emailAndPassword: {
-      enabled: true,
-      autoSignIn: true,
-      minPasswordLength: 8,
-      maxPasswordLength: 128,
-    },
     plugins: [
       oAuthProxy({
         productionURL: options.productionUrl,

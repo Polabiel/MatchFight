@@ -187,9 +187,21 @@ export default async function HomePage() {
                 <Link href="/profile">Editar meu perfil</Link>
               </Button>
             ) : (
-              <Button asChild size="lg">
-                <Link href="/sign-up">Criar conta</Link>
-              </Button>
+              <form>
+                <Button
+                  size="lg"
+                  formAction={async () => {
+                    "use server";
+                    const res = await auth.api.signInSocial({
+                      body: { provider: "discord", callbackURL: "/profile/edit" },
+                    });
+                    if (!res.url) throw new Error("No URL returned");
+                    redirect(res.url);
+                  }}
+                >
+                  Entrar com Discord
+                </Button>
+              </form>
             )}
           </div>
         </section>
