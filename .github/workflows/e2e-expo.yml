@@ -17,17 +17,11 @@ jobs:
   maestro-android:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/expo
     steps:
       - uses: actions/checkout@v5
 
       - name: Setup
         uses: ./tooling/github/setup
-
-      - name: Copy env
-        run: cp .env.example .env
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -41,33 +35,34 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Start Android Emulator
-        uses: reactivecircus/android-emulator-runner@v2
+      # Emulador + todos os steps que dependem dele dentro do `script:`
+      - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
           arch: x86_64
           profile: pixel_8
           force-avd-creation: false
           disable-animations: true
+          script: |
+            set -euo pipefail
 
-      - name: Install Expo Go
-        run: |
-          EXPO_GO_VERSION="v54.0.0"
-          wget -q "https://github.com/expo/expo-go/releases/download/$EXPO_GO_VERSION/ExpoGo-$EXPO_GO_VERSION-android-arm64-release.apk" -O /tmp/expo-go.apk
-          adb install -r /tmp/expo-go.apk
+            # cd para o app Expo
+            cd apps/expo
 
-      - name: Start Metro bundler
-        run: |
-          npx expo start --web -- --no-interaction &
-          PID=$!
-          npx wait-on tcp:8081 --timeout=120000
+            # Instalar Expo Go APK
+            EXPO_GO_VERSION="v54.0.0"
+            wget -q "https://github.com/expo/expo-go/releases/download/$EXPO_GO_VERSION/ExpoGo-$EXPO_GO_VERSION-android-arm64-release.apk" -O /tmp/expo-go.apk
+            adb install -r /tmp/expo-go.apk
 
-      - name: Install Maestro CLI
-        run: curl -fsSL "https://get.maestro.mobile.dev" | bash
+            # Iniciar Metro bundler em background
+            npx expo start --web -- --no-interaction &
+            npx wait-on tcp:8081 --timeout=120000
 
-      - name: Run Maestro tests
-        run: |
-          maestro test .maestro --config .maestro/config.yaml
+            # Instalar Maestro CLI
+            curl -fsSL "https://get.maestro.mobile.dev" | bash
+
+            # Rodar testes Maestro
+            ~/.maestro/bin/maestro test .maestro --config .maestro/config.yaml
 
       - uses: actions/upload-artifact@v4
         if: failure()
