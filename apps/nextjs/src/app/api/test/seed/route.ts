@@ -18,6 +18,19 @@ export const TEST_USER_IDS = {
 
 export const TEST_FIGHT_ID = "00000000-0000-0000-0000-000000000001";
 
+// UUIDs determinísticos (colunas com PK uuid exigem formato válido)
+const TEST_PROFILE_IDS = {
+  me: "00000000-0000-0000-0000-000000000010",
+  opponent: "00000000-0000-0000-0000-000000000011",
+  candidate: "00000000-0000-0000-0000-000000000012",
+} as const;
+
+const TEST_MESSAGE_IDS = [
+  "00000000-0000-0000-0000-000000000021",
+  "00000000-0000-0000-0000-000000000022",
+  "00000000-0000-0000-0000-000000000023",
+] as const;
+
 /**
  * Gera o valor do cookie de sessão no mesmo formato que o better-auth/better-call:
  * encodeURIComponent(`${token}.${base64(hmacSha256(secret, token))}`)
@@ -89,7 +102,7 @@ export async function GET() {
   // Perfis
   await db.insert(schema.Profile).values([
     {
-      id: "e2e-profile-me",
+      id: TEST_PROFILE_IDS.me,
       userId: TEST_USER_IDS.me,
       nickname: "Thiago",
       bio: "Striker especialista em muay thai.",
@@ -102,7 +115,7 @@ export async function GET() {
       updatedAt: now,
     },
     {
-      id: "e2e-profile-opponent",
+      id: TEST_PROFILE_IDS.opponent,
       userId: TEST_USER_IDS.opponent,
       nickname: "Anderson",
       bio: "Faixa preta de Jiu-Jitsu.",
@@ -115,7 +128,7 @@ export async function GET() {
       updatedAt: now,
     },
     {
-      id: "e2e-profile-candidate",
+      id: TEST_PROFILE_IDS.candidate,
       userId: TEST_USER_IDS.candidate,
       nickname: "José",
       bio: "Boxeador olímpico transicionando para MMA.",
@@ -145,21 +158,21 @@ export async function GET() {
   // Mensagens do chat
   await db.insert(schema.ChatMessage).values([
     {
-      id: "e2e-msg-1",
+      id: TEST_MESSAGE_IDS[0],
       fightId: TEST_FIGHT_ID,
       senderId: TEST_USER_IDS.me,
       content: "E aí, pronto para o combate?",
       createdAt: new Date(Date.now() - 3600_000),
     },
     {
-      id: "e2e-msg-2",
+      id: TEST_MESSAGE_IDS[1],
       fightId: TEST_FIGHT_ID,
       senderId: TEST_USER_IDS.opponent,
       content: "Sempre pronto. Nos vemos no octógono.",
       createdAt: new Date(Date.now() - 1800_000),
     },
     {
-      id: "e2e-msg-3",
+      id: TEST_MESSAGE_IDS[2],
       fightId: TEST_FIGHT_ID,
       senderId: TEST_USER_IDS.me,
       content: "O treino hoje foi pesado. Vou descansar.",
