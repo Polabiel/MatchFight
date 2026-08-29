@@ -1,0 +1,11 @@
+# Navegação: a partir da landing, abre a tela de Fights e depois volta.
+---
+name: Navigate to Fights
+appId: host.exp.exponent
+
+---
+- openLink: "exp://10.0.2.2:8081"
+- assertVisible: "Fights"
+- tapOn: "Fights"
+- assertVisible: "Fights"
+- assertVisible: "Your fights"

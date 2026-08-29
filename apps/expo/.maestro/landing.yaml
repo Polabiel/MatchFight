@@ -1,0 +1,13 @@
+# Smoke test da landing screen (público — não requer auth)
+# Verifica que o app carrega e exibe o conteúdo principal.
+---
+name: Landing screen
+appId: host.exp.exponent
+
+---
+- openLink: "exp://10.0.2.2:8081"
+- assertVisible: "MatchFight"
+- assertVisible: "Find your next opponent"
+- assertVisible: "Sign in with Discord"
+- assertVisible: "Fights"
+- assertVisible: "Profile"

@@ -11,7 +11,9 @@
     "ios": "expo run:ios",
     "format": "prettier --check . --ignore-path ../../.gitignore --ignore-path .prettierignore",
     "lint": "eslint --flag unstable_native_nodejs_ts_config",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "e2e:maestro": "maestro test .maestro",
+    "e2e:maestro:open": "maestro studio"
   },
   "dependencies": {
     "@better-auth/expo": "catalog:",

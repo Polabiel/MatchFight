@@ -1,0 +1,84 @@
+name: Expo E2E (Maestro)
+
+on:
+  pull_request:
+    branches: ["*"]
+  push:
+    branches: ["main"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  FORCE_COLOR: 3
+
+jobs:
+  maestro-android:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/expo
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup
+        uses: ./tooling/github/setup
+
+      - name: Copy env
+        run: cp .env.example .env
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Start Android Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          profile: pixel_8
+          force-avd-creation: false
+          disable-animations: true
+
+      - name: Install Expo Go
+        run: |
+          EXPO_GO_VERSION="v54.0.0"
+          wget -q "https://github.com/expo/expo-go/releases/download/$EXPO_GO_VERSION/ExpoGo-$EXPO_GO_VERSION-android-arm64-release.apk" -O /tmp/expo-go.apk
+          adb install -r /tmp/expo-go.apk
+
+      - name: Start Metro bundler
+        run: |
+          npx expo start --web -- --no-interaction &
+          PID=$!
+          npx wait-on tcp:8081 --timeout=120000
+
+      - name: Install Maestro CLI
+        run: curl -fsSL "https://get.maestro.mobile.dev" | bash
+
+      - name: Run Maestro tests
+        run: |
+          maestro test .maestro --config .maestro/config.yaml
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: maestro-screenshots
+          path: apps/expo/.maestro/screenshots
+          if-no-files-found: ignore
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: maestro-videos
+          path: apps/expo/.maestro/videos
+          if-no-files-found: ignore

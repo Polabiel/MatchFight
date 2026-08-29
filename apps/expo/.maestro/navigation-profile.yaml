@@ -1,0 +1,11 @@
+# Navegação: a partir da landing, abre a tela de Profile.
+---
+name: Navigate to Profile
+appId: host.exp.exponent
+
+---
+- openLink: "exp://10.0.2.2:8081"
+- assertVisible: "Profile"
+- tapOn: "Profile"
+- assertVisible: "Profile"
+- assertVisible: "No profile yet"
