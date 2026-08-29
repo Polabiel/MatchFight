@@ -10,6 +10,8 @@
     "lint": "eslint --flag unstable_native_nodejs_ts_config",
     "start": "pnpm with-env next start",
     "typecheck": "tsc --noEmit",
+    "e2e": "cypress run",
+    "e2e:open": "cypress open",
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
@@ -25,6 +27,7 @@
     "@trpc/server": "catalog:",
     "@trpc/tanstack-react-query": "catalog:",
     "better-auth": "catalog:",
+    "drizzle-orm": "catalog:",
     "next": "^16.0.9",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
@@ -39,6 +42,7 @@
     "@types/node": "catalog:",
     "@types/react": "catalog:react19",
     "@types/react-dom": "catalog:react19",
+    "cypress": "^15.21.1",
     "eslint": "catalog:",
     "jiti": "^2.5.1",
     "prettier": "catalog:",
