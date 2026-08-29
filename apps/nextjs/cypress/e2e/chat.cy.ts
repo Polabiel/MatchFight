@@ -13,7 +13,9 @@ describe("Chat Page", () => {
     // Mensagens
     cy.contains("E aí, pronto para o combate?").should("be.visible");
     cy.contains("Sempre pronto. Nos vemos no octógono.").should("be.visible");
-    cy.contains("O treino hoje foi pesado. Vou descansar.").should("be.visible");
+    cy.contains("O treino hoje foi pesado. Vou descansar.").should(
+      "be.visible",
+    );
 
     // Input
     cy.get('input[placeholder="Type a message..."]').should("exist");

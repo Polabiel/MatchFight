@@ -47,6 +47,9 @@ jobs:
       - name: Build
         run: pnpm --filter @acme/nextjs build
 
+      - name: Install Cypress binary
+        run: pnpm --filter @acme/nextjs exec cypress install
+
       - name: E2E Tests
         uses: cypress-io/github-action@v6
         with:

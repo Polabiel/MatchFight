@@ -1,10 +1,9 @@
 import { createHmac, randomUUID } from "node:crypto";
-
-import { inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { inArray } from "drizzle-orm";
 
-import * as schema from "@acme/db/schema";
 import { db } from "@acme/db/client";
+import * as schema from "@acme/db/schema";
 
 import { env } from "~/env";
 
@@ -45,10 +44,7 @@ export async function GET() {
 
   const secret = env.AUTH_SECRET ?? env.BETTER_AUTH_SECRET;
   if (!secret) {
-    return NextResponse.json(
-      { error: "AUTH_SECRET not set" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "AUTH_SECRET not set" }, { status: 500 });
   }
 
   const now = new Date();
