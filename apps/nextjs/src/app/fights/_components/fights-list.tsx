@@ -33,13 +33,11 @@ function FightCard({
     : "Data TBD";
 
   // Status chip - no red to avoid multiple red elements; red reserved for confirm button in detail
-  const statusClass = "bg-foreground text-background px-3 py-1 text-label-sm rounded-none";
+  const statusClass =
+    "bg-foreground text-background px-3 py-1 text-label-sm rounded-none";
 
   return (
-    <Link
-      href={`/fights/${id}`}
-      className="border-b border-border py-6"
-    >
+    <Link href={`/fights/${id}`} className="border-border border-b py-6">
       <div className="flex flex-col items-start gap-4">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3">
@@ -47,10 +45,10 @@ function FightCard({
               <img
                 src={fighter1.image}
                 alt={fighter1.name}
-                className="h-10 w-10 object-cover rounded-none border border-border"
+                className="border-border h-10 w-10 rounded-none border object-cover"
               />
             ) : (
-              <div className="h-10 w-10 bg-foreground flex items-center justify-center text-background rounded-none">
+              <div className="bg-foreground text-background flex h-10 w-10 items-center justify-center rounded-none">
                 {fighter1.name.charAt(0)}
               </div>
             )}
@@ -62,17 +60,17 @@ function FightCard({
               <img
                 src={fighter2.image}
                 alt={fighter2.name}
-                className="h-10 w-10 object-cover rounded-none border border-border"
+                className="border-border h-10 w-10 rounded-none border object-cover"
               />
             ) : (
-              <div className="h-10 w-10 bg-foreground flex items-center justify-center text-background rounded-none">
+              <div className="bg-foreground text-background flex h-10 w-10 items-center justify-center rounded-none">
                 {fighter2.name.charAt(0)}
               </div>
             )}
             <p className="text-headline-md">{fighter2.name}</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 text-body-md">
+        <div className="text-body-md flex items-center gap-2">
           {location && <span>📍 {location}</span>}
           <span>🗓 {scheduled}</span>
         </div>
@@ -96,8 +94,8 @@ export function FightsList() {
   );
 
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-10 sm:space-y-12 p-6 sm:p-8">
-      <div className="flex items-center justify-between mb-4">
+    <div className="mx-auto w-full max-w-3xl space-y-10 p-6 sm:space-y-12 sm:p-8">
+      <div className="mb-4 flex items-center justify-between">
         <h1 className="text-display-lg">Lutas</h1>
       </div>
 
@@ -106,11 +104,9 @@ export function FightsList() {
         <section className="space-y-6 sm:space-y-8">
           <h2 className="text-headline-lg">
             Disponível para arbitrar{" "}
-            <span className="text-label-sm">
-              ({judgeFights.length})
-            </span>
+            <span className="text-label-sm">({judgeFights.length})</span>
           </h2>
-          <div className="grid gap-6 sm:gap-8 sm:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2 sm:gap-8">
             {judgeFights.map((fight) => (
               <FightCard
                 key={fight.id}
@@ -129,10 +125,7 @@ export function FightsList() {
       {/* My fights */}
       <section className="space-y-6 sm:space-y-8">
         <h2 className="text-headline-lg">
-          Suas lutas{" "}
-          <span className="text-label-sm">
-            ({myFights.length})
-          </span>
+          Suas lutas <span className="text-label-sm">({myFights.length})</span>
         </h2>
         {myFights.length === 0 ? (
           <div className="border-border flex flex-col items-center gap-6 border p-10 text-center">
@@ -143,13 +136,13 @@ export function FightsList() {
             </p>
             <Link
               href="/swipe"
-              className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
+              className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
             >
               Encontrar oponentes
             </Link>
           </div>
         ) : (
-          <div className="grid gap-6 sm:gap-8 sm:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2 sm:gap-8">
             {myFights.map((fight) => (
               <FightCard
                 key={fight.id}

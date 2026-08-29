@@ -32,7 +32,10 @@ export default function SignUpPage() {
         size="lg"
         className="w-full max-w-xs"
         onClick={() =>
-          authClient.signIn.social({ provider: "discord", callbackURL: "/profile/edit" })
+          authClient.signIn.social({
+            provider: "discord",
+            callbackURL: "/profile/edit",
+          })
         }
       >
         Entrar com Discord

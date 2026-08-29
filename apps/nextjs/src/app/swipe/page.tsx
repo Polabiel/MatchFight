@@ -1,5 +1,6 @@
-import { HydrateClient, prefetch, trpc, getCaller } from "~/trpc/server";
 import { redirect } from "next/navigation";
+
+import { getCaller, HydrateClient, prefetch, trpc } from "~/trpc/server";
 import { SwipeCandidates } from "./_components/swipe-candidates";
 
 export default async function SwipePage() {

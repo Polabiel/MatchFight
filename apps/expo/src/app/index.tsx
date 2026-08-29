@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, Stack, useRouter } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -29,7 +29,8 @@ function AuthGate({ children }: { children: React.ReactNode }) {
     enabled: !!session,
   });
 
-  const isFirstTime = !!session && !profileQuery.isLoading && !profileQuery.data;
+  const isFirstTime =
+    !!session && !profileQuery.isLoading && !profileQuery.data;
 
   useEffect(() => {
     if (isFirstTime) {
@@ -189,15 +190,18 @@ function SwipeCard() {
       ) : (
         <>
           <View className="border-border bg-card w-full overflow-hidden rounded-2xl border shadow-lg">
-            <View className="bg-muted h-64 w-full">
+            <View className="bg-muted h-64 w-full overflow-hidden">
               {current.image ? (
-                <Text className="text-muted-foreground p-4 text-sm">
-                  {current.name}
-                </Text>
-              ) : null}
-              <View className="h-full items-center justify-center">
-                <Text className="text-6xl">🥊</Text>
-              </View>
+                <Image
+                  source={{ uri: current.image }}
+                  className="h-full w-full"
+                  resizeMode="cover"
+                />
+              ) : (
+                <View className="h-full items-center justify-center">
+                  <Text className="text-6xl">🥊</Text>
+                </View>
+              )}
               <View className="absolute inset-x-0 bottom-0 bg-black/70 p-4">
                 <Text className="text-2xl font-bold text-white">
                   {current.name}

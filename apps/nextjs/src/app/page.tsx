@@ -14,7 +14,7 @@ function Logo() {
   );
 }
 
-type ButtonVariant = 
+type ButtonVariant =
   | "default"
   | "destructive"
   | "outline"
@@ -25,11 +25,11 @@ type ButtonVariant =
 
 type ButtonSize = "default" | "sm" | "lg" | "icon";
 
-function SignInButton({ 
-  className, 
-  variant, 
+function SignInButton({
+  className,
+  variant,
   size,
-  formAction
+  formAction,
 }: {
   className: string;
   variant: ButtonVariant;
@@ -52,10 +52,10 @@ function SignInButton({
 
 function Navbar({ isAuthed }: { isAuthed: boolean }) {
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background">
+    <header className="border-border bg-background sticky top-0 z-50 border-b">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Logo />
-        <nav className="text-muted-foreground flex items-center gap-6 text-body-md">
+        <nav className="text-muted-foreground text-body-md flex items-center gap-6">
           <Link
             href="/swipe"
             className="hover:text-foreground transition-colors"
@@ -79,16 +79,17 @@ function Navbar({ isAuthed }: { isAuthed: boolean }) {
               <Link href="/swipe">Ir para o app</Link>
             </Button>
           ) : (
-            <SignInButton 
+            <SignInButton
               variant="outline"
               size="sm"
-              className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
+              className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
               formAction={async () => {
                 "use server";
                 const res = await auth.api.signInSocial({
                   body: { provider: "discord", callbackURL: "/" },
                 });
-                if (!res.url) throw new Error("No URL returned from signInSocial");
+                if (!res.url)
+                  throw new Error("No URL returned from signInSocial");
                 redirect(res.url);
               }}
             />
@@ -109,10 +110,8 @@ function Feature({
   description: string;
 }) {
   return (
-    <div className="border-border flex flex-col gap-3 border-t border-border pt-6">
-      <span className="text-primary text-body-md">
-        {index}
-      </span>
+    <div className="border-border border-border flex flex-col gap-3 border-t pt-6">
+      <span className="text-primary text-body-md">{index}</span>
       <h3 className="text-headline-md">{title}</h3>
       <p className="text-muted-foreground text-body-md">{description}</p>
     </div>
@@ -129,16 +128,16 @@ export default async function HomePage() {
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative overflow-hidden border-b border-border">
+        <section className="border-border relative overflow-hidden border-b">
           <div className="relative mx-auto flex max-w-6xl flex-col items-center px-6 pt-28 pb-24 text-center sm:pt-36 sm:pb-32">
-            <span className="border-2 border-border bg-background text-muted-foreground mb-8 inline-flex items-center rounded-none px-4 py-2 text-body-md">
+            <span className="border-border bg-background text-muted-foreground text-body-md mb-8 inline-flex items-center rounded-none border-2 px-4 py-2">
               Onde lutadores se encontram
             </span>
-            <h1 className="max-w-4xl text-display-lg text-balance">
+            <h1 className="text-display-lg max-w-4xl text-balance">
               Encontre seu próximo{" "}
               <span className="text-primary">oponente</span>.
             </h1>
-            <p className="text-muted-foreground mt-6 max-w-xl text-body-lg leading-relaxed">
+            <p className="text-muted-foreground text-body-lg mt-6 max-w-xl leading-relaxed">
               Deslize, combine e agende lutas com lutadores da sua categoria.
               Com a supervisão de juízes e a conversa certa antes de entrar no
               octógono.
@@ -152,7 +151,7 @@ export default async function HomePage() {
                 <SignInButton
                   variant="default"
                   size="lg"
-                  className="bg-primary text-primary-foreground border-2 border-primary hover:bg-foreground hover:border-foreground h-12 px-6 text-label-bold"
+                  className="bg-primary text-primary-foreground border-primary hover:bg-foreground hover:border-foreground text-label-bold h-12 border-2 px-6"
                   formAction={async () => {
                     "use server";
                     const res = await auth.api.signInSocial({
@@ -163,7 +162,12 @@ export default async function HomePage() {
                   }}
                 />
               )}
-              <Button asChild size="lg" variant="outline" className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold">
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
+              >
                 <Link href="/profile">Ver perfil</Link>
               </Button>
             </div>
@@ -171,7 +175,7 @@ export default async function HomePage() {
         </section>
 
         {/* How it works */}
-        <section className="border-y border-border">
+        <section className="border-border border-y">
           <div className="mx-auto grid max-w-6xl gap-10 px-6 py-20 sm:grid-cols-3">
             <Feature
               index="01"
@@ -193,23 +197,28 @@ export default async function HomePage() {
 
         {/* CTA */}
         <section className="mx-auto flex max-w-6xl flex-col items-center px-6 py-24 text-center">
-          <h2 className="max-w-2xl text-headline-lg text-balance">
+          <h2 className="text-headline-lg max-w-2xl text-balance">
             A luta começa antes do octógono.
           </h2>
-          <p className="text-muted-foreground mt-4 max-w-lg text-body-lg">
+          <p className="text-muted-foreground text-body-lg mt-4 max-w-lg">
             Crie seu perfil, mostre seu cartel e deixe o próximo desafio vir até
             você.
           </p>
           <div className="mt-8">
             {isAuthed ? (
-              <Button asChild size="lg" variant="outline" className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold">
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
+              >
                 <Link href="/profile">Editar meu perfil</Link>
               </Button>
             ) : (
               <SignInButton
                 variant="default"
                 size="lg"
-                className="bg-primary text-primary-foreground border-2 border-primary hover:bg-foreground hover:border-foreground h-12 px-6 text-label-bold"
+                className="bg-primary text-primary-foreground border-primary hover:bg-foreground hover:border-foreground text-label-bold h-12 border-2 px-6"
                 formAction={async () => {
                   "use server";
                   const res = await auth.api.signInSocial({
@@ -224,8 +233,8 @@ export default async function HomePage() {
         </section>
       </main>
 
-      <footer className="border-t border-border">
-        <div className="text-muted-foreground mx-auto flex max-w-6xl items-center justify-between px-6 py-8 text-body-md">
+      <footer className="border-border border-t">
+        <div className="text-muted-foreground text-body-md mx-auto flex max-w-6xl items-center justify-between px-6 py-8">
           <Logo />
           <p>© {new Date().getFullYear()} MatchFight</p>
         </div>

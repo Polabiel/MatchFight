@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 
 import { Button } from "@acme/ui/button";
+import { Field, FieldContent, FieldLabel } from "@acme/ui/field";
 import { Input } from "@acme/ui/input";
 import { Label } from "@acme/ui/label";
-import { Field, FieldContent, FieldLabel } from "@acme/ui/field";
 
 import { useTRPC } from "~/trpc/react";
 
@@ -33,7 +33,8 @@ const carouselSlides = [
   },
   {
     title: "Lute",
-    description: "Agende local, data, regras — acompanhe o status até o resultado",
+    description:
+      "Agende local, data, regras — acompanhe o status até o resultado",
   },
 ];
 
@@ -79,7 +80,7 @@ export default function OnboardingPage() {
       onError: (error) => {
         console.error("Failed to create profile:", error);
       },
-    })
+    }),
   );
 
   // Handle welcome carousel navigation
@@ -125,7 +126,12 @@ export default function OnboardingPage() {
       // Record step
       const winsNum = parseInt(wins, 10);
       const lossesNum = parseInt(losses, 10);
-      if (!isNaN(winsNum) && !isNaN(lossesNum) && winsNum >= 0 && lossesNum >= 0) {
+      if (
+        !isNaN(winsNum) &&
+        !isNaN(lossesNum) &&
+        winsNum >= 0 &&
+        lossesNum >= 0
+      ) {
         setCurrentStep(4);
       }
     } else if (currentStep === 4) {
@@ -140,7 +146,8 @@ export default function OnboardingPage() {
 
     const winsNum = wins ? parseInt(wins, 10) : 0;
     const lossesNum = losses ? parseInt(losses, 10) : 0;
-    if (isNaN(winsNum) || isNaN(lossesNum) || winsNum < 0 || lossesNum < 0) return;
+    if (isNaN(winsNum) || isNaN(lossesNum) || winsNum < 0 || lossesNum < 0)
+      return;
 
     updateProfile.mutate({
       nickname: nickname.trim(),
@@ -157,16 +164,16 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="bg-background min-h-screen flex flex-col">
+    <div className="bg-background flex min-h-screen flex-col">
       {currentStep === 0 ? (
         // Welcome Carousel
-        <div className="flex-1 flex flex-col items-center justify-center gap-8 p-6">
+        <div className="flex flex-1 flex-col items-center justify-center gap-8 p-6">
           {/* Slide indicator dots */}
           <div className="flex gap-2">
             {carouselSlides.map((_, index) => (
               <div
                 key={index}
-                className={`w-2 h-2 rounded-none transition-colors ${
+                className={`h-2 w-2 rounded-none transition-colors ${
                   carouselIndex === index ? "bg-primary" : "bg-muted"
                 }`}
               />
@@ -174,7 +181,7 @@ export default function OnboardingPage() {
           </div>
 
           {/* Slide content */}
-          <div className="items-center gap-4 text-center max-w-2xl">
+          <div className="max-w-2xl items-center gap-4 text-center">
             <h1 className="text-headline-lg font-extrabold tracking-tight">
               {carouselSlides[carouselIndex]?.title ?? ""}
             </h1>
@@ -204,26 +211,26 @@ export default function OnboardingPage() {
         </div>
       ) : (
         // Profile Wizard
-        <div className="flex-1 flex flex-col">
+        <div className="flex flex-1 flex-col">
           <main className="flex-1 overflow-y-auto p-6 md:p-10">
             <div className="mx-auto max-w-xl">
               {/* Progress indicator */}
               <div className="mb-8">
-                <div className="flex gap-2 mb-2">
+                <div className="mb-2 flex gap-2">
                   {wizardSteps.map((_, index) => (
                     <div
                       key={index}
-                      className={`flex-1 h-1.5 rounded-none transition-colors ${
+                      className={`h-1.5 flex-1 rounded-none transition-colors ${
                         index < currentStep - 1
                           ? "bg-primary"
                           : index === currentStep - 1
-                          ? "bg-primary"
-                          : "bg-muted"
+                            ? "bg-primary"
+                            : "bg-muted"
                       }`}
                     />
                   ))}
                 </div>
-                <div className="flex gap-2 text-xs text-muted-foreground">
+                <div className="text-muted-foreground flex gap-2 text-xs">
                   {wizardSteps.map((step, index) => (
                     <span
                       key={index}
@@ -231,8 +238,8 @@ export default function OnboardingPage() {
                         index < currentStep - 1
                           ? "text-primary-foreground"
                           : index === currentStep - 1
-                          ? "text-primary-foreground"
-                          : "text-muted-foreground"
+                            ? "text-primary-foreground"
+                            : "text-muted-foreground"
                       }`}
                     >
                       {step.title}
@@ -247,7 +254,7 @@ export default function OnboardingPage() {
                   <h2 className="text-headline-lg mb-2 text-center">
                     Quem é você?
                   </h2>
-                  <p className="text-muted-foreground text-center mb-8">
+                  <p className="text-muted-foreground mb-8 text-center">
                     Selecione sua função para começar
                   </p>
                   <div className="flex gap-3">
@@ -262,11 +269,15 @@ export default function OnboardingPage() {
                           key={roleOption.value}
                           type="button"
                           variant={selected ? "default" : "outline"}
-                          className="flex-1 flex-col gap-2 p-6 rounded-none border-2 transition-all"
-                          onClick={() => setRole(roleOption.value as "fighter" | "judge" | "both")}
+                          className="flex-1 flex-col gap-2 rounded-none border-2 p-6 transition-all"
+                          onClick={() =>
+                            setRole(
+                              roleOption.value as "fighter" | "judge" | "both",
+                            )
+                          }
                         >
                           <span className="text-3xl">{roleOption.emoji}</span>
-                          <span className="font-semibold text-lg">
+                          <span className="text-lg font-semibold">
                             {roleOption.label}
                           </span>
                         </Button>
@@ -281,7 +292,7 @@ export default function OnboardingPage() {
                   <h2 className="text-headline-lg mb-2 text-center">
                     Sua Identidade
                   </h2>
-                  <p className="text-muted-foreground text-center mb-8">
+                  <p className="text-muted-foreground mb-8 text-center">
                     Escolha seu apelido e categoria de peso
                   </p>
 
@@ -303,7 +314,9 @@ export default function OnboardingPage() {
                     {(role === "fighter" || role === "both") && (
                       <Field orientation="vertical">
                         <FieldLabel>
-                          <Label className="text-label-bold">Categoria de Peso</Label>
+                          <Label className="text-label-bold">
+                            Categoria de Peso
+                          </Label>
                         </FieldLabel>
                         <FieldContent>
                           <div className="flex flex-wrap gap-2">
@@ -323,7 +336,7 @@ export default function OnboardingPage() {
                               );
                             })}
                           </div>
-                          <p className="text-muted-foreground text-xs mt-2">
+                          <p className="text-muted-foreground mt-2 text-xs">
                             flyweight, bantamweight, featherweight, lightweight,
                             welterweight, middleweight, light_heavyweight,
                             heavyweight
@@ -340,7 +353,7 @@ export default function OnboardingPage() {
                   <h2 className="text-headline-lg mb-2 text-center">
                     Seu Cartel
                   </h2>
-                  <p className="text-muted-foreground text-center mb-8">
+                  <p className="text-muted-foreground mb-8 text-center">
                     Adicione seu cartel de lutas e localização
                   </p>
 
@@ -394,10 +407,8 @@ export default function OnboardingPage() {
 
               {currentStep === 4 && (
                 <>
-                  <h2 className="text-headline-lg mb-2 text-center">
-                    Sua Bio
-                  </h2>
-                  <p className="text-muted-foreground text-center mb-8">
+                  <h2 className="text-headline-lg mb-2 text-center">Sua Bio</h2>
+                  <p className="text-muted-foreground mb-8 text-center">
                     Conte sobre você (opcional)
                   </p>
 
@@ -405,7 +416,7 @@ export default function OnboardingPage() {
                     <Field orientation="vertical">
                       <FieldContent>
                         <textarea
-className="border-foreground bg-background text-foreground h-32 w-full min-w-0 rounded-none border-2 px-4 py-3 text-body-md outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 placeholder:text-muted-foreground resize-none"
+                          className="border-foreground bg-background text-foreground text-body-md focus-visible:border-ring focus-visible:ring-ring/50 placeholder:text-muted-foreground h-32 w-full min-w-0 resize-none rounded-none border-2 px-4 py-3 outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
                           value={bio}
                           onChange={(e) => setBio(e.target.value)}
                           placeholder="Conte sobre seu estilo de luta, objetivos ou qualquer outra coisa..."
@@ -421,7 +432,7 @@ className="border-foreground bg-background text-foreground h-32 w-full min-w-0 r
                   <h2 className="text-headline-lg mb-2 text-center">
                     Quase lá!
                   </h2>
-                  <p className="text-muted-foreground text-center mb-8">
+                  <p className="text-muted-foreground mb-8 text-center">
                     Revise seu perfil antes de finalizar
                   </p>
 
@@ -433,8 +444,8 @@ className="border-foreground bg-background text-foreground h-32 w-full min-w-0 r
                           {role === "fighter"
                             ? "Lutador"
                             : role === "judge"
-                            ? "Juiz"
-                            : "Ambos"}
+                              ? "Juiz"
+                              : "Ambos"}
                         </span>
                       </div>
 
@@ -445,14 +456,21 @@ className="border-foreground bg-background text-foreground h-32 w-full min-w-0 r
                         </div>
                       )}
 
-                      {(role === "fighter" || role === "both") && weightClass && (
-                        <div className="flex justify-between">
-                          <span className="font-medium">Categoria de Peso:</span>
-                          <span className="font-medium">
-                            {weightClasses.find((wc) => wc.value === weightClass)?.label}
-                          </span>
-                        </div>
-                      )}
+                      {(role === "fighter" || role === "both") &&
+                        weightClass && (
+                          <div className="flex justify-between">
+                            <span className="font-medium">
+                              Categoria de Peso:
+                            </span>
+                            <span className="font-medium">
+                              {
+                                weightClasses.find(
+                                  (wc) => wc.value === weightClass,
+                                )?.label
+                              }
+                            </span>
+                          </div>
+                        )}
 
                       <div className="flex justify-between">
                         <span className="font-medium">Cartel:</span>
@@ -482,8 +500,8 @@ className="border-foreground bg-background text-foreground h-32 w-full min-w-0 r
           </main>
 
           {/* Navigation buttons */}
-          <footer className="bg-background border-t border-border p-6">
-            <div className="mx-auto max-w-xl flex justify-between">
+          <footer className="bg-background border-border border-t p-6">
+            <div className="mx-auto flex max-w-xl justify-between">
               {currentStep > 1 && (
                 <Button
                   variant="ghost"

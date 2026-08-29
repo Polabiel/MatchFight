@@ -126,7 +126,7 @@ export function FieldLabel({
       data-slot="field-label"
       className={cn(
         "group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50",
-        "has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col has-[>[data-slot=field]]:rounded-none has-[>[data-slot=field]]:border-2 has-[>[data-slot=field]]:border-foreground [&>*]:data-[slot=field]:p-4",
+        "has-[>[data-slot=field]]:border-foreground has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col has-[>[data-slot=field]]:rounded-none has-[>[data-slot=field]]:border-2 [&>*]:data-[slot=field]:p-4",
         "has-data-[state=checked]:bg-primary/5 has-data-[state=checked]:border-primary dark:has-data-[state=checked]:bg-primary/10",
         className,
       )}
@@ -143,7 +143,7 @@ export function FieldTitle({
     <div
       data-slot="field-label"
       className={cn(
-        "flex w-fit items-center gap-2 text-label-bold leading-snug group-data-[disabled=true]/field:opacity-50",
+        "text-label-bold flex w-fit items-center gap-2 leading-snug group-data-[disabled=true]/field:opacity-50",
         className,
       )}
       {...props}

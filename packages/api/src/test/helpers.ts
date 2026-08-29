@@ -14,6 +14,7 @@ export const createTestUser = async (
     emailVerified: boolean | null;
     createdAt: Date;
     updatedAt: Date;
+    image: string | null;
     profile?: Pick<typeof schema.Profile.$inferInsert, "nickname" | "role"> &
       Partial<
         Omit<
@@ -38,6 +39,10 @@ export const createTestUser = async (
     emailVerified,
     createdAt,
     updatedAt,
+    image:
+      overrides.image !== undefined
+        ? overrides.image
+        : "https://example.com/avatar.png",
   });
 
   let profileId: string | undefined;
@@ -46,6 +51,9 @@ export const createTestUser = async (
       userId: id,
       ...overrides.profile,
     };
+    if (!("bio" in profileData)) {
+      profileData.bio = "Test bio";
+    }
     const [profile] = await testDb
       .insert(schema.Profile)
       .values(profileData)

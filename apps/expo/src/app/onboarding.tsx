@@ -1,8 +1,8 @@
 import { useState } from "react";
 import {
   Pressable,
-  ScrollView,
   SafeAreaView,
+  ScrollView,
   Text,
   TextInput,
   View,
@@ -61,7 +61,7 @@ export default function Onboarding() {
         console.error("Failed to create profile:", error);
         // In a real app, you might want to show an error message
       },
-    })
+    }),
   );
 
   // Handle welcome carousel navigation
@@ -108,7 +108,12 @@ export default function Onboarding() {
       // Record step
       const winsNum = parseInt(wins, 10);
       const lossesNum = parseInt(losses, 10);
-      if (!isNaN(winsNum) && !isNaN(lossesNum) && winsNum >= 0 && lossesNum >= 0) {
+      if (
+        !isNaN(winsNum) &&
+        !isNaN(lossesNum) &&
+        winsNum >= 0 &&
+        lossesNum >= 0
+      ) {
         setCurrentStep(4);
       }
     } else if (currentStep === 4) {
@@ -123,7 +128,8 @@ export default function Onboarding() {
 
     const winsNum = wins ? parseInt(wins, 10) : 0;
     const lossesNum = losses ? parseInt(losses, 10) : 0;
-    if (isNaN(winsNum) || isNaN(lossesNum) || winsNum < 0 || lossesNum < 0) return;
+    if (isNaN(winsNum) || isNaN(lossesNum) || winsNum < 0 || lossesNum < 0)
+      return;
 
     updateProfile.mutate({
       nickname: nickname.trim(),
@@ -175,10 +181,8 @@ export default function Onboarding() {
               {carouselSlides.map((_, index) => (
                 <View
                   key={index}
-                  className={`w-2 h-2 rounded-full ${
-                    carouselIndex === index
-                      ? "bg-primary"
-                      : "bg-muted/50"
+                  className={`h-2 w-2 rounded-full ${
+                    carouselIndex === index ? "bg-primary" : "bg-muted/50"
                   }`}
                 />
               ))}
@@ -187,13 +191,16 @@ export default function Onboarding() {
             {/* Slide content */}
             <View className="items-center gap-4">
               {(() => {
-                const slide = carouselSlides[carouselIndex] ?? { title: "", description: "" };
+                const slide = carouselSlides[carouselIndex] ?? {
+                  title: "",
+                  description: "",
+                };
                 return (
                   <>
                     <Text className="text-3xl font-extrabold tracking-tight">
                       {slide.title}
                     </Text>
-                    <Text className="text-lg text-muted-foreground text-center max-w-xs">
+                    <Text className="text-muted-foreground max-w-xs text-center text-lg">
                       {slide.description}
                     </Text>
                   </>
@@ -202,7 +209,7 @@ export default function Onboarding() {
             </View>
 
             {/* Navigation buttons */}
-            <View className="flex-row w-full justify-between px-6">
+            <View className="w-full flex-row justify-between px-6">
               <Pressable
                 onPress={handleCarouselSkip}
                 className="text-muted-foreground"
@@ -239,7 +246,7 @@ export default function Onboarding() {
                     />
                   ))}
                 </View>
-                <View className="flex-row gap-2 text-xs text-muted-foreground mt-2">
+                <View className="text-muted-foreground mt-2 flex-row gap-2 text-xs">
                   {wizardSteps.map((step, index) => (
                     <Text
                       key={index}
@@ -260,10 +267,8 @@ export default function Onboarding() {
               {/* Step content */}
               {currentStep === 1 && (
                 <>
-                  <Text className="text-2xl font-bold mb-2">
-                    Who are you?
-                  </Text>
-                  <Text className="text-muted-foreground text-center mb-6">
+                  <Text className="mb-2 text-2xl font-bold">Who are you?</Text>
+                  <Text className="text-muted-foreground mb-6 text-center">
                     Select your role to get started
                   </Text>
                   <View className="flex-row gap-4">
@@ -276,11 +281,13 @@ export default function Onboarding() {
                       return (
                         <Pressable
                           key={roleOption.value}
-                          onPress={() => setRole(roleOption.value as "fighter" | "judge" | "both")}
-                          className={`flex-1 items-center justify-center gap-2 p-4 rounded-2xl border ${
-                            selected
-                              ? "bg-primary"
-                              : "bg-muted"
+                          onPress={() =>
+                            setRole(
+                              roleOption.value as "fighter" | "judge" | "both",
+                            )
+                          }
+                          className={`flex-1 items-center justify-center gap-2 rounded-2xl border p-4 ${
+                            selected ? "bg-primary" : "bg-muted"
                           }`}
                         >
                           <View className="flex-row items-center gap-2">
@@ -293,11 +300,13 @@ export default function Onboarding() {
                             {roleOption.value === "both" && (
                               <Text className="text-2xl">🥊👓</Text>
                             )}
-                            <Text className={`font-semibold ${
-                              selected
-                                ? "text-primary-foreground"
-                                : "text-foreground"
-                            }`}>
+                            <Text
+                              className={`font-semibold ${
+                                selected
+                                  ? "text-primary-foreground"
+                                  : "text-foreground"
+                              }`}
+                            >
                               {roleOption.label}
                             </Text>
                           </View>
@@ -310,10 +319,8 @@ export default function Onboarding() {
 
               {currentStep === 2 && (
                 <>
-                  <Text className="text-2xl font-bold mb-2">
-                    Your Identity
-                  </Text>
-                  <Text className="text-muted-foreground text-center mb-6">
+                  <Text className="mb-2 text-2xl font-bold">Your Identity</Text>
+                  <Text className="text-muted-foreground mb-6 text-center">
                     Choose your nickname and weight class
                   </Text>
 
@@ -331,7 +338,9 @@ export default function Onboarding() {
 
                     {(role === "fighter" || role === "both") && (
                       <View className="gap-2">
-                        <Text className="text-sm font-medium">Weight Class</Text>
+                        <Text className="text-sm font-medium">
+                          Weight Class
+                        </Text>
                         <View className="flex-row flex-wrap gap-2">
                           {weightClasses.map((wc) => {
                             const selected = weightClass === wc.value;
@@ -356,7 +365,7 @@ export default function Onboarding() {
                             );
                           })}
                         </View>
-                        <Text className="text-muted-foreground text-xs mt-2">
+                        <Text className="text-muted-foreground mt-2 text-xs">
                           flyweight, bantamweight, featherweight, lightweight,
                           welterweight, middleweight, light_heavyweight,
                           heavyweight
@@ -369,10 +378,8 @@ export default function Onboarding() {
 
               {currentStep === 3 && (
                 <>
-                  <Text className="text-2xl font-bold mb-2">
-                    Your Record
-                  </Text>
-                  <Text className="text-muted-foreground text-center mb-6">
+                  <Text className="mb-2 text-2xl font-bold">Your Record</Text>
+                  <Text className="text-muted-foreground mb-6 text-center">
                     Add your fight record and location
                   </Text>
 
@@ -415,17 +422,15 @@ export default function Onboarding() {
 
               {currentStep === 4 && (
                 <>
-                  <Text className="text-2xl font-bold mb-2">
-                    Your Bio
-                  </Text>
-                  <Text className="text-muted-foreground text-center mb-6">
+                  <Text className="mb-2 text-2xl font-bold">Your Bio</Text>
+                  <Text className="text-muted-foreground mb-6 text-center">
                     Tell us about yourself (optional)
                   </Text>
 
                   <View className="gap-4">
                     <View className="gap-2">
                       <TextInput
-                        className="border-input bg-background text-foreground rounded-md border px-3 py-2 h-32"
+                        className="border-input bg-background text-foreground h-32 rounded-md border px-3 py-2"
                         value={bio}
                         onChangeText={setBio}
                         placeholder="Tell us about your fighting style, goals, or anything else..."
@@ -438,10 +443,8 @@ export default function Onboarding() {
 
               {currentStep === 5 && (
                 <>
-                  <Text className="text-2xl font-bold mb-2">
-                    Almost done!
-                  </Text>
-                  <Text className="text-muted-foreground text-center mb-6">
+                  <Text className="mb-2 text-2xl font-bold">Almost done!</Text>
+                  <Text className="text-muted-foreground mb-6 text-center">
                     Review your profile before submitting
                   </Text>
 
@@ -465,14 +468,19 @@ export default function Onboarding() {
                         </View>
                       )}
 
-                      {(role === "fighter" || role === "both") && weightClass && (
-                        <View className="flex-row justify-between">
-                          <Text className="font-medium">Weight Class:</Text>
-                          <Text className="font-medium">
-                            {weightClasses.find((wc) => wc.value === weightClass)?.label}
-                          </Text>
-                        </View>
-                      )}
+                      {(role === "fighter" || role === "both") &&
+                        weightClass && (
+                          <View className="flex-row justify-between">
+                            <Text className="font-medium">Weight Class:</Text>
+                            <Text className="font-medium">
+                              {
+                                weightClasses.find(
+                                  (wc) => wc.value === weightClass,
+                                )?.label
+                              }
+                            </Text>
+                          </View>
+                        )}
 
                       <View className="flex-row justify-between">
                         <Text className="font-medium">Record:</Text>
@@ -501,7 +509,7 @@ export default function Onboarding() {
             </ScrollView>
 
             {/* Navigation buttons */}
-            <View className="bg-background p-6 border-t border-border">
+            <View className="bg-background border-border border-t p-6">
               <View className="flex-row justify-between">
                 {currentStep > 1 && (
                   <Pressable

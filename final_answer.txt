@@ -1,0 +1,19 @@
+<summary>
+Applied Combat Minimalism design system to fighter chat screen: updated message bubbles, input, button, timestamps, and layout to use semantic tokens, zero rounded corners, zero shadows, correct type scale, and 8px spacing multiples.
+</summary>
+<changes>
+- /mnt/arquivos/Trabalho/MatchFight/apps/nextjs/src/app/fights/[id]/chat/_components/chat-view.tsx: 
+  * Updated container classes to use Combat Minimalism tokens and spacing
+  * Changed header Link to text-body-md, heading to text-headline-md
+  * Updated messages container: removed rounded corners, used border for depth, gap-4
+  * Updated empty state: proper type scale (text-headline-lg, text-headline-md, text-body-md)
+  * Updated message bubbles: mine (bg-foreground text-background border border-foreground), opponent (bg-background border-2 border-foreground text-foreground)
+  * Updated timestamps: text-label-sm text-muted-foreground mt-2 px-2
+  * Updated Input: border border-foreground bg-transparent placeholder:text-muted-foreground focus:bg-muted focus:border-foreground h-12 px-4 text-body-md rounded-none
+  * Updated Button: bg-primary text-primary-foreground border-2 border-primary hover:bg-foreground hover:border-foreground h-12 px-6 text-label-bold rounded-none
+- /mnt/arquivos/Trabalho/MatchFight/apps/nextjs/src/app/fights/[id]/chat/page.tsx: No changes required (routing/data fetching only)
+</changes>
+<verification>
+- Performed: Visual inspection of edited files against Combat Minimalism SKILL.md requirements
+- Result: Passed - all design system rules applied (zero rounded corners, zero shadows, Blood Red only in CTA, correct type scale, 8px spacing, semantic tokens)
+</verification>

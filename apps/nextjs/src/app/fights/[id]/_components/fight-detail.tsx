@@ -124,13 +124,13 @@ export function FightDetail({ fightId }: { fightId: string }) {
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-display-lg">Luta</h1>
         {/* Status chip - no red to avoid multiple red elements; red reserved for confirm button */}
-        <span className="bg-foreground text-background px-3 py-1 text-label-sm rounded-none">
+        <span className="bg-foreground text-background text-label-sm rounded-none px-3 py-1">
           {statusLabels[fight.status] ?? fight.status.toUpperCase()}
         </span>
       </div>
 
       {/* Fighters */}
-      <div className="border-t border-border bg-background grid grid-cols-[1fr_auto_1fr] items-center gap-6 p-6">
+      <div className="border-border bg-background grid grid-cols-[1fr_auto_1fr] items-center gap-6 border-t p-6">
         {[fight.fighter1, fight.fighter2].map((fighter) => (
           <div
             key={fighter.id}
@@ -141,10 +141,10 @@ export function FightDetail({ fightId }: { fightId: string }) {
               <img
                 src={fighter.image}
                 alt={fighter.name}
-                className="h-10 w-10 object-cover rounded-none border border-border"
+                className="border-border h-10 w-10 rounded-none border object-cover"
               />
             ) : (
-              <div className="h-10 w-10 bg-foreground flex items-center justify-center text-background rounded-none">
+              <div className="bg-foreground text-background flex h-10 w-10 items-center justify-center rounded-none">
                 {fighter.name.charAt(0)}
               </div>
             )}
@@ -160,7 +160,7 @@ export function FightDetail({ fightId }: { fightId: string }) {
       </div>
 
       {/* Details */}
-      <div className="border-t border-border bg-background space-y-4 p-6">
+      <div className="border-border bg-background space-y-4 border-t p-6">
         <div className="flex justify-between">
           <span className="text-label-bold">LOCAL</span>
           <span className="text-body-md">{fight.location ?? "TBD"}</span>
@@ -189,7 +189,7 @@ export function FightDetail({ fightId }: { fightId: string }) {
             </span>
           </div>
         )}
-        {fight.judge && fight.judge.nickname && (
+        {fight.judge?.nickname && (
           <div className="flex justify-between">
             <span className="text-label-bold">Apelido do Juiz</span>
             <span className="text-body-md">
@@ -199,155 +199,155 @@ export function FightDetail({ fightId }: { fightId: string }) {
         )}
       </div>
 
-{/* Actions */}
-{isParticipant && fight.status !== "completed" && (
-        <div className="border-t border-border bg-background space-y-6 p-6">
+      {/* Actions */}
+      {isParticipant && fight.status !== "completed" && (
+        <div className="border-border bg-background space-y-6 border-t p-6">
           {/* Pending: propose / confirm / accept judge / cancel */}
           {fight.status === "pending" && (
-<>
-               {!hasProposal && (isFighter1 || isFighter2) && (
-<Button
-                  className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
+            <>
+              {!hasProposal && (isFighter1 || isFighter2) && (
+                <Button
+                  className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
                   onClick={() => setShowPropose((v) => !v)}
                 >
                   Propor detalhes da luta
                 </Button>
-               )}
+              )}
 
-{showPropose && (
-                 <form onSubmit={handlePropose} className="space-y-6">
-                   <Field>
-                     <FieldLabel>LOCAL</FieldLabel>
-                     <FieldContent>
-                       <Input
-                         type="text"
-                         placeholder="Academia / Cidade"
-                         value={location}
-                         onChange={(e) => setLocation(e.target.value)}
-                         className="border-2 border-border bg-background focus:bg-muted focus:border-border h-12 px-4 rounded-none text-body-md"
-                       />
-                     </FieldContent>
-                   </Field>
-                   <Field>
-                     <FieldLabel>DATA & HORÁRIO</FieldLabel>
-                     <FieldContent>
-                       <Input
-                         type="datetime-local"
-                         value={scheduledAt}
-                         onChange={(e) => setScheduledAt(e.target.value)}
-                         required
-                         className="border-2 border-border bg-background focus:bg-muted focus:border-border h-12 px-4 rounded-none text-body-md"
-                       />
-                     </FieldContent>
-                   </Field>
-                   <div className="flex gap-3">
-                     <Button
-                       type="submit"
-                       disabled={propose.isPending}
-                       className="bg-foreground text-background border-2 border-foreground hover:bg-background hover:text-foreground h-12 px-6 text-label-bold"
-                     >
-                       {propose.isPending ? "Enviando..." : "Enviar proposta"}
-                     </Button>
-                     <Button
-                       type="button"
-                       variant="outline"
-                       onClick={() => setShowPropose(false)}
-                       className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
-                     >
-                       Cancelar
-                     </Button>
-                   </div>
-                 </form>
-               )}
+              {showPropose && (
+                <form onSubmit={handlePropose} className="space-y-6">
+                  <Field>
+                    <FieldLabel>LOCAL</FieldLabel>
+                    <FieldContent>
+                      <Input
+                        type="text"
+                        placeholder="Academia / Cidade"
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
+                        className="border-border bg-background focus:bg-muted focus:border-border text-body-md h-12 rounded-none border-2 px-4"
+                      />
+                    </FieldContent>
+                  </Field>
+                  <Field>
+                    <FieldLabel>DATA & HORÁRIO</FieldLabel>
+                    <FieldContent>
+                      <Input
+                        type="datetime-local"
+                        value={scheduledAt}
+                        onChange={(e) => setScheduledAt(e.target.value)}
+                        required
+                        className="border-border bg-background focus:bg-muted focus:border-border text-body-md h-12 rounded-none border-2 px-4"
+                      />
+                    </FieldContent>
+                  </Field>
+                  <div className="flex gap-3">
+                    <Button
+                      type="submit"
+                      disabled={propose.isPending}
+                      className="bg-foreground text-background border-foreground hover:bg-background hover:text-foreground text-label-bold h-12 border-2 px-6"
+                    >
+                      {propose.isPending ? "Enviando..." : "Enviar proposta"}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowPropose(false)}
+                      className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
+                    >
+                      Cancelar
+                    </Button>
+                  </div>
+                </form>
+              )}
 
-{hasProposal && !isProposer && (isFighter1 || isFighter2) && (
-                 <Button
-                   className="bg-primary text-primary-foreground border-2 border-primary hover:bg-foreground hover:border-foreground h-12 px-6 text-label-bold"
-                   onClick={() => confirm.mutate({ fightId })}
-                   disabled={confirm.isPending}
-                 >
-                   {confirm.isPending ? "Confirmando..." : "Confirmar luta"}
-                 </Button>
-               )}
+              {hasProposal && !isProposer && (isFighter1 || isFighter2) && (
+                <Button
+                  className="bg-primary text-primary-foreground border-primary hover:bg-foreground hover:border-foreground text-label-bold h-12 border-2 px-6"
+                  onClick={() => confirm.mutate({ fightId })}
+                  disabled={confirm.isPending}
+                >
+                  {confirm.isPending ? "Confirmando..." : "Confirmar luta"}
+                </Button>
+              )}
 
-{!fight.judge && (
-                 <Button
-                   variant="outline"
-                   onClick={() => acceptJudge.mutate({ fightId })}
-                   disabled={acceptJudge.isPending}
-                   className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
-                 >
-                   {acceptJudge.isPending ? "Aceitando..." : "Aceitar como juiz"}
-                 </Button>
-               )}
+              {!fight.judge && (
+                <Button
+                  variant="outline"
+                  onClick={() => acceptJudge.mutate({ fightId })}
+                  disabled={acceptJudge.isPending}
+                  className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
+                >
+                  {acceptJudge.isPending ? "Aceitando..." : "Aceitar como juiz"}
+                </Button>
+              )}
             </>
           )}
 
-{/* Scheduled: complete / cancel */}
-{fight.status === "scheduled" && (
-        <div className="border-t border-border bg-background space-y-6 p-6">
-          <div className="flex flex-wrap gap-3">
-            {fight.fighter1Id && fight.fighter2Id && (
-              <>
-                <Button
-                  variant="outline"
-                  className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
-                  onClick={() =>
-                    complete.mutate({ fightId, winnerId: fight.fighter1Id })
-                  }
-                  disabled={complete.isPending}
-                >
-                  {complete.isPending
-                    ? "Completando..."
-                    : `${fight.fighter1.name} vence`}
-                </Button>
-                <Button
-                  variant="outline"
-                  className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
-                  onClick={() =>
-                    complete.mutate({ fightId, winnerId: fight.fighter2Id })
-                  }
-                  disabled={complete.isPending}
-                >
-                  {complete.isPending
-                    ? "Completando..."
-                    : `${fight.fighter2.name} vence`}
-                </Button>
-              </>
-            )}
-          </div>
-          <Button
-            variant="outline"
-            onClick={() => cancel.mutate({ fightId })}
-            disabled={cancel.isPending}
-            className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
-          >
-            {cancel.isPending ? "Cancelando..." : "Cancelar luta"}
-          </Button>
+          {/* Scheduled: complete / cancel */}
+          {fight.status === "scheduled" && (
+            <div className="border-border bg-background space-y-6 border-t p-6">
+              <div className="flex flex-wrap gap-3">
+                {fight.fighter1Id && fight.fighter2Id && (
+                  <>
+                    <Button
+                      variant="outline"
+                      className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
+                      onClick={() =>
+                        complete.mutate({ fightId, winnerId: fight.fighter1Id })
+                      }
+                      disabled={complete.isPending}
+                    >
+                      {complete.isPending
+                        ? "Completando..."
+                        : `${fight.fighter1.name} vence`}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
+                      onClick={() =>
+                        complete.mutate({ fightId, winnerId: fight.fighter2Id })
+                      }
+                      disabled={complete.isPending}
+                    >
+                      {complete.isPending
+                        ? "Completando..."
+                        : `${fight.fighter2.name} vence`}
+                    </Button>
+                  </>
+                )}
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => cancel.mutate({ fightId })}
+                disabled={cancel.isPending}
+                className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
+              >
+                {cancel.isPending ? "Cancelando..." : "Cancelar luta"}
+              </Button>
+            </div>
+          )}
+
+          {/* Pending/scheduled: cancel */}
+          {(fight.status === "pending" || fight.status === "scheduled") && (
+            <div className="border-border bg-background space-y-6 border-t p-6">
+              <Button
+                variant="outline"
+                onClick={() => cancel.mutate({ fightId })}
+                disabled={cancel.isPending}
+                className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
+              >
+                {cancel.isPending ? "Cancelando..." : "Cancelar luta"}
+              </Button>
+            </div>
+          )}
         </div>
       )}
 
-{/* Pending/scheduled: cancel */}
-{(fight.status === "pending" || fight.status === "scheduled") && (
-        <div className="border-t border-border bg-background space-y-6 p-6">
-          <Button
-            variant="outline"
-            onClick={() => cancel.mutate({ fightId })}
-            disabled={cancel.isPending}
-            className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
-          >
-            {cancel.isPending ? "Cancelando..." : "Cancelar luta"}
-          </Button>
-        </div>
+      {!isParticipant && (
+        <p className="border-border bg-background border-t p-4 text-center text-sm">
+          Você não é participante desta luta.
+        </p>
       )}
-        </div>
-      )}
-
-{!isParticipant && (
-          <p className="border-t border-border bg-background p-4 text-center text-sm">
-            Você não é participante desta luta.
-          </p>
-        )}
 
       <div className="flex justify-center gap-4">
         <Button

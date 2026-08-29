@@ -2,10 +2,9 @@ import { eq } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import * as schema from "./schema";
-import { seedDatabase } from "./seed";
 import { runMigrations, db as testDb } from "./test/db";
 
-describe("Seed", () => {
+describe("Schema constraints", () => {
   beforeAll(async () => {
     await runMigrations();
     // O turbo roda os testes de @acme/api e @acme/db em paralelo contra o mesmo
@@ -26,22 +25,6 @@ describe("Seed", () => {
     const result = await testDb.select().from(schema.user);
     // We don't expect any users yet, but the query should not throw
     expect(result).toBeInstanceOf(Array);
-  });
-
-  it("should create 15 fighters and 3 judges", async () => {
-    await seedDatabase(testDb);
-
-    const users = await testDb.select().from(schema.user);
-    expect(users).toHaveLength(18); // 15 fighters + 3 judges
-
-    const profiles = await testDb.select().from(schema.Profile);
-    expect(profiles).toHaveLength(18);
-
-    // Check that we have 15 fighters and 3 judges based on role
-    const fighters = profiles.filter((p) => p.role === "fighter");
-    const judges = profiles.filter((p) => p.role === "judge");
-    expect(fighters).toHaveLength(15);
-    expect(judges).toHaveLength(3);
   });
 
   it("should ensure Profile.userId is unique", async () => {

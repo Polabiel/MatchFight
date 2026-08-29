@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { and, desc, eq, isNull, not, or } from "drizzle-orm";
+import { and, desc, eq, isNotNull, isNull, not, or } from "drizzle-orm";
 import { z } from "zod";
 
 import * as schema from "@acme/db/schema";
@@ -68,6 +68,8 @@ export const swipeRouter = createTRPCRouter({
             )
             .limit(1),
         ),
+        isNotNull(schema.user.image),
+        isNotNull(schema.Profile.bio),
       ];
 
       if (weightClass !== undefined) {

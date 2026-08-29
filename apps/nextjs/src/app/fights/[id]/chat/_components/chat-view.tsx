@@ -72,7 +72,7 @@ export function ChatView({ fightId }: { fightId: string }) {
       {/* Messages */}
       <div
         ref={scrollRef}
-        className="border border-border bg-background flex flex-1 flex-col gap-4 overflow-y-auto rounded-none p-4"
+        className="border-border bg-background flex flex-1 flex-col gap-4 overflow-y-auto rounded-none border p-4"
       >
         {messages.length === 0 ? (
           <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-2 text-center">
@@ -85,12 +85,12 @@ export function ChatView({ fightId }: { fightId: string }) {
         ) : (
           messages.map((msg) => {
             const mine = msg.senderId === session?.user.id;
-            const isSystem = (msg as any).type === "system";
+            const isSystem = (msg as Record<string, unknown>).type === "system";
 
             if (isSystem) {
               return (
                 <div key={msg.id} className="flex flex-col items-center">
-                  <div className="bg-muted text-muted-foreground rounded-none px-4 py-2 text-label-sm">
+                  <div className="bg-muted text-muted-foreground text-label-sm rounded-none px-4 py-2">
                     <p className="break-words whitespace-pre-wrap">
                       {msg.content}
                     </p>
@@ -100,12 +100,17 @@ export function ChatView({ fightId }: { fightId: string }) {
             }
 
             return (
-              <div key={msg.id} className={`flex flex-col ${mine ? "items-end" : "items-start"}`}>
-                <div className={`max-w-[80%] rounded-none px-4 py-2 text-body-md ${
-                  mine
-                    ? "bg-foreground text-background border border-foreground"
-                    : "bg-background border-2 border-foreground text-foreground"
-                }`}>
+              <div
+                key={msg.id}
+                className={`flex flex-col ${mine ? "items-end" : "items-start"}`}
+              >
+                <div
+                  className={`text-body-md max-w-[80%] rounded-none px-4 py-2 ${
+                    mine
+                      ? "bg-foreground text-background border-foreground border"
+                      : "bg-background border-foreground text-foreground border-2"
+                  }`}
+                >
                   <p className="break-words whitespace-pre-wrap">
                     {msg.content}
                   </p>
@@ -133,12 +138,12 @@ export function ChatView({ fightId }: { fightId: string }) {
           placeholder="Type a message..."
           maxLength={2000}
           disabled={send.isPending}
-          className="border-2 border-foreground bg-transparent placeholder:text-muted-foreground focus:bg-muted focus:border-foreground h-12 px-4 text-body-md rounded-none"
+          className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
         />
         <Button
           type="submit"
           disabled={send.isPending || !content.trim()}
-          className="bg-primary text-primary-foreground border-2 border-primary hover:bg-foreground hover:border-foreground h-12 px-6 text-label-bold rounded-none"
+          className="bg-primary text-primary-foreground border-primary hover:bg-foreground hover:border-foreground text-label-bold h-12 rounded-none border-2 px-6"
         >
           {send.isPending ? "Sending..." : "Send"}
         </Button>

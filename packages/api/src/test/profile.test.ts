@@ -115,7 +115,7 @@ describe("Profile Router", () => {
   });
 
   it("should getMe return the created profile with nested user", async () => {
-    const { userId } = await createTestUser();
+    const { userId } = await createTestUser({ image: null });
     const caller = createTestCaller(userId);
 
     // Create a profile via update

@@ -14,22 +14,22 @@ export function ProfileView() {
 
   if (!profile) {
     return (
-<div className="flex min-h-[24rem] flex-col items-center justify-center p-6 text-center">
-         <div className="mb-6">
-           <div className="bg-muted flex h-16 w-16 items-center justify-center rounded-none">
-             <span className="text-muted-foreground text-lg">👤</span>
-           </div>
-         </div>
-         <h1 className="mb-4 text-headline-lg">No profile yet</h1>
-         <p className="text-body-md text-muted-foreground mb-6 max-w-xl">
-           Create your profile to get started on MatchFight. Add your nickname,
-           bio, role, weight class and more to connect with other fighters and
-           judges.
-         </p>
-         <Link href="/profile/edit" className="button">
-           Create your profile
-         </Link>
-       </div>
+      <div className="flex min-h-[24rem] flex-col items-center justify-center p-6 text-center">
+        <div className="mb-6">
+          <div className="bg-muted flex h-16 w-16 items-center justify-center rounded-none">
+            <span className="text-muted-foreground text-lg">👤</span>
+          </div>
+        </div>
+        <h1 className="text-headline-lg mb-4">No profile yet</h1>
+        <p className="text-body-md text-muted-foreground mb-6 max-w-xl">
+          Create your profile to get started on MatchFight. Add your nickname,
+          bio, role, weight class and more to connect with other fighters and
+          judges.
+        </p>
+        <Link href="/profile/edit" className="button">
+          Create your profile
+        </Link>
+      </div>
     );
   }
 
@@ -51,35 +51,39 @@ export function ProfileView() {
     <div className="space-y-8 p-6">
       <div className="flex items-center gap-6">
         <div className="flex-shrink-0">
-{profile.user.image ? (
-             <img
-               src={profile.user.image}
-               alt={`${profile.user.name}'s avatar`}
-               width={100}
-               height={100}
-               className="w-full h-full object-cover border-foreground rounded-none"
-             />
-           ) : (
-             <div className="w-20 h-20 bg-foreground flex items-center justify-center text-background text-headline-md font-extrabold border border-foreground rounded-none">
-               {profile.user.name?.substring(0, 2) || "JJ"}
-             </div>
-           )}
+          {profile.user.image ? (
+            <img
+              src={profile.user.image}
+              alt={`${profile.user.name}'s avatar`}
+              width={100}
+              height={100}
+              className="border-foreground h-full w-full rounded-none object-cover"
+            />
+          ) : (
+            <div className="bg-foreground text-background text-headline-md border-foreground flex h-20 w-20 items-center justify-center rounded-none border font-extrabold">
+              {profile.user.name.substring(0, 2) || "JJ"}
+            </div>
+          )}
         </div>
         <div className="space-y-2">
           <h1 className="text-headline-lg">{profile.user.name}</h1>
-          <p className="text-body-md text-muted-foreground">{profile.nickname}</p>
-<span className="bg-foreground text-background px-3 py-1 text-label-bold">
-               {profile.role === "fighter"
-                 ? "Fighter"
-                 : profile.role === "judge"
-                   ? "Judge"
-                   : "Both"}
-             </span>
+          <p className="text-body-md text-muted-foreground">
+            {profile.nickname}
+          </p>
+          <span className="bg-foreground text-background text-label-bold px-3 py-1">
+            {profile.role === "fighter"
+              ? "Fighter"
+              : profile.role === "judge"
+                ? "Judge"
+                : "Both"}
+          </span>
         </div>
-<div className="border-2 border-foreground p-6 mb-8">
-           <div className="text-display-lg">{profile.wins}-{profile.losses}</div>
-           <div className="text-label-bold">Record</div>
-         </div>
+        <div className="border-foreground mb-8 border-2 p-6">
+          <div className="text-display-lg">
+            {profile.wins}-{profile.losses}
+          </div>
+          <div className="text-label-bold">Record</div>
+        </div>
       </div>
 
       <Separator className="my-4" />
@@ -91,36 +95,38 @@ export function ProfileView() {
             <p className="text-muted-foreground">{profile.bio}</p>
           </div>
         )}
-<div className="space-y-2">
-             <h3 className="text-label-bold">Details</h3>
-             <div className="grid gap-2 text-sm">
-               {profile.weightClass && (
-                 <div className="flex items-center gap-2">
-                   <span className="text-label-sm">Weight class:</span>
-                   <span className="text-headline-md">
-                     {profile.weightClass
-                       .replace("_", " ")
-                       .replace(/\b\w/g, (c) => c.toUpperCase())}
-                   </span>
-                 </div>
-               )}
-               <div className="flex items-center gap-2">
-                 <span className="text-label-sm">Record:</span>
-                 <span className="text-headline-md">
-                   {profile.wins}-{profile.losses}
-                 </span>
-               </div>
-               {profile.location && (
-                 <div className="flex items-center gap-2">
-                   <span className="text-label-sm">Location:</span>
-                   <span className="text-headline-md">{profile.location}</span>
-                 </div>
-               )}
-             </div>
-           </div>
+        <div className="space-y-2">
+          <h3 className="text-label-bold">Details</h3>
+          <div className="grid gap-2 text-sm">
+            {profile.weightClass && (
+              <div className="flex items-center gap-2">
+                <span className="text-label-sm">Weight class:</span>
+                <span className="text-headline-md">
+                  {profile.weightClass
+                    .replace("_", " ")
+                    .replace(/\b\w/g, (c) => c.toUpperCase())}
+                </span>
+              </div>
+            )}
+            <div className="flex items-center gap-2">
+              <span className="text-label-sm">Record:</span>
+              <span className="text-headline-md">
+                {profile.wins}-{profile.losses}
+              </span>
+            </div>
+            {profile.location && (
+              <div className="flex items-center gap-2">
+                <span className="text-label-sm">Location:</span>
+                <span className="text-headline-md">{profile.location}</span>
+              </div>
+            )}
+          </div>
+        </div>
         <div className="border-t pt-4">
           <h3 className="text-label-bold mb-2">Account</h3>
-          <p className="text-body-md text-muted-foreground">Joined {joinedDate}</p>
+          <p className="text-body-md text-muted-foreground">
+            Joined {joinedDate}
+          </p>
         </div>
       </div>
 

@@ -87,38 +87,38 @@ export function ProfileEditForm() {
         <Field>
           <FieldLabel className="text-label-bold">Nickname</FieldLabel>
           <FieldContent>
-<Input
-               type="text"
-               placeholder="Enter your nickname"
-               defaultValue={profile?.nickname ?? ""}
-               name="nickname"
-               required
-               className="border-2 border-foreground bg-transparent placeholder:text-muted-foreground focus:bg-muted focus:border-foreground rounded-none h-12 px-4 text-body-md"
-             />
+            <Input
+              type="text"
+              placeholder="Enter your nickname"
+              defaultValue={profile?.nickname ?? ""}
+              name="nickname"
+              required
+              className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
+            />
           </FieldContent>
         </Field>
 
         <Field>
           <FieldLabel className="text-label-bold">Bio</FieldLabel>
           <FieldContent>
-<textarea
-               defaultValue={profile?.bio ?? ""}
-               name="bio"
-               placeholder="Tell us about yourself..."
-               className="border-2 border-foreground bg-transparent focus:bg-muted focus:border-foreground h-12 px-4 text-body-md rounded-none resize-none"
-               rows={4}
-             />
+            <textarea
+              defaultValue={profile?.bio ?? ""}
+              name="bio"
+              placeholder="Tell us about yourself..."
+              className="border-foreground focus:bg-muted focus:border-foreground text-body-md h-12 resize-none rounded-none border-2 bg-transparent px-4"
+              rows={4}
+            />
           </FieldContent>
         </Field>
 
         <Field>
           <FieldLabel className="text-label-bold">Role</FieldLabel>
           <FieldContent>
-<select
-               defaultValue={profile?.role ?? "fighter"}
-               name="role"
-               className="border-2 border-foreground bg-transparent focus:bg-muted focus:border-foreground rounded-none h-12 px-4 text-body-md"
-             >
+            <select
+              defaultValue={profile?.role ?? "fighter"}
+              name="role"
+              className="border-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
+            >
               <option value="fighter">Fighter</option>
               <option value="judge">Judge</option>
               <option value="both">Both</option>
@@ -127,13 +127,15 @@ export function ProfileEditForm() {
         </Field>
 
         <Field>
-          <FieldLabel className="text-label-bold">Weight Class (optional)</FieldLabel>
+          <FieldLabel className="text-label-bold">
+            Weight Class (optional)
+          </FieldLabel>
           <FieldContent>
-<select
-               defaultValue={profile?.weightClass ?? ""}
-               name="weightClass"
-               className="border-2 border-foreground bg-transparent focus:bg-muted focus:border-foreground rounded-none h-12 px-4 text-body-md"
-             >
+            <select
+              defaultValue={profile?.weightClass ?? ""}
+              name="weightClass"
+              className="border-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
+            >
               <option value="">Select weight class</option>
               <option value="flyweight">Flyweight</option>
               <option value="bantamweight">Bantamweight</option>
@@ -150,46 +152,52 @@ export function ProfileEditForm() {
         <Field>
           <FieldLabel className="text-label-bold">Wins</FieldLabel>
           <FieldContent>
-<Input
-               type="number"
-               min="0"
-               defaultValue={(profile?.wins ?? 0).toString()}
-               name="wins"
-               placeholder="0"
-               className="border-2 border-foreground bg-transparent h-12 px-4 text-body-md rounded-none"
-             />
+            <Input
+              type="number"
+              min="0"
+              defaultValue={(profile?.wins ?? 0).toString()}
+              name="wins"
+              placeholder="0"
+              className="border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
+            />
           </FieldContent>
         </Field>
 
         <Field>
           <FieldLabel className="text-label-bold">Losses</FieldLabel>
           <FieldContent>
-<Input
-               type="number"
-               min="0"
-               defaultValue={(profile?.losses ?? 0).toString()}
-               name="losses"
-               placeholder="0"
-               className="border-2 border-foreground bg-transparent h-12 px-4 text-body-md rounded-none"
-             />
+            <Input
+              type="number"
+              min="0"
+              defaultValue={(profile?.losses ?? 0).toString()}
+              name="losses"
+              placeholder="0"
+              className="border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
+            />
           </FieldContent>
         </Field>
 
         <Field>
-          <FieldLabel className="text-label-bold">Location (optional)</FieldLabel>
+          <FieldLabel className="text-label-bold">
+            Location (optional)
+          </FieldLabel>
           <FieldContent>
-<Input
-               type="text"
-               defaultValue={profile?.location ?? ""}
-               name="location"
-               placeholder="City, Country"
-               className="border-2 border-foreground bg-transparent h-12 px-4 text-body-md rounded-none"
-             />
+            <Input
+              type="text"
+              defaultValue={profile?.location ?? ""}
+              name="location"
+              placeholder="City, Country"
+              className="border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
+            />
           </FieldContent>
         </Field>
 
         <div className="flex items-center gap-4">
-          <Button type="submit" disabled={mutation.isPending} className="bg-primary text-primary-foreground border-2 border-primary hover:bg-foreground hover:border-foreground h-12 px-6 text-label-bold">
+          <Button
+            type="submit"
+            disabled={mutation.isPending}
+            className="bg-primary text-primary-foreground border-primary hover:bg-foreground hover:border-foreground text-label-bold h-12 border-2 px-6"
+          >
             {mutation.isPending
               ? "Saving..."
               : isEditMode
