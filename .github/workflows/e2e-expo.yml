@@ -44,7 +44,7 @@ jobs:
           force-avd-creation: false
           disable-animations: true
           script: |
-            set -euo pipefail
+            set -eu
 
             # cd para o app Expo
             cd apps/expo
