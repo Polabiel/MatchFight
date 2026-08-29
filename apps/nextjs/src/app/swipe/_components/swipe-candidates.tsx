@@ -81,153 +81,153 @@ export function SwipeCandidates() {
 
   const current = candidates[currentIndex];
 
-  return (
-    <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-2xl flex-col items-center justify-center gap-6 p-6">
-      <h1 className="text-3xl font-extrabold tracking-tight">
-        Find your opponent
-      </h1>
+return (
+     <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-2xl flex-col items-center justify-center gap-6 p-6">
+       <h1 className="text-headline-lg">
+         Find your opponent
+       </h1>
 
-      {/* Weight class filter */}
-      <div className="w-full max-w-md">
-        <select
-          value={weightClass}
-          onChange={(e) => {
-            setWeightClass((e.target.value || undefined) as typeof weightClass);
-            setCurrentIndex(0);
-          }}
-          className="border-input focus-visible:border-ring focus-visible:ring-ring/50 block w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] focus-visible:ring-[3px]"
-          aria-label="Filter by weight class"
-        >
-          {weightClasses.map((wc) => (
-            <option key={wc.value} value={wc.value}>
-              {wc.label}
-            </option>
-          ))}
-        </select>
-      </div>
+{/* Weight class filter */}
+       <div className="w-full max-w-md">
+         <select
+           value={weightClass}
+           onChange={(e) => {
+             setWeightClass((e.target.value || undefined) as typeof weightClass);
+             setCurrentIndex(0);
+           }}
+           className="border-2 border-border bg-background placeholder:text-muted-foreground focus:bg-muted focus:border-foreground h-12 px-4 text-body-md"
+           aria-label="Filter by weight class"
+         >
+           {weightClasses.map((wc) => (
+             <option key={wc.value} value={wc.value}>
+               {wc.label}
+             </option>
+           ))}
+         </select>
+       </div>
 
-      {!current ? (
-        <div className="flex flex-col items-center gap-4 text-center">
-          <div className="bg-muted flex h-24 w-24 items-center justify-center rounded-full text-4xl">
-            🥊
-          </div>
-          <h2 className="text-2xl font-bold">No more candidates</h2>
-          <p className="text-muted-foreground max-w-md">
-            You've seen everyone in this weight class. Check back later for new
-            fighters or adjust your filter.
-          </p>
-          <Button onClick={refresh} variant="outline">
-            Refresh
-          </Button>
-        </div>
+{!current ? (
+         <div className="flex flex-col items-center gap-6 text-center">
+           <div className="bg-muted flex h-24 w-24 items-center justify-center rounded-none text-headline-md">
+             🥊
+           </div>
+           <h2 className="text-headline-md">No more candidates</h2>
+           <p className="text-body-md text-muted-foreground max-w-md">
+             You've seen everyone in this weight class. Check back later for new
+             fighters or adjust your filter.
+           </p>
+           <Button onClick={refresh} variant="outline" className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold">
+             Refresh
+           </Button>
+         </div>
       ) : (
         <>
-          {/* Candidate card */}
-          <div className="border-border bg-card flex w-full max-w-md flex-col overflow-hidden rounded-2xl border shadow-lg">
-            <div className="bg-muted relative h-64 w-full">
-              {current.image ? (
+{/* Candidate card */}
+           <div className="border-2 border-border bg-background p-6 hover:bg-muted transition-colors">
+{current.image ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={current.image}
                   alt={`${current.name} avatar`}
-                  className="h-full w-full object-cover"
+                  className="w-full h-56 object-cover rounded-none mb-6"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center text-6xl">
+                <div className="flex h-56 w-full items-center justify-center text-6xl bg-muted rounded-none border border-foreground mb-6">
                   🥊
                 </div>
               )}
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 pt-12">
-                <h2 className="text-2xl font-bold text-white">
-                  {current.name}
-                </h2>
-                <p className="text-sm font-medium text-white/90">
-                  "{current.nickname}"
-                </p>
-              </div>
-            </div>
+             <div className="relative">
+               <div className="absolute inset-x-0 bottom-0 bg-muted/50 p-4 pt-12">
+                 <h2 className="text-headline-md text-foreground">
+                   {current.name}
+                 </h2>
+                 <p className="text-label-bold text-foreground/90 uppercase">
+                   "{current.nickname}"
+                 </p>
+               </div>
+             </div>
 
-            <div className="flex flex-col gap-3 p-5">
-              {current.bio && (
-                <p className="text-muted-foreground text-sm">{current.bio}</p>
-              )}
+             <div className="mt-6">
+               {current.bio && (
+                 <p className="text-body-md text-muted-foreground">
+                   {current.bio}
+                 </p>
+               )}
 
-              <div className="flex flex-wrap gap-2 text-sm">
-                {current.weightClass && (
-                  <span className="bg-primary/10 text-primary inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
-                    {current.weightClass
-                      .replace("_", " ")
-                      .replace(/\b\w/g, (c) => c.toUpperCase())}
+               <div className="mt-4 flex flex-wrap gap-2">
+{current.weightClass && (
+                    <span className="bg-foreground text-background rounded-none px-3 py-1 text-label-sm">
+                      {current.weightClass
+                        .replace("_", " ")
+                        .replace(/\b\w/g, (c) => c.toUpperCase())}
+                    </span>
+                  )}
+                  <span className="bg-foreground text-background rounded-none px-3 py-1 text-label-sm">
+                    {current.wins}-{current.losses}
                   </span>
-                )}
-                <span className="bg-muted inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
-                  {current.wins}-{current.losses}
-                </span>
-                {current.location && (
-                  <span className="bg-muted inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
-                    📍 {current.location}
-                  </span>
-                )}
-              </div>
+                  {current.location && (
+                    <span className="bg-foreground text-background rounded-none px-3 py-1 text-label-sm">
+                      📍 {current.location}
+                    </span>
+                  )}
+               </div>
+             </div>
 
-              {/* Actions */}
-              <div className="mt-2 flex items-center justify-center gap-6">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  aria-label="Pass"
-                  disabled={pass.isPending || like.isPending}
-                  onClick={() => pass.mutate({ targetId: current.id })}
-                  className="h-14 w-14 rounded-full text-xl"
-                >
-                  ✕
-                </Button>
-                <Button
-                  variant="default"
-                  size="lg"
-                  aria-label="Like"
-                  disabled={pass.isPending || like.isPending}
-                  onClick={() => like.mutate({ targetId: current.id })}
-                  className="h-14 w-14 rounded-full text-xl"
-                >
-                  ✓
-                </Button>
-              </div>
-            </div>
-          </div>
+             {/* Actions */}
+             <div className="mt-8 flex items-center justify-center gap-6">
+               <Button
+                 variant="outline"
+                 aria-label="Pass"
+                 disabled={pass.isPending || like.isPending}
+                 onClick={() => pass.mutate({ targetId: current.id })}
+                 className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
+               >
+                 Passar
+               </Button>
+               <Button
+                 aria-label="Like"
+                 disabled={pass.isPending || like.isPending}
+                 onClick={() => like.mutate({ targetId: current.id })}
+                 className="bg-primary text-primary-foreground border-2 border-primary hover:bg-foreground hover:border-foreground h-12 px-6 text-label-bold"
+               >
+                 Dar Match
+               </Button>
+             </div>
+           </div>
         </>
       )}
 
-      {/* Match modal */}
-      {matchUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="border-border bg-card flex w-full max-w-sm flex-col items-center gap-4 rounded-2xl border p-8 text-center shadow-2xl">
-            <div className="text-6xl">🎉</div>
-            <h2 className="text-3xl font-extrabold">It&apos;s a Match!</h2>
-            <p className="text-muted-foreground">
-              You and{" "}
-              <span className="text-foreground font-semibold">
-                {matchUser.name}
-              </span>{" "}
-              ({matchUser.nickname}) liked each other. Time to schedule your
-              fight.
-            </p>
-            <div className="flex w-full flex-col gap-2">
-              <Button
-                onClick={() => {
-                  setMatchUser(null);
-                  refresh();
-                }}
-              >
-                Keep swiping
-              </Button>
-              <Button variant="outline" onClick={() => setMatchUser(null)}>
-                Close
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+{/* Match modal */}
+       {matchUser && (
+         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/50 p-4">
+           <div className="border-2 border-border bg-background flex w-full max-w-sm flex-col items-center gap-6 p-6">
+             <div className="text-6xl">🎉</div>
+             <h2 className="text-headline-lg">It&apos;s a Match!</h2>
+             <p className="text-body-md text-muted-foreground">
+               You and{" "}
+               <span className="text-foreground font-semibold">
+                 {matchUser.name}
+               </span>{" "}
+               ({matchUser.nickname}) liked each other. Time to schedule your
+               fight.
+             </p>
+             <div className="flex w-full flex-col gap-4">
+               <Button
+                 onClick={() => {
+                   setMatchUser(null);
+                   refresh();
+                 }}
+                 className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
+               >
+                 Keep swiping
+               </Button>
+               <Button variant="outline" onClick={() => setMatchUser(null)} className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold">
+                 Close
+               </Button>
+             </div>
+           </div>
+         </div>
+       )}
     </div>
   );
 }

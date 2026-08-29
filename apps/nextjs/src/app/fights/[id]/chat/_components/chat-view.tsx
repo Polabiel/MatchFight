@@ -50,57 +50,74 @@ export function ChatView({ fightId }: { fightId: string }) {
     send.mutate({ fightId, content: trimmed });
   };
 
+  // Placeholder for opponent name and status - TODO: fetch from trpc.fight
+  const opponentName = "Opponent Name";
+  const status = "Scheduled";
+
   return (
     <div className="mx-auto flex h-[calc(100vh-4rem)] w-full max-w-2xl flex-col p-6">
       <div className="mb-4 flex items-center justify-between">
         <Link
           href={`/fights/${fightId}`}
-          className="text-muted-foreground hover:text-foreground text-sm"
+          className="text-body-md text-muted-foreground hover:text-foreground"
         >
           ← Back to fight
         </Link>
-        <h1 className="text-2xl font-bold">Fight Chat</h1>
-        <span className="w-20" />
+        <div className="flex flex-col items-center">
+          <h1 className="text-headline-md">{opponentName}</h1>
+          <span className="text-label-sm">{status.toUpperCase()}</span>
+        </div>
       </div>
 
       {/* Messages */}
       <div
         ref={scrollRef}
-        className="border-border bg-card flex flex-1 flex-col gap-3 overflow-y-auto rounded-2xl border p-4"
+        className="border border-border bg-background flex flex-1 flex-col gap-4 overflow-y-auto rounded-none p-4"
       >
         {messages.length === 0 ? (
           <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-2 text-center">
-            <div className="text-4xl">💬</div>
-            <p className="text-foreground font-semibold">No messages yet</p>
-            <p className="text-sm">
+            <div className="text-headline-lg">💬</div>
+            <p className="text-headline-md text-foreground">No messages yet</p>
+            <p className="text-body-md text-muted-foreground">
               Send the first message to coordinate your fight.
             </p>
           </div>
         ) : (
           messages.map((msg) => {
             const mine = msg.senderId === session?.user.id;
+            const isSystem = (msg as any).type === "system";
+
+            if (isSystem) {
+              return (
+                <div key={msg.id} className="flex flex-col items-center">
+                  <div className="bg-muted text-muted-foreground rounded-none px-4 py-2 text-label-sm">
+                    <p className="break-words whitespace-pre-wrap">
+                      {msg.content}
+                    </p>
+                  </div>
+                </div>
+              );
+            }
+
             return (
-              <div
-                key={msg.id}
-                className={`flex flex-col ${mine ? "items-end" : "items-start"}`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
-                    mine
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-foreground"
-                  }`}
-                >
+              <div key={msg.id} className={`flex flex-col ${mine ? "items-end" : "items-start"}`}>
+                <div className={`max-w-[80%] rounded-none px-4 py-2 text-body-md ${
+                  mine
+                    ? "bg-foreground text-background border border-foreground"
+                    : "bg-background border-2 border-foreground text-foreground"
+                }`}>
                   <p className="break-words whitespace-pre-wrap">
                     {msg.content}
                   </p>
                 </div>
-                <span className="text-muted-foreground mt-1 px-1 text-xs">
-                  {new Date(msg.createdAt).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </span>
+                {!mine && (
+                  <span className="text-label-sm text-muted-foreground mt-2 px-2">
+                    {new Date(msg.createdAt).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                )}
               </div>
             );
           })
@@ -116,9 +133,13 @@ export function ChatView({ fightId }: { fightId: string }) {
           placeholder="Type a message..."
           maxLength={2000}
           disabled={send.isPending}
-          className="flex-1"
+          className="border-2 border-foreground bg-transparent placeholder:text-muted-foreground focus:bg-muted focus:border-foreground h-12 px-4 text-body-md rounded-none"
         />
-        <Button type="submit" disabled={send.isPending || !content.trim()}>
+        <Button
+          type="submit"
+          disabled={send.isPending || !content.trim()}
+          className="bg-primary text-primary-foreground border-2 border-primary hover:bg-foreground hover:border-foreground h-12 px-6 text-label-bold rounded-none"
+        >
           {send.isPending ? "Sending..." : "Send"}
         </Button>
       </form>

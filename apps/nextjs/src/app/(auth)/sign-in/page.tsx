@@ -22,13 +22,14 @@ function SignInContent() {
   return (
     <div className="flex flex-col items-center gap-6 text-center">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">MatchFight</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-display-lg">MatchFight</h1>
+        <p className="text-muted-foreground text-body-lg">
           Entre com sua conta Discord para continuar.
         </p>
       </div>
 
       <Button
+        variant="action"
         size="lg"
         className="w-full max-w-xs"
         onClick={() =>

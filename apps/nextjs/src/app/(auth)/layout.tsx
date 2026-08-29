@@ -10,7 +10,9 @@ export default function AuthLayout({
 }) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-      <div className="w-full space-y-8 sm:max-w-md lg:max-w-xl">{children}</div>
+      <div className="w-full space-y-8 sm:max-w-md lg:max-w-xl bg-background border border-border p-6">
+        {children}
+      </div>
     </div>
   );
 }

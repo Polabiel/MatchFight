@@ -6,60 +6,81 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useSession } from "~/auth/hooks";
 import { useTRPC } from "~/trpc/react";
 
-const statusStyles: Record<string, string> = {
-  pending: "bg-yellow-500/10 text-yellow-500",
-  scheduled: "bg-blue-500/10 text-blue-500",
-  completed: "bg-green-500/10 text-green-500",
-  cancelled: "bg-red-500/10 text-red-500",
-};
-
 const statusLabels: Record<string, string> = {
-  pending: "Pending",
-  scheduled: "Scheduled",
-  completed: "Completed",
-  cancelled: "Cancelled",
+  pending: "PENDING",
+  scheduled: "CONFIRMADA",
+  completed: "CONCLUÍDA",
+  cancelled: "CANCELADA",
 };
 
 function FightCard({
   id,
-  fighter1Name,
-  fighter2Name,
+  fighter1,
+  fighter2,
   status,
   scheduledAt,
   location,
 }: {
   id: string;
-  fighter1Name: string;
-  fighter2Name: string;
+  fighter1: { id: string; name: string; image: string | null };
+  fighter2: { id: string; name: string; image: string | null };
   status: string;
   scheduledAt: Date | null;
   location: string | null;
 }) {
   const scheduled = scheduledAt
     ? new Date(scheduledAt).toLocaleString()
-    : "Date TBD";
+    : "Data TBD";
+
+  // Status chip - no red to avoid multiple red elements; red reserved for confirm button in detail
+  const statusClass = "bg-foreground text-background px-3 py-1 text-label-sm rounded-none";
 
   return (
     <Link
       href={`/fights/${id}`}
-      className="border-border bg-card hover:bg-accent/50 flex flex-col gap-3 rounded-2xl border p-5 shadow-sm transition-colors"
+      className="border-b border-border py-6"
     >
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-sm font-semibold">
-          {fighter1Name} <span className="text-muted-foreground">vs</span>{" "}
-          {fighter2Name}
-        </span>
-        <span
-          className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            statusStyles[status] ?? "bg-muted text-muted-foreground"
-          }`}
-        >
-          {statusLabels[status] ?? status}
-        </span>
-      </div>
-      <div className="text-muted-foreground flex flex-col gap-1 text-sm">
-        {location && <span>📍 {location}</span>}
-        <span>🗓 {scheduled}</span>
+      <div className="flex flex-col items-start gap-4">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {fighter1.image ? (
+              <img
+                src={fighter1.image}
+                alt={fighter1.name}
+                className="h-10 w-10 object-cover rounded-none border border-border"
+              />
+            ) : (
+              <div className="h-10 w-10 bg-foreground flex items-center justify-center text-background rounded-none">
+                {fighter1.name.charAt(0)}
+              </div>
+            )}
+            <p className="text-headline-md">{fighter1.name}</p>
+          </div>
+          <span className="text-muted-foreground">vs</span>
+          <div className="flex items-center gap-3">
+            {fighter2.image ? (
+              <img
+                src={fighter2.image}
+                alt={fighter2.name}
+                className="h-10 w-10 object-cover rounded-none border border-border"
+              />
+            ) : (
+              <div className="h-10 w-10 bg-foreground flex items-center justify-center text-background rounded-none">
+                {fighter2.name.charAt(0)}
+              </div>
+            )}
+            <p className="text-headline-md">{fighter2.name}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 text-body-md">
+          {location && <span>📍 {location}</span>}
+          <span>🗓 {scheduled}</span>
+        </div>
+        <div className="mt-2 self-end">
+          <span className={statusClass}>
+            {statusLabels[status] ?? status.toUpperCase()}
+          </span>
+        </div>
       </div>
     </Link>
   );
@@ -75,27 +96,27 @@ export function FightsList() {
   );
 
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-8 p-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-extrabold tracking-tight">Fights</h1>
+    <div className="mx-auto w-full max-w-3xl space-y-10 sm:space-y-12 p-6 sm:p-8">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-display-lg">Lutas</h1>
       </div>
 
       {/* Judge available fights */}
       {judgeFights.length > 0 && (
-        <section className="space-y-4">
-          <h2 className="text-xl font-semibold">
-            Available to officiate{" "}
-            <span className="text-muted-foreground text-sm font-normal">
+        <section className="space-y-6 sm:space-y-8">
+          <h2 className="text-headline-lg">
+            Disponível para arbitrar{" "}
+            <span className="text-label-sm">
               ({judgeFights.length})
             </span>
           </h2>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-6 sm:gap-8 sm:grid-cols-2">
             {judgeFights.map((fight) => (
               <FightCard
                 key={fight.id}
                 id={fight.id}
-                fighter1Name={fight.fighter1.name}
-                fighter2Name={fight.fighter2.name}
+                fighter1={fight.fighter1}
+                fighter2={fight.fighter2}
                 status={fight.status}
                 scheduledAt={fight.scheduledAt}
                 location={fight.location}
@@ -106,35 +127,35 @@ export function FightsList() {
       )}
 
       {/* My fights */}
-      <section className="space-y-4">
-        <h2 className="text-xl font-semibold">
-          Your fights{" "}
-          <span className="text-muted-foreground text-sm font-normal">
+      <section className="space-y-6 sm:space-y-8">
+        <h2 className="text-headline-lg">
+          Suas lutas{" "}
+          <span className="text-label-sm">
             ({myFights.length})
           </span>
         </h2>
         {myFights.length === 0 ? (
-          <div className="border-border flex flex-col items-center gap-3 rounded-2xl border border-dashed p-10 text-center">
-            <div className="text-4xl">🥊</div>
-            <p className="font-semibold">No fights yet</p>
-            <p className="text-muted-foreground max-w-md text-sm">
-              Swipe and match with other fighters to schedule your first fight.
+          <div className="border-border flex flex-col items-center gap-6 border p-10 text-center">
+            <div className="text-6xl">🥊</div>
+            <p className="text-headline-md">Nenhuma luta ainda</p>
+            <p className="text-body-md max-w-md">
+              Deslize, combine e marque seu primeiro combate.
             </p>
             <Link
               href="/swipe"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 mt-2 inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-semibold"
+              className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
             >
-              Find opponents
+              Encontrar oponentes
             </Link>
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-6 sm:gap-8 sm:grid-cols-2">
             {myFights.map((fight) => (
               <FightCard
                 key={fight.id}
                 id={fight.id}
-                fighter1Name={fight.fighter1.name}
-                fighter2Name={fight.fighter2.name}
+                fighter1={fight.fighter1}
+                fighter2={fight.fighter2}
                 status={fight.status}
                 scheduledAt={fight.scheduledAt}
                 location={fight.location}

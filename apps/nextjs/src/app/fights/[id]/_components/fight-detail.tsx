@@ -16,18 +16,11 @@ import { toast } from "@acme/ui/toast";
 import { useSession } from "~/auth/hooks";
 import { useTRPC } from "~/trpc/react";
 
-const statusStyles: Record<string, string> = {
-  pending: "bg-yellow-500/10 text-yellow-500",
-  scheduled: "bg-blue-500/10 text-blue-500",
-  completed: "bg-green-500/10 text-green-500",
-  cancelled: "bg-red-500/10 text-red-500",
-};
-
 const statusLabels: Record<string, string> = {
-  pending: "Pending",
-  scheduled: "Scheduled",
-  completed: "Completed",
-  cancelled: "Cancelled",
+  pending: "PENDING",
+  scheduled: "CONFIRMADA",
+  completed: "CONCLUÍDA",
+  cancelled: "CANCELADA",
 };
 
 function weightLabel(w: string | null) {
@@ -129,225 +122,241 @@ export function FightDetail({ fightId }: { fightId: string }) {
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6 p-6">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-3xl font-extrabold tracking-tight">Fight</h1>
-        <span
-          className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
-            statusStyles[fight.status] ?? "bg-muted text-muted-foreground"
-          }`}
-        >
-          {statusLabels[fight.status] ?? fight.status}
+        <h1 className="text-display-lg">Luta</h1>
+        {/* Status chip - no red to avoid multiple red elements; red reserved for confirm button */}
+        <span className="bg-foreground text-background px-3 py-1 text-label-sm rounded-none">
+          {statusLabels[fight.status] ?? fight.status.toUpperCase()}
         </span>
       </div>
 
       {/* Fighters */}
-      <div className="border-border bg-card grid grid-cols-[1fr_auto_1fr] items-center gap-4 rounded-2xl border p-6">
+      <div className="border-t border-border bg-background grid grid-cols-[1fr_auto_1fr] items-center gap-6 p-6">
         {[fight.fighter1, fight.fighter2].map((fighter) => (
           <div
             key={fighter.id}
-            className="flex flex-col items-center gap-2 text-center"
+            className="flex flex-col items-center gap-4 text-center"
           >
             {fighter.image ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={fighter.image}
                 alt={fighter.name}
-                className="border-ring/20 h-20 w-20 rounded-full border object-cover"
+                className="h-10 w-10 object-cover rounded-none border border-border"
               />
             ) : (
-              <div className="bg-muted flex h-20 w-20 items-center justify-center rounded-full text-2xl">
-                🥊
+              <div className="h-10 w-10 bg-foreground flex items-center justify-center text-background rounded-none">
+                {fighter.name.charAt(0)}
               </div>
             )}
-            <span className="font-semibold">{fighter.name}</span>
+            <p className="text-headline-md">{fighter.name}</p>
             {fighter.nickname && (
-              <span className="text-muted-foreground text-sm">
+              <p className="text-body-md text-muted-foreground">
                 "{fighter.nickname}"
-              </span>
+              </p>
             )}
           </div>
         ))}
-        <span className="text-muted-foreground text-2xl font-bold">VS</span>
+        <span className="text-display-lg">VS</span>
       </div>
 
       {/* Details */}
-      <div className="border-border bg-card space-y-2 rounded-2xl border p-6 text-sm">
+      <div className="border-t border-border bg-background space-y-4 p-6">
         <div className="flex justify-between">
-          <span className="text-muted-foreground">Location</span>
-          <span className="font-medium">{fight.location ?? "TBD"}</span>
+          <span className="text-label-bold">LOCAL</span>
+          <span className="text-body-md">{fight.location ?? "TBD"}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-muted-foreground">Scheduled</span>
-          <span className="font-medium">
+          <span className="text-label-bold">DATA/HORÁRIO</span>
+          <span className="text-body-md">
             {fight.scheduledAt
               ? new Date(fight.scheduledAt).toLocaleString()
               : "TBD"}
           </span>
         </div>
         <div className="flex justify-between">
-          <span className="text-muted-foreground">Judge</span>
-          <span className="font-medium">
-            {fight.judge ? fight.judge.name : "Not assigned"}
+          <span className="text-label-bold">JUIZ</span>
+          <span className="text-body-md">
+            {fight.judge ? fight.judge.name : "Não atribuído"}
           </span>
         </div>
         {fight.winnerId && (
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Winner</span>
-            <span className="font-medium text-green-500">
+            <span className="text-label-bold">Vencedor</span>
+            <span className="text-body-md">
               {fight.winnerId === fight.fighter1Id
                 ? fight.fighter1.name
                 : fight.fighter2.name}
             </span>
           </div>
         )}
-        {fight.judge && (
+        {fight.judge && fight.judge.nickname && (
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Judge nickname</span>
-            <span className="font-medium">
+            <span className="text-label-bold">Apelido do Juiz</span>
+            <span className="text-body-md">
               {weightLabel(fight.judge.nickname)}
             </span>
           </div>
         )}
       </div>
 
-      {/* Actions */}
-      {isParticipant && fight.status !== "completed" && (
-        <div className="border-border bg-card flex flex-col gap-3 rounded-2xl border p-6">
+{/* Actions */}
+{isParticipant && fight.status !== "completed" && (
+        <div className="border-t border-border bg-background space-y-6 p-6">
           {/* Pending: propose / confirm / accept judge / cancel */}
           {fight.status === "pending" && (
-            <>
-              {!hasProposal && (isFighter1 || isFighter2) && (
-                <Button onClick={() => setShowPropose((v) => !v)}>
-                  Propose fight details
-                </Button>
-              )}
-
-              {showPropose && (
-                <form onSubmit={handlePropose} className="space-y-4">
-                  <Field>
-                    <FieldLabel>Location</FieldLabel>
-                    <FieldContent>
-                      <Input
-                        type="text"
-                        placeholder="Gym / City"
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                      />
-                    </FieldContent>
-                  </Field>
-                  <Field>
-                    <FieldLabel>Date &amp; time</FieldLabel>
-                    <FieldContent>
-                      <Input
-                        type="datetime-local"
-                        value={scheduledAt}
-                        onChange={(e) => setScheduledAt(e.target.value)}
-                        required
-                      />
-                    </FieldContent>
-                  </Field>
-                  <div className="flex gap-2">
-                    <Button type="submit" disabled={propose.isPending}>
-                      {propose.isPending ? "Sending..." : "Send proposal"}
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setShowPropose(false)}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </form>
-              )}
-
-              {hasProposal && !isProposer && (isFighter1 || isFighter2) && (
-                <Button
-                  onClick={() => confirm.mutate({ fightId })}
-                  disabled={confirm.isPending}
+<>
+               {!hasProposal && (isFighter1 || isFighter2) && (
+<Button
+                  className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
+                  onClick={() => setShowPropose((v) => !v)}
                 >
-                  {confirm.isPending ? "Confirming..." : "Confirm fight"}
+                  Propor detalhes da luta
                 </Button>
-              )}
+               )}
 
-              {!fight.judge && (
+{showPropose && (
+                 <form onSubmit={handlePropose} className="space-y-6">
+                   <Field>
+                     <FieldLabel>LOCAL</FieldLabel>
+                     <FieldContent>
+                       <Input
+                         type="text"
+                         placeholder="Academia / Cidade"
+                         value={location}
+                         onChange={(e) => setLocation(e.target.value)}
+                         className="border-2 border-border bg-background focus:bg-muted focus:border-border h-12 px-4 rounded-none text-body-md"
+                       />
+                     </FieldContent>
+                   </Field>
+                   <Field>
+                     <FieldLabel>DATA & HORÁRIO</FieldLabel>
+                     <FieldContent>
+                       <Input
+                         type="datetime-local"
+                         value={scheduledAt}
+                         onChange={(e) => setScheduledAt(e.target.value)}
+                         required
+                         className="border-2 border-border bg-background focus:bg-muted focus:border-border h-12 px-4 rounded-none text-body-md"
+                       />
+                     </FieldContent>
+                   </Field>
+                   <div className="flex gap-3">
+                     <Button
+                       type="submit"
+                       disabled={propose.isPending}
+                       className="bg-foreground text-background border-2 border-foreground hover:bg-background hover:text-foreground h-12 px-6 text-label-bold"
+                     >
+                       {propose.isPending ? "Enviando..." : "Enviar proposta"}
+                     </Button>
+                     <Button
+                       type="button"
+                       variant="outline"
+                       onClick={() => setShowPropose(false)}
+                       className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
+                     >
+                       Cancelar
+                     </Button>
+                   </div>
+                 </form>
+               )}
+
+{hasProposal && !isProposer && (isFighter1 || isFighter2) && (
+                 <Button
+                   className="bg-primary text-primary-foreground border-2 border-primary hover:bg-foreground hover:border-foreground h-12 px-6 text-label-bold"
+                   onClick={() => confirm.mutate({ fightId })}
+                   disabled={confirm.isPending}
+                 >
+                   {confirm.isPending ? "Confirmando..." : "Confirmar luta"}
+                 </Button>
+               )}
+
+{!fight.judge && (
+                 <Button
+                   variant="outline"
+                   onClick={() => acceptJudge.mutate({ fightId })}
+                   disabled={acceptJudge.isPending}
+                   className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
+                 >
+                   {acceptJudge.isPending ? "Aceitando..." : "Aceitar como juiz"}
+                 </Button>
+               )}
+            </>
+          )}
+
+{/* Scheduled: complete / cancel */}
+{fight.status === "scheduled" && (
+        <div className="border-t border-border bg-background space-y-6 p-6">
+          <div className="flex flex-wrap gap-3">
+            {fight.fighter1Id && fight.fighter2Id && (
+              <>
                 <Button
                   variant="outline"
-                  onClick={() => acceptJudge.mutate({ fightId })}
-                  disabled={acceptJudge.isPending}
+                  className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
+                  onClick={() =>
+                    complete.mutate({ fightId, winnerId: fight.fighter1Id })
+                  }
+                  disabled={complete.isPending}
                 >
-                  {acceptJudge.isPending ? "Accepting..." : "Accept as judge"}
+                  {complete.isPending
+                    ? "Completando..."
+                    : `${fight.fighter1.name} vence`}
                 </Button>
-              )}
-            </>
-          )}
-
-          {/* Scheduled: complete / cancel */}
-          {fight.status === "scheduled" && (
-            <>
-              <div className="flex flex-wrap gap-2">
-                {fight.fighter1Id && fight.fighter2Id && (
-                  <>
-                    <Button
-                      onClick={() =>
-                        complete.mutate({ fightId, winnerId: fight.fighter1Id })
-                      }
-                      disabled={complete.isPending}
-                    >
-                      {complete.isPending
-                        ? "Completing..."
-                        : `${fight.fighter1.name} wins`}
-                    </Button>
-                    <Button
-                      onClick={() =>
-                        complete.mutate({ fightId, winnerId: fight.fighter2Id })
-                      }
-                      disabled={complete.isPending}
-                    >
-                      {complete.isPending
-                        ? "Completing..."
-                        : `${fight.fighter2.name} wins`}
-                    </Button>
-                  </>
-                )}
-              </div>
-              <Button
-                variant="outline"
-                onClick={() => cancel.mutate({ fightId })}
-                disabled={cancel.isPending}
-              >
-                {cancel.isPending ? "Cancelling..." : "Cancel fight"}
-              </Button>
-            </>
-          )}
-
-          {/* Pending/scheduled: cancel */}
-          {(fight.status === "pending" || fight.status === "scheduled") && (
-            <Button
-              variant="ghost"
-              className="text-destructive"
-              onClick={() => cancel.mutate({ fightId })}
-              disabled={cancel.isPending}
-            >
-              {cancel.isPending ? "Cancelling..." : "Cancel fight"}
-            </Button>
-          )}
+                <Button
+                  variant="outline"
+                  className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
+                  onClick={() =>
+                    complete.mutate({ fightId, winnerId: fight.fighter2Id })
+                  }
+                  disabled={complete.isPending}
+                >
+                  {complete.isPending
+                    ? "Completando..."
+                    : `${fight.fighter2.name} vence`}
+                </Button>
+              </>
+            )}
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => cancel.mutate({ fightId })}
+            disabled={cancel.isPending}
+            className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
+          >
+            {cancel.isPending ? "Cancelando..." : "Cancelar luta"}
+          </Button>
         </div>
       )}
 
-      {!isParticipant && (
-        <p className="border-border bg-card text-muted-foreground rounded-2xl border p-4 text-center text-sm">
-          You are not a participant in this fight.
-        </p>
+{/* Pending/scheduled: cancel */}
+{(fight.status === "pending" || fight.status === "scheduled") && (
+        <div className="border-t border-border bg-background space-y-6 p-6">
+          <Button
+            variant="outline"
+            onClick={() => cancel.mutate({ fightId })}
+            disabled={cancel.isPending}
+            className="bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-6 text-label-bold"
+          >
+            {cancel.isPending ? "Cancelando..." : "Cancelar luta"}
+          </Button>
+        </div>
       )}
+        </div>
+      )}
+
+{!isParticipant && (
+          <p className="border-t border-border bg-background p-4 text-center text-sm">
+            Você não é participante desta luta.
+          </p>
+        )}
 
       <div className="flex justify-center gap-4">
         <Button
-          variant="ghost"
+          variant="outline"
           onClick={() => router.push(`/fights/${fightId}/chat`)}
         >
           💬 Chat
         </Button>
-        <Button variant="ghost" onClick={() => router.push("/fights")}>
+        <Button variant="outline" onClick={() => router.push("/fights")}>
           ← Back to fights
         </Button>
       </div>

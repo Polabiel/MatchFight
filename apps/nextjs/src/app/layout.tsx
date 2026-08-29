@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Nunito_Sans } from "next/font/google";
 
 import { cn } from "@acme/ui";
 import { ThemeProvider, ThemeToggle } from "@acme/ui/theme";
@@ -38,13 +38,10 @@ export const viewport: Viewport = {
   ],
 };
 
-const geistSans = Geist({
+const nunitoSans = Nunito_Sans({
   subsets: ["latin"],
-  variable: "--font-geist-sans",
-});
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
+  variable: "--font-nunito-sans",
+  weight: ["400", "600", "700", "800", "900"],
 });
 
 export default function RootLayout(props: { children: React.ReactNode }) {
@@ -53,8 +50,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
       <body
         className={cn(
           "bg-background text-foreground min-h-screen font-sans antialiased",
-          geistSans.variable,
-          geistMono.variable,
+          nunitoSans.variable,
         )}
       >
         <ThemeProvider>

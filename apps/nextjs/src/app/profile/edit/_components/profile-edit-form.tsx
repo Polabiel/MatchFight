@@ -73,10 +73,10 @@ export function ProfileEditForm() {
   return (
     <div className="mx-auto max-w-2xl p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-headline-lg">
           {isEditMode ? "Edit Profile" : "Create Profile"}
         </h1>
-        <p className="text-muted-foreground mt-2">
+        <p className="text-body-md text-muted-foreground mt-2">
           {isEditMode
             ? "Update your profile information"
             : "Get started by creating your profile"}
@@ -85,39 +85,40 @@ export function ProfileEditForm() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <Field>
-          <FieldLabel>Nickname</FieldLabel>
+          <FieldLabel className="text-label-bold">Nickname</FieldLabel>
           <FieldContent>
-            <Input
-              type="text"
-              placeholder="Enter your nickname"
-              defaultValue={profile?.nickname ?? ""}
-              name="nickname"
-              required
-            />
+<Input
+               type="text"
+               placeholder="Enter your nickname"
+               defaultValue={profile?.nickname ?? ""}
+               name="nickname"
+               required
+               className="border-2 border-foreground bg-transparent placeholder:text-muted-foreground focus:bg-muted focus:border-foreground rounded-none h-12 px-4 text-body-md"
+             />
           </FieldContent>
         </Field>
 
         <Field>
-          <FieldLabel>Bio</FieldLabel>
+          <FieldLabel className="text-label-bold">Bio</FieldLabel>
           <FieldContent>
-            <textarea
-              defaultValue={profile?.bio ?? ""}
-              name="bio"
-              placeholder="Tell us about yourself..."
-              className="border-input focus-visible:border-ring focus-visible:ring-ring/50 block w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50"
-              rows={4}
-            />
+<textarea
+               defaultValue={profile?.bio ?? ""}
+               name="bio"
+               placeholder="Tell us about yourself..."
+               className="border-2 border-foreground bg-transparent focus:bg-muted focus:border-foreground h-12 px-4 text-body-md rounded-none resize-none"
+               rows={4}
+             />
           </FieldContent>
         </Field>
 
         <Field>
-          <FieldLabel>Role</FieldLabel>
+          <FieldLabel className="text-label-bold">Role</FieldLabel>
           <FieldContent>
-            <select
-              defaultValue={profile?.role ?? "fighter"}
-              name="role"
-              className="border-input focus-visible:border-ring focus-visible:ring-ring/50 block w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50"
-            >
+<select
+               defaultValue={profile?.role ?? "fighter"}
+               name="role"
+               className="border-2 border-foreground bg-transparent focus:bg-muted focus:border-foreground rounded-none h-12 px-4 text-body-md"
+             >
               <option value="fighter">Fighter</option>
               <option value="judge">Judge</option>
               <option value="both">Both</option>
@@ -126,13 +127,13 @@ export function ProfileEditForm() {
         </Field>
 
         <Field>
-          <FieldLabel>Weight Class (optional)</FieldLabel>
+          <FieldLabel className="text-label-bold">Weight Class (optional)</FieldLabel>
           <FieldContent>
-            <select
-              defaultValue={profile?.weightClass ?? ""}
-              name="weightClass"
-              className="border-input focus-visible:border-ring focus-visible:ring-ring/50 block w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50"
-            >
+<select
+               defaultValue={profile?.weightClass ?? ""}
+               name="weightClass"
+               className="border-2 border-foreground bg-transparent focus:bg-muted focus:border-foreground rounded-none h-12 px-4 text-body-md"
+             >
               <option value="">Select weight class</option>
               <option value="flyweight">Flyweight</option>
               <option value="bantamweight">Bantamweight</option>
@@ -147,45 +148,48 @@ export function ProfileEditForm() {
         </Field>
 
         <Field>
-          <FieldLabel>Wins</FieldLabel>
+          <FieldLabel className="text-label-bold">Wins</FieldLabel>
           <FieldContent>
-            <Input
-              type="number"
-              min="0"
-              defaultValue={(profile?.wins ?? 0).toString()}
-              name="wins"
-              placeholder="0"
-            />
+<Input
+               type="number"
+               min="0"
+               defaultValue={(profile?.wins ?? 0).toString()}
+               name="wins"
+               placeholder="0"
+               className="border-2 border-foreground bg-transparent h-12 px-4 text-body-md rounded-none"
+             />
           </FieldContent>
         </Field>
 
         <Field>
-          <FieldLabel>Losses</FieldLabel>
+          <FieldLabel className="text-label-bold">Losses</FieldLabel>
           <FieldContent>
-            <Input
-              type="number"
-              min="0"
-              defaultValue={(profile?.losses ?? 0).toString()}
-              name="losses"
-              placeholder="0"
-            />
+<Input
+               type="number"
+               min="0"
+               defaultValue={(profile?.losses ?? 0).toString()}
+               name="losses"
+               placeholder="0"
+               className="border-2 border-foreground bg-transparent h-12 px-4 text-body-md rounded-none"
+             />
           </FieldContent>
         </Field>
 
         <Field>
-          <FieldLabel>Location (optional)</FieldLabel>
+          <FieldLabel className="text-label-bold">Location (optional)</FieldLabel>
           <FieldContent>
-            <Input
-              type="text"
-              defaultValue={profile?.location ?? ""}
-              name="location"
-              placeholder="City, Country"
-            />
+<Input
+               type="text"
+               defaultValue={profile?.location ?? ""}
+               name="location"
+               placeholder="City, Country"
+               className="border-2 border-foreground bg-transparent h-12 px-4 text-body-md rounded-none"
+             />
           </FieldContent>
         </Field>
 
         <div className="flex items-center gap-4">
-          <Button type="submit" disabled={mutation.isPending}>
+          <Button type="submit" disabled={mutation.isPending} className="bg-primary text-primary-foreground border-2 border-primary hover:bg-foreground hover:border-foreground h-12 px-6 text-label-bold">
             {mutation.isPending
               ? "Saving..."
               : isEditMode

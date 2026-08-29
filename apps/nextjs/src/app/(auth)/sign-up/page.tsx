@@ -21,13 +21,14 @@ export default function SignUpPage() {
   return (
     <div className="flex flex-col items-center gap-6 text-center">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Criar conta</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-display-lg">Criar conta</h1>
+        <p className="text-muted-foreground text-body-lg">
           Use sua conta Discord para começar no MatchFight.
         </p>
       </div>
 
       <Button
+        variant="action"
         size="lg"
         className="w-full max-w-xs"
         onClick={() =>
@@ -37,7 +38,7 @@ export default function SignUpPage() {
         Entrar com Discord
       </Button>
 
-      <p className="text-muted-foreground text-sm">
+      <p className="text-muted-foreground text-body-md">
         Já tem conta?{" "}
         <a href="/sign-in" className="text-primary font-medium hover:underline">
           Entrar

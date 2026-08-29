@@ -166,8 +166,8 @@ export default function OnboardingPage() {
             {carouselSlides.map((_, index) => (
               <div
                 key={index}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  carouselIndex === index ? "bg-primary" : "bg-muted/50"
+                className={`w-2 h-2 rounded-none transition-colors ${
+                  carouselIndex === index ? "bg-primary" : "bg-muted"
                 }`}
               />
             ))}
@@ -175,10 +175,10 @@ export default function OnboardingPage() {
 
           {/* Slide content */}
           <div className="items-center gap-4 text-center max-w-2xl">
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+            <h1 className="text-headline-lg font-extrabold tracking-tight">
               {carouselSlides[carouselIndex]?.title ?? ""}
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-md">
+            <p className="text-body-md text-muted-foreground max-w-md">
               {carouselSlides[carouselIndex]?.description ?? ""}
             </p>
           </div>
@@ -213,12 +213,12 @@ export default function OnboardingPage() {
                   {wizardSteps.map((_, index) => (
                     <div
                       key={index}
-                      className={`flex-1 h-1.5 rounded-full transition-colors ${
+                      className={`flex-1 h-1.5 rounded-none transition-colors ${
                         index < currentStep - 1
                           ? "bg-primary"
                           : index === currentStep - 1
                           ? "bg-primary"
-                          : "bg-muted/30"
+                          : "bg-muted"
                       }`}
                     />
                   ))}
@@ -229,9 +229,9 @@ export default function OnboardingPage() {
                       key={index}
                       className={`flex-1 text-center font-medium ${
                         index < currentStep - 1
-                          ? "text-primary"
+                          ? "text-primary-foreground"
                           : index === currentStep - 1
-                          ? "text-primary"
+                          ? "text-primary-foreground"
                           : "text-muted-foreground"
                       }`}
                     >
@@ -244,7 +244,7 @@ export default function OnboardingPage() {
               {/* Step content */}
               {currentStep === 1 && (
                 <>
-                  <h2 className="text-3xl font-bold mb-2 text-center">
+                  <h2 className="text-headline-lg mb-2 text-center">
                     Quem é você?
                   </h2>
                   <p className="text-muted-foreground text-center mb-8">
@@ -262,7 +262,7 @@ export default function OnboardingPage() {
                           key={roleOption.value}
                           type="button"
                           variant={selected ? "default" : "outline"}
-                          className="flex-1 flex-col gap-2 p-6 rounded-2xl border-2 transition-all"
+                          className="flex-1 flex-col gap-2 p-6 rounded-none border-2 transition-all"
                           onClick={() => setRole(roleOption.value as "fighter" | "judge" | "both")}
                         >
                           <span className="text-3xl">{roleOption.emoji}</span>
@@ -278,7 +278,7 @@ export default function OnboardingPage() {
 
               {currentStep === 2 && (
                 <>
-                  <h2 className="text-3xl font-bold mb-2 text-center">
+                  <h2 className="text-headline-lg mb-2 text-center">
                     Sua Identidade
                   </h2>
                   <p className="text-muted-foreground text-center mb-8">
@@ -288,7 +288,7 @@ export default function OnboardingPage() {
                   <div className="space-y-6">
                     <Field orientation="vertical">
                       <FieldLabel>
-                        <Label>Apelido *</Label>
+                        <Label className="text-label-bold">Apelido *</Label>
                       </FieldLabel>
                       <FieldContent>
                         <Input
@@ -303,7 +303,7 @@ export default function OnboardingPage() {
                     {(role === "fighter" || role === "both") && (
                       <Field orientation="vertical">
                         <FieldLabel>
-                          <Label>Categoria de Peso</Label>
+                          <Label className="text-label-bold">Categoria de Peso</Label>
                         </FieldLabel>
                         <FieldContent>
                           <div className="flex flex-wrap gap-2">
@@ -315,7 +315,7 @@ export default function OnboardingPage() {
                                   type="button"
                                   variant={selected ? "default" : "outline"}
                                   size="sm"
-                                  className="rounded-full"
+                                  className="rounded-none"
                                   onClick={() => setWeightClass(wc.value)}
                                 >
                                   {wc.label}
@@ -337,7 +337,7 @@ export default function OnboardingPage() {
 
               {currentStep === 3 && (
                 <>
-                  <h2 className="text-3xl font-bold mb-2 text-center">
+                  <h2 className="text-headline-lg mb-2 text-center">
                     Seu Cartel
                   </h2>
                   <p className="text-muted-foreground text-center mb-8">
@@ -348,7 +348,7 @@ export default function OnboardingPage() {
                     <div className="grid grid-cols-2 gap-4">
                       <Field orientation="vertical">
                         <FieldLabel>
-                          <Label>Vitórias</Label>
+                          <Label className="text-label-bold">Vitórias</Label>
                         </FieldLabel>
                         <FieldContent>
                           <Input
@@ -362,7 +362,7 @@ export default function OnboardingPage() {
                       </Field>
                       <Field orientation="vertical">
                         <FieldLabel>
-                          <Label>Derrotas</Label>
+                          <Label className="text-label-bold">Derrotas</Label>
                         </FieldLabel>
                         <FieldContent>
                           <Input
@@ -378,7 +378,7 @@ export default function OnboardingPage() {
 
                     <Field orientation="vertical">
                       <FieldLabel>
-                        <Label>Localização</Label>
+                        <Label className="text-label-bold">Localização</Label>
                       </FieldLabel>
                       <FieldContent>
                         <Input
@@ -394,7 +394,7 @@ export default function OnboardingPage() {
 
               {currentStep === 4 && (
                 <>
-                  <h2 className="text-3xl font-bold mb-2 text-center">
+                  <h2 className="text-headline-lg mb-2 text-center">
                     Sua Bio
                   </h2>
                   <p className="text-muted-foreground text-center mb-8">
@@ -405,7 +405,7 @@ export default function OnboardingPage() {
                     <Field orientation="vertical">
                       <FieldContent>
                         <textarea
-                          className="border-input bg-background text-foreground h-32 w-full min-w-0 rounded-md border px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 placeholder:text-muted-foreground resize-none"
+className="border-foreground bg-background text-foreground h-32 w-full min-w-0 rounded-none border-2 px-4 py-3 text-body-md outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 placeholder:text-muted-foreground resize-none"
                           value={bio}
                           onChange={(e) => setBio(e.target.value)}
                           placeholder="Conte sobre seu estilo de luta, objetivos ou qualquer outra coisa..."
@@ -418,14 +418,14 @@ export default function OnboardingPage() {
 
               {currentStep === 5 && (
                 <>
-                  <h2 className="text-3xl font-bold mb-2 text-center">
+                  <h2 className="text-headline-lg mb-2 text-center">
                     Quase lá!
                   </h2>
                   <p className="text-muted-foreground text-center mb-8">
                     Revise seu perfil antes de finalizar
                   </p>
 
-                  <div className="bg-card border-border rounded-2xl border p-6">
+                  <div className="bg-background border-border rounded-none border p-6">
                     <div className="space-y-4">
                       <div className="flex justify-between">
                         <span className="font-medium">Função:</span>

@@ -14,9 +14,21 @@ export const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group"
       style={
         {
-          "--normal-bg": "var(--popover)",
-          "--normal-text": "var(--popover-foreground)",
+          "--normal-bg": "var(--background)",
+          "--normal-text": "var(--foreground)",
           "--normal-border": "var(--border)",
+          "--success-bg": "var(--background)",
+          "--success-text": "var(--foreground)",
+          "--success-border": "var(--border)",
+          "--error-bg": "var(--background)",
+          "--error-text": "var(--destructive)",
+          "--error-border": "var(--destructive)",
+          "--warning-bg": "var(--background)",
+          "--warning-text": "var(--foreground)",
+          "--warning-border": "var(--border)",
+          "--info-bg": "var(--background)",
+          "--info-text": "var(--foreground)",
+          "--info-border": "var(--border)",
         } as React.CSSProperties
       }
       {...props}
