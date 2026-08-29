@@ -31,11 +31,13 @@ function signSessionToken(token: string, secret: string) {
  * Rota de teste (E2E): popula o banco com dados determinísticos e devolve um
  * cookie de sessão válido para o usuário logado.
  *
- * Apenas disponível fora de produção. As specs Cypress chamam esta rota via
- * `cy.request()` e setam o cookie retornado antes de visitar as telas.
+ * Bloqueada apenas em produção real (Vercel). `next start` local/CI roda com
+ * NODE_ENV=production, então NÃO usamos NODE_ENV como guard aqui.
+ * As specs Cypress chamam esta rota via `cy.request()` e setam o cookie
+ * retornado antes de visitar as telas.
  */
 export async function GET() {
-  if (env.NODE_ENV === "production") {
+  if (env.VERCEL_ENV === "production") {
     return NextResponse.json(
       { error: "Seed route not allowed in production" },
       { status: 403 },
