@@ -54,9 +54,7 @@ jobs:
             adb install -r /tmp/expo-go.apk
 
             # Iniciar Metro bundler em background (para o app mobile, não web)
-            export METRO_HOST=0.0.0.0
-            export METRO_PORT=8081
-            npx expo start --non-interactive > /tmp/metro.log 2>&1 &
+            npx expo start --port 8081 --host 0.0.0.0 --non-interactive > /tmp/metro.log 2>&1 &
             METRO_PID=$!
             npx wait-on tcp:8081 --timeout=120000
 
