@@ -17,6 +17,23 @@ jobs:
   maestro-android:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: matchfight
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d matchfight"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      POSTGRES_URL: postgres://postgres:postgres@localhost:5432/matchfight
+      TEST_POSTGRES_URL: postgres://postgres:postgres@localhost:5432/matchfight
     steps:
       - uses: actions/checkout@v5
 
@@ -35,7 +52,15 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      # Emulador + todos os steps que dependem dele dentro do `script:`
+      - name: Copy env & migrate
+        run: |
+          cp .env.example .env
+          pnpm --filter @acme/db db:migrate
+
+      - name: Build Next.js
+        run: pnpm --filter @acme/nextjs build
+
+      # Emulador + backend + testes dentro do script
       - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
@@ -43,21 +68,18 @@ jobs:
           profile: pixel_6
           force-avd-creation: false
           disable-animations: true
-          # Executa o script E2E (arquivo commitado no repo).
-          # A action executa o `script:` como sh -c linha a linha, então
-          # toda a lógica fica num único script standalone chamado aqui.
           script: bash apps/expo/scripts/e2e-android.sh
 
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: maestro-screenshots
-          path: apps/expo/.maestro/screenshots
+          path: ~/.maestro/tests
           if-no-files-found: ignore
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: maestro-videos
-          path: apps/expo/.maestro/videos
+          path: ~/.maestro/tests
           if-no-files-found: ignore

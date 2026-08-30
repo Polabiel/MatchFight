@@ -3,6 +3,31 @@
 # Roda dentro do emulador Android via reactivecircus/android-emulator-runner.
 set -eu
 
+# 0. Iniciar backend Next.js (API) — o app Expo precisa dele para renderizar.
+#    O app usa getBaseUrl() que resolve para http://10.0.2.2:3000 no emulador.
+echo "==> Iniciando backend Next.js..."
+pnpm --filter @acme/nextjs start > /tmp/api.log 2>&1 &
+API_PID=$!
+
+for i in $(seq 1 60); do
+  if curl -sf "http://127.0.0.1:3000" > /dev/null 2>&1; then
+    echo "API ready after ${i}x2s"
+    break
+  fi
+  if ! kill -0 "$API_PID" 2>/dev/null; then
+    echo "API process died. Log:"
+    cat /tmp/api.log
+    exit 1
+  fi
+  sleep 2
+done
+
+if ! curl -sf "http://127.0.0.1:3000" > /dev/null 2>&1; then
+  echo "API failed to start. Log:"
+  cat /tmp/api.log
+  exit 1
+fi
+
 cd apps/expo
 
 # 1. Instalar Expo Go APK (via GitHub Releases oficial - Expo-Go-54.0.8 para SDK 54)
@@ -50,3 +75,4 @@ echo "==> Rodando testes Maestro..."
 
 # 6. Cleanup
 kill "$METRO_PID" 2>/dev/null || true
+kill "$API_PID" 2>/dev/null || true
