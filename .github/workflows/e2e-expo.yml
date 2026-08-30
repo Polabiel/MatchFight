@@ -43,52 +43,10 @@ jobs:
           profile: pixel_6
           force-avd-creation: false
           disable-animations: true
-          script: |
-            cat > /tmp/e2e-run.sh << 'ENDSCRIPT'
-            #!/bin/bash
-            set -eu
-
-            cd apps/expo
-
-            # Instalar Expo Go APK (via GitHub Releases oficial - Expo-Go-54.0.8 para SDK 54)
-            wget -q --header="Accept: application/octet-stream" "https://github.com/expo/expo-go-releases/releases/download/Expo-Go-54.0.8/Expo-Go-54.0.8.apk" -O /tmp/expo-go.apk
-            adb install -r /tmp/expo-go.apk
-
-            # Iniciar Metro bundler em background (expo local do monorepo via pnpm)
-            pnpm exec expo start --port 8081 --host 0.0.0.0 --non-interactive > /tmp/metro.log 2>&1 &
-            METRO_PID=$!
-
-            # Poll do status do Metro
-            for i in $(seq 1 60); do
-              if curl -sf "http://127.0.0.1:8081/status" > /dev/null 2>&1; then
-                echo "Metro bundler ready after ${i}x2s"
-                break
-              fi
-              if ! kill -0 $METRO_PID 2>/dev/null; then
-                echo "Metro bundler process died. Log:"
-                cat /tmp/metro.log
-                exit 1
-              fi
-              sleep 2
-            done
-
-            if ! curl -sf "http://127.0.0.1:8081/status" > /dev/null 2>&1; then
-              echo "Metro bundler failed to start. Log:"
-              cat /tmp/metro.log
-              exit 1
-            fi
-
-            # Instalar Maestro CLI
-            curl -fsSL "https://get.maestro.mobile.dev" | bash
-
-            # Rodar testes Maestro
-            ~/.maestro/bin/maestro test .maestro --config .maestro/config.yaml
-
-            # Cleanup
-            kill $METRO_PID 2>/dev/null || true
-            ENDSCRIPT
-            chmod +x /tmp/e2e-run.sh
-            bash /tmp/e2e-run.sh
+          # Executa o script E2E (arquivo commitado no repo).
+          # A action executa o `script:` como sh -c linha a linha, então
+          # toda a lógica fica num único script standalone chamado aqui.
+          script: bash apps/expo/scripts/e2e-android.sh
 
       - uses: actions/upload-artifact@v4
         if: failure()
