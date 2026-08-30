@@ -1,3 +1,3 @@
-# Configuração global do Maestro para o app MatchFight (Expo Go)
-# appId do Expo Go — o app roda dentro do Expo Go nos testes E2E
-appId: host.exp.exponent
+# Configuração global do Maestro para o app MatchFight (APK nativo)
+# appId: com.matchfight.app — o app roda como APK standalone, sem Expo Go.
+appId: com.matchfight.app

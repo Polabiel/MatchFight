@@ -2,13 +2,13 @@
 # Verifica que o app carrega e exibe o conteúdo principal.
 ---
 name: Landing screen
-appId: host.exp.exponent
+appId: com.matchfight.app
 
 ---
-- openLink: "exp://10.0.2.2:8081"
+- launchApp
 - extendedWaitUntil:
     visible: "MatchFight"
-    timeout: 120000
+    timeout: 30000
 - assertVisible: "Find your next opponent"
 - assertVisible: "Sign in with Discord"
 - assertVisible: "Fights"

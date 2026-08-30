@@ -34,6 +34,7 @@ jobs:
     env:
       POSTGRES_URL: postgres://postgres:postgres@localhost:5432/matchfight
       TEST_POSTGRES_URL: postgres://postgres:postgres@localhost:5432/matchfight
+      EXPO_PUBLIC_BASE_URL: http://10.0.2.2:3000
     steps:
       - uses: actions/checkout@v5
 
@@ -41,7 +42,7 @@ jobs:
         uses: ./tooling/github/setup
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -59,6 +60,17 @@ jobs:
 
       - name: Build Next.js
         run: pnpm --filter @acme/nextjs build
+
+      # Gera o projeto nativo (android/) e compila o APK standalone.
+      # O app roda fora do Expo Go — evita os problemas de deep link exp://
+      # e de carregamento de bundle no emulador headless da CI.
+      - name: Prebuild Android project
+        working-directory: apps/expo
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Build Android APK
+        working-directory: apps/expo/android
+        run: ./gradlew assembleRelease --no-daemon
 
       # Emulador + backend + testes dentro do script
       - uses: reactivecircus/android-emulator-runner@v2

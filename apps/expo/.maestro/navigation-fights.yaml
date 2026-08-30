@@ -1,14 +1,14 @@
 # Navegação: a partir da landing, abre a tela de Fights e depois volta.
 ---
 name: Navigate to Fights
-appId: host.exp.exponent
+appId: com.matchfight.app
 
 ---
-- openLink: "exp://10.0.2.2:8081"
+- launchApp
 - extendedWaitUntil:
     visible: "Fights"
-    timeout: 120000
+    timeout: 30000
 - tapOn: "Fights"
 - extendedWaitUntil:
     visible: "Your fights"
-    timeout: 60000
+    timeout: 30000
