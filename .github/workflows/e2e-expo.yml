@@ -53,17 +53,38 @@ jobs:
             wget -q --header="Accept: application/octet-stream" "https://github.com/expo/expo-go-releases/releases/download/Expo-Go-54.0.8/Expo-Go-54.0.8.apk" -O /tmp/expo-go.apk
             adb install -r /tmp/expo-go.apk
 
-            # Iniciar Metro bundler em background (para o app mobile, não web)
-            npx expo start --port 8081 --host 0.0.0.0 --non-interactive > /tmp/metro.log 2>&1 &
+            # Iniciar Metro bundler em background (expo local do monorepo via pnpm,
+            # não npx — npx baixaria expo@57 incompatível com o SDK 54 do projeto)
+            pnpm exec expo start --port 8081 --host 0.0.0.0 --non-interactive > /tmp/metro.log 2>&1 &
             METRO_PID=$!
-            npx wait-on tcp:8081 --timeout=120000
+
+            # Poll do status do Metro (mais confiável que wait-on tcp)
+            for i in $(seq 1 60); do
+              if curl -sf "http://127.0.0.1:8081/status" > /dev/null 2>&1; then
+                echo "Metro bundler ready after ${i}x2s"
+                break
+              fi
+              if ! kill -0 $METRO_PID 2>/dev/null; then
+                echo "Metro bundler process died. Log:"
+                cat /tmp/metro.log
+                exit 1
+              fi
+              sleep 2
+            done
+
+            # Confirma que o Metro está de fato respondendo
+            if ! curl -sf "http://127.0.0.1:8081/status" > /dev/null 2>&1; then
+              echo "Metro bundler failed to start. Log:"
+              cat /tmp/metro.log
+              exit 1
+            fi
 
             # Instalar Maestro CLI
             curl -fsSL "https://get.maestro.mobile.dev" | bash
 
             # Rodar testes Maestro
             ~/.maestro/bin/maestro test .maestro --config .maestro/config.yaml
-            
+
             # Cleanup
             kill $METRO_PID 2>/dev/null || true
 
