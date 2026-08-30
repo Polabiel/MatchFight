@@ -1,0 +1,99 @@
+name: Expo E2E (Maestro)
+
+on:
+  pull_request:
+    branches: ["*"]
+  push:
+    branches: ["main"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  FORCE_COLOR: 3
+
+jobs:
+  maestro-android:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: matchfight
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d matchfight"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      POSTGRES_URL: postgres://postgres:postgres@localhost:5432/matchfight
+      TEST_POSTGRES_URL: postgres://postgres:postgres@localhost:5432/matchfight
+      EXPO_PUBLIC_BASE_URL: http://10.0.2.2:3000
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup
+        uses: ./tooling/github/setup
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Copy env & migrate
+        run: |
+          cp .env.example .env
+          pnpm --filter @acme/db db:migrate
+
+      - name: Build Next.js
+        run: pnpm --filter @acme/nextjs build
+
+      # Gera o projeto nativo (android/) e compila o APK debug.
+      # Debug build carrega o JS do Metro (sem Hermes bytecode embutido) —
+      # evita crash do react-native-css/worklets no release. O app roda com
+      # appId nativo (com.matchfight.app) via launchApp, sem Expo Go/deep link.
+      - name: Prebuild Android project
+        working-directory: apps/expo
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Build Android APK (debug)
+        working-directory: apps/expo/android
+        run: ./gradlew assembleDebug --no-daemon
+
+      # Emulador + backend + testes dentro do script
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          profile: pixel_6
+          force-avd-creation: false
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect
+          script: bash apps/expo/scripts/e2e-android.sh
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: maestro-screenshots
+          path: ~/.maestro/tests
+          if-no-files-found: ignore
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: maestro-videos
+          path: ~/.maestro/tests
+          if-no-files-found: ignore

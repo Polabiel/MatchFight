@@ -50,7 +50,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
     return (
       <View className="flex-1 items-center justify-center gap-6 p-6">
         <Text className="text-5xl font-extrabold">
-          Match<span className="text-primary">Fight</span>
+          Match<Text className="text-primary">Fight</Text>
         </Text>
         <Text className="text-muted-foreground text-center">
           Find your next opponent. Swipe, match, fight.
@@ -295,7 +295,7 @@ export default function Index() {
       <View className="bg-background h-full w-full gap-4 p-4">
         <View className="flex-row items-center justify-between">
           <Text className="text-2xl font-extrabold">
-            Match<span className="text-primary">Fight</span>
+            Match<Text className="text-primary">Fight</Text>
           </Text>
           <View className="flex-row gap-4">
             <Link href="/fights">

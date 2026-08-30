@@ -1,0 +1,14 @@
+# Navegação: a partir da landing, abre a tela de Fights e depois volta.
+---
+name: Navigate to Fights
+appId: com.matchfight.app
+
+---
+- launchApp
+- extendedWaitUntil:
+    visible: "Fights"
+    timeout: 30000
+- tapOn: "Fights"
+- extendedWaitUntil:
+    visible: "Your fights.*"
+    timeout: 30000

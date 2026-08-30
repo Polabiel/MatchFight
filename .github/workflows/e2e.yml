@@ -1,0 +1,71 @@
+name: E2E Tests
+
+on:
+  pull_request:
+    branches: ["*"]
+  push:
+    branches: ["main"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  FORCE_COLOR: 3
+
+jobs:
+  e2e:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: matchfight
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d matchfight"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      POSTGRES_URL: postgres://postgres:postgres@localhost:5432/matchfight
+      TEST_POSTGRES_URL: postgres://postgres:postgres@localhost:5432/matchfight
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./tooling/github/setup
+
+      - name: Copy env
+        run: cp .env.example .env
+
+      - name: Migrate
+        run: pnpm --filter @acme/db db:migrate
+
+      - name: Build
+        run: pnpm --filter @acme/nextjs build
+
+      - name: Install Cypress binary
+        run: pnpm --filter @acme/nextjs exec cypress install
+
+      - name: E2E Tests
+        uses: cypress-io/github-action@v6
+        with:
+          install: false
+          start: pnpm --filter @acme/nextjs start
+          wait-on: http://localhost:3000
+          working-directory: apps/nextjs
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: apps/nextjs/cypress/screenshots
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-videos
+          path: apps/nextjs/cypress/videos

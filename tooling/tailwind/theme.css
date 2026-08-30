@@ -161,15 +161,15 @@
 
   /* ===== RADIUS ===== */
   --radius-none: var(--radius);
-  --radius-sm: var(--radius-sm);
-  --radius-md: var(--radius-md);
-  --radius-lg: var(--radius-lg);
-  --radius-xl: var(--radius-xl);
-  --radius-2xl: var(--radius-2xl);
-  --radius-full: var(--radius-full);
+  --radius-sm: var(--radius);
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius);
+  --radius-xl: var(--radius);
+  --radius-2xl: var(--radius);
+  --radius-full: var(--radius);
 
   /* ===== FONTES ===== */
-  --font-sans: "Nunito Sans", var(--font-nunito-sans), ui-sans-serif, system-ui;
+  --font-sans: "Nunito Sans", ui-sans-serif, system-ui;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   /* ===== TYPE SCALE (Combat Minimalism) ===== */

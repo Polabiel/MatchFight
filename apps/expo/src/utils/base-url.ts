@@ -23,9 +23,11 @@ export const getBaseUrl = () => {
   const localhost = debuggerHost?.split(":")[0];
 
   // If hostUri is available, use it; otherwise fall back to localhost:3000
-  // Users can set BASE_URL env var or override this function for production
+  // Users can set EXPO_PUBLIC_BASE_URL env var or override this function for
+  // production. EXPO_PUBLIC_* vars are inlined by Metro at bundle time, so
+  // this works for standalone (non-Expo Go) builds too.
   if (!localhost) {
-    const envBaseUrl = process.env.BASE_URL;
+    const envBaseUrl = process.env.EXPO_PUBLIC_BASE_URL;
     if (envBaseUrl) {
       return envBaseUrl;
     }

@@ -1,0 +1,14 @@
+# Navegação: a partir da landing, abre a tela de Profile.
+---
+name: Navigate to Profile
+appId: com.matchfight.app
+
+---
+- launchApp
+- extendedWaitUntil:
+    visible: "Profile"
+    timeout: 30000
+- tapOn: "Profile"
+- extendedWaitUntil:
+    visible: "No profile yet"
+    timeout: 30000
