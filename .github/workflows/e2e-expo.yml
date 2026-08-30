@@ -61,16 +61,17 @@ jobs:
       - name: Build Next.js
         run: pnpm --filter @acme/nextjs build
 
-      # Gera o projeto nativo (android/) e compila o APK standalone.
-      # O app roda fora do Expo Go — evita os problemas de deep link exp://
-      # e de carregamento de bundle no emulador headless da CI.
+      # Gera o projeto nativo (android/) e compila o APK debug.
+      # Debug build carrega o JS do Metro (sem Hermes bytecode embutido) —
+      # evita crash do react-native-css/worklets no release. O app roda com
+      # appId nativo (com.matchfight.app) via launchApp, sem Expo Go/deep link.
       - name: Prebuild Android project
         working-directory: apps/expo
         run: npx expo prebuild --platform android --no-install
 
-      - name: Build Android APK
+      - name: Build Android APK (debug)
         working-directory: apps/expo/android
-        run: ./gradlew assembleRelease --no-daemon
+        run: ./gradlew assembleDebug --no-daemon
 
       # Emulador + backend + testes dentro do script
       - uses: reactivecircus/android-emulator-runner@v2
