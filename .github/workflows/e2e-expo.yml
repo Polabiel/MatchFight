@@ -49,8 +49,8 @@ jobs:
             # cd para o app Expo
             cd apps/expo
 
-            # Instalar Expo Go APK (via GitHub Releases - versão 2.34.0 para SDK 54)
-            wget -q --header="Accept: application/octet-stream" "https://github.com/expo/expo-go/releases/download/v2.34.0/ExpoGo-v2.34.0-android-arm64-release.apk" -O /tmp/expo-go.apk
+            # Instalar Expo Go APK (via GitHub Releases oficial - Expo-Go-54.0.8 para SDK 54)
+            wget -q --header="Accept: application/octet-stream" "https://github.com/expo/expo-go-releases/releases/download/Expo-Go-54.0.8/Expo-Go-54.0.8.apk" -O /tmp/expo-go.apk
             adb install -r /tmp/expo-go.apk
 
             # Iniciar Metro bundler em background
