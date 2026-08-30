@@ -75,6 +75,12 @@ fi
 echo "==> Instalando APK debug..."
 adb install -r "$APK"
 
+# O debug APK procura o Metro em localhost:8081 (dentro do emulador, localhost
+# é o próprio emulador). adb reverse encaminha localhost:8081 do emulador
+# para o host, onde o Metro está rodando.
+echo "==> Encaminhando porta do Metro (adb reverse)..."
+adb reverse tcp:8081 tcp:8081
+
 # 4. Instalar Maestro CLI
 echo "==> Instalando Maestro CLI..."
 curl -fsSL "https://get.maestro.mobile.dev" | bash
