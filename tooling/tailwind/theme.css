@@ -169,7 +169,7 @@
   --radius-full: var(--radius-full);
 
   /* ===== FONTES ===== */
-  --font-sans: "Nunito Sans", var(--font-nunito-sans), ui-sans-serif, system-ui;
+  --font-sans: "Nunito Sans", ui-sans-serif, system-ui;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   /* ===== TYPE SCALE (Combat Minimalism) ===== */
