@@ -1,5 +1,7 @@
 # Smoke test da landing screen (público — não requer auth)
 # Verifica que o app carrega e exibe o conteúdo principal.
+# Maestro faz match de texto via regex full-match; por isso os padrões
+# terminam em .* para casar com textos compostos.
 ---
 name: Landing screen
 appId: com.matchfight.app
@@ -9,7 +11,7 @@ appId: com.matchfight.app
 - extendedWaitUntil:
     visible: "MatchFight"
     timeout: 30000
-- assertVisible: "Find your next opponent"
+- assertVisible: "Find your next opponent.*"
 - assertVisible: "Sign in with Discord"
 - assertVisible: "Fights"
 - assertVisible: "Profile"

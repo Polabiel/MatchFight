@@ -10,5 +10,5 @@ appId: com.matchfight.app
     timeout: 30000
 - tapOn: "Fights"
 - extendedWaitUntil:
-    visible: "Your fights"
+    visible: "Your fights.*"
     timeout: 30000
