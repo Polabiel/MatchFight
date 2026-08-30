@@ -5,7 +5,10 @@ appId: host.exp.exponent
 
 ---
 - openLink: "exp://10.0.2.2:8081"
-- assertVisible: "Fights"
+- extendedWaitUntil:
+    visible: "Fights"
+    timeout: 120000
 - tapOn: "Fights"
-- assertVisible: "Fights"
-- assertVisible: "Your fights"
+- extendedWaitUntil:
+    visible: "Your fights"
+    timeout: 60000

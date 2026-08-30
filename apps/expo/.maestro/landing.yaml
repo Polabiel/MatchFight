@@ -6,7 +6,9 @@ appId: host.exp.exponent
 
 ---
 - openLink: "exp://10.0.2.2:8081"
-- assertVisible: "MatchFight"
+- extendedWaitUntil:
+    visible: "MatchFight"
+    timeout: 120000
 - assertVisible: "Find your next opponent"
 - assertVisible: "Sign in with Discord"
 - assertVisible: "Fights"

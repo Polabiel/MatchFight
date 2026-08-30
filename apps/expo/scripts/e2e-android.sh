@@ -65,6 +65,11 @@ if ! curl -sf "http://127.0.0.1:8081/status" > /dev/null 2>&1; then
   exit 1
 fi
 
+# 3b. Pré-aquecer o bundle do Metro (primeiro build é lento; sem isso o
+#     assertVisible do Maestro estoura antes do app renderizar)
+echo "==> Pré-aquecendo bundle do Metro..."
+curl -sf "http://127.0.0.1:8081/index.bundle?platform=android&dev=true&minify=false" -o /tmp/warm.bundle.js || echo "warm falhou (prosseguindo mesmo assim)"
+
 # 4. Instalar Maestro CLI
 echo "==> Instalando Maestro CLI..."
 curl -fsSL "https://get.maestro.mobile.dev" | bash

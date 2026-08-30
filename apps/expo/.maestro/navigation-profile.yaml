@@ -5,7 +5,10 @@ appId: host.exp.exponent
 
 ---
 - openLink: "exp://10.0.2.2:8081"
-- assertVisible: "Profile"
+- extendedWaitUntil:
+    visible: "Profile"
+    timeout: 120000
 - tapOn: "Profile"
-- assertVisible: "Profile"
-- assertVisible: "No profile yet"
+- extendedWaitUntil:
+    visible: "No profile yet"
+    timeout: 60000
