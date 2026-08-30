@@ -14,8 +14,9 @@ echo "==> Instalando Expo Go no emulador..."
 adb install -r /tmp/expo-go.apk
 
 # 2. Iniciar Metro bundler em background (expo local do monorepo via pnpm)
+# CI=1 desativa o modo interativo; host lan (default) já bind em 0.0.0.0
 echo "==> Iniciando Metro bundler..."
-pnpm exec expo start --port 8081 --host 0.0.0.0 --non-interactive > /tmp/metro.log 2>&1 &
+CI=1 pnpm exec expo start --port 8081 > /tmp/metro.log 2>&1 &
 METRO_PID=$!
 echo "Metro PID: $METRO_PID"
 
