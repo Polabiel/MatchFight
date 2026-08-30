@@ -44,21 +44,21 @@ jobs:
           force-avd-creation: false
           disable-animations: true
           script: |
+            cat > /tmp/e2e-run.sh << 'ENDSCRIPT'
+            #!/bin/bash
             set -eu
 
-            # cd para o app Expo
             cd apps/expo
 
             # Instalar Expo Go APK (via GitHub Releases oficial - Expo-Go-54.0.8 para SDK 54)
             wget -q --header="Accept: application/octet-stream" "https://github.com/expo/expo-go-releases/releases/download/Expo-Go-54.0.8/Expo-Go-54.0.8.apk" -O /tmp/expo-go.apk
             adb install -r /tmp/expo-go.apk
 
-            # Iniciar Metro bundler em background (expo local do monorepo via pnpm,
-            # não npx — npx baixaria expo@57 incompatível com o SDK 54 do projeto)
+            # Iniciar Metro bundler em background (expo local do monorepo via pnpm)
             pnpm exec expo start --port 8081 --host 0.0.0.0 --non-interactive > /tmp/metro.log 2>&1 &
             METRO_PID=$!
 
-            # Poll do status do Metro (mais confiável que wait-on tcp)
+            # Poll do status do Metro
             for i in $(seq 1 60); do
               if curl -sf "http://127.0.0.1:8081/status" > /dev/null 2>&1; then
                 echo "Metro bundler ready after ${i}x2s"
@@ -72,7 +72,6 @@ jobs:
               sleep 2
             done
 
-            # Confirma que o Metro está de fato respondendo
             if ! curl -sf "http://127.0.0.1:8081/status" > /dev/null 2>&1; then
               echo "Metro bundler failed to start. Log:"
               cat /tmp/metro.log
@@ -87,6 +86,9 @@ jobs:
 
             # Cleanup
             kill $METRO_PID 2>/dev/null || true
+            ENDSCRIPT
+            chmod +x /tmp/e2e-run.sh
+            bash /tmp/e2e-run.sh
 
       - uses: actions/upload-artifact@v4
         if: failure()
