@@ -25,7 +25,7 @@ const weightClasses = [
 
 export default function Onboarding() {
   const router = useRouter();
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
 
   // Welcome carousel state
@@ -59,7 +59,6 @@ export default function Onboarding() {
       },
       onError: (error) => {
         console.error("Failed to create profile:", error);
-        // In a real app, you might want to show an error message
       },
     }),
   );
@@ -69,32 +68,24 @@ export default function Onboarding() {
     if (carouselIndex < 2) {
       setCarouselIndex(carouselIndex + 1);
     } else {
-      // Move to profile wizard
       setCurrentStep(1);
     }
   };
 
   const handleCarouselSkip = () => {
-    // Skip to profile wizard
     setCurrentStep(1);
   };
 
   // Handle profile wizard navigation
   const handleBack = () => {
-    if (currentStep === 0) {
-      // On welcome carousel, go back would exit (but we don't allow exiting)
-      // For now, stay on first step
-    } else if (currentStep > 0) {
+    if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
   };
 
   const handleNext = () => {
     // Validate current step before moving to next
-    if (currentStep === 0) {
-      // Welcome carousel - handled by carousel navigation
-      handleCarouselNext();
-    } else if (currentStep === 1) {
+    if (currentStep === 1) {
       // Role step
       if (role) {
         setCurrentStep(2);
@@ -169,6 +160,8 @@ export default function Onboarding() {
     { title: "Bio", description: "Tell us about yourself" },
   ];
 
+  const isLastCarouselSlide = carouselIndex === carouselSlides.length - 1;
+
   return (
     <SafeAreaView className="bg-background flex-1">
       <Stack.Screen options={{ headerShown: false }} />
@@ -181,8 +174,8 @@ export default function Onboarding() {
               {carouselSlides.map((_, index) => (
                 <View
                   key={index}
-                  className={`h-2 w-2 rounded-full ${
-                    carouselIndex === index ? "bg-primary" : "bg-muted/50"
+                  className={`h-2 w-2 rounded-none ${
+                    carouselIndex === index ? "bg-foreground" : "bg-muted"
                   }`}
                 />
               ))}
@@ -190,38 +183,27 @@ export default function Onboarding() {
 
             {/* Slide content */}
             <View className="items-center gap-4">
-              {(() => {
-                const slide = carouselSlides[carouselIndex] ?? {
-                  title: "",
-                  description: "",
-                };
-                return (
-                  <>
-                    <Text className="text-3xl font-extrabold tracking-tight">
-                      {slide.title}
-                    </Text>
-                    <Text className="text-muted-foreground max-w-xs text-center text-lg">
-                      {slide.description}
-                    </Text>
-                  </>
-                );
-              })()}
+              <Text className="text-headline-lg">
+                {carouselSlides[carouselIndex]?.title}
+              </Text>
+              <Text className="text-body-md text-muted-foreground max-w-xs text-center">
+                {carouselSlides[carouselIndex]?.description}
+              </Text>
             </View>
 
             {/* Navigation buttons */}
-            <View className="w-full flex-row justify-between px-6">
-              <Pressable
-                onPress={handleCarouselSkip}
-                className="text-muted-foreground"
-              >
-                <Text className="font-medium">Skip</Text>
+            <View className="w-full flex-row items-center justify-between px-6">
+              <Pressable onPress={handleCarouselSkip}>
+                <Text className="text-label-bold text-muted-foreground">
+                  Skip
+                </Text>
               </Pressable>
               <Pressable
                 onPress={handleCarouselNext}
-                className="bg-primary rounded-md px-4 py-2"
+                className="bg-primary text-primary-foreground border-2 border-primary h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
               >
-                <Text className="text-primary-foreground font-semibold">
-                  {carouselIndex === 2 ? "Create your profile" : "Next"}
+                <Text className="text-label-bold text-primary-foreground">
+                  {isLastCarouselSlide ? "Create profile" : "Next"}
                 </Text>
               </Pressable>
             </View>
@@ -235,27 +217,23 @@ export default function Onboarding() {
                 <View className="flex-row gap-2">
                   {wizardSteps.map((step, index) => (
                     <View
-                      key={index}
+                      key={step.title}
                       className={`flex-1 border-b-2 ${
-                        index < currentStep - 1
-                          ? "bg-primary"
-                          : index === currentStep - 1
-                            ? "bg-primary"
-                            : "bg-muted/30"
+                        index <= currentStep - 2
+                          ? "border-foreground"
+                          : "border-muted"
                       }`}
                     />
                   ))}
                 </View>
-                <View className="text-muted-foreground mt-2 flex-row gap-2 text-xs">
+                <View className="mt-2 flex-row gap-2">
                   {wizardSteps.map((step, index) => (
                     <Text
-                      key={index}
-                      className={`font-medium ${
-                        index < currentStep - 1
-                          ? "text-primary"
-                          : index === currentStep - 1
-                            ? "text-primary"
-                            : "text-muted-foreground"
+                      key={step.title}
+                      className={`text-label-sm ${
+                        index <= currentStep - 2
+                          ? "text-foreground"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {step.title}
@@ -267,8 +245,8 @@ export default function Onboarding() {
               {/* Step content */}
               {currentStep === 1 && (
                 <>
-                  <Text className="mb-2 text-2xl font-bold">Who are you?</Text>
-                  <Text className="text-muted-foreground mb-6 text-center">
+                  <Text className="text-headline-lg">Who are you?</Text>
+                  <Text className="text-body-md text-muted-foreground mb-6">
                     Select your role to get started
                   </Text>
                   <View className="flex-row gap-4">
@@ -286,30 +264,21 @@ export default function Onboarding() {
                               roleOption.value as "fighter" | "judge" | "both",
                             )
                           }
-                          className={`flex-1 items-center justify-center gap-2 rounded-2xl border p-4 ${
-                            selected ? "bg-primary" : "bg-muted"
+                          className={`flex-1 items-center justify-center gap-2 rounded-none border-2 p-4 ${
+                            selected
+                              ? "bg-foreground border-foreground"
+                              : "bg-background border-foreground"
                           }`}
                         >
-                          <View className="flex-row items-center gap-2">
-                            {roleOption.value === "fighter" && (
-                              <Text className="text-2xl">🥊</Text>
-                            )}
-                            {roleOption.value === "judge" && (
-                              <Text className="text-2xl">👓</Text>
-                            )}
-                            {roleOption.value === "both" && (
-                              <Text className="text-2xl">🥊👓</Text>
-                            )}
-                            <Text
-                              className={`font-semibold ${
-                                selected
-                                  ? "text-primary-foreground"
-                                  : "text-foreground"
-                              }`}
-                            >
-                              {roleOption.label}
-                            </Text>
-                          </View>
+                          <Text
+                            className={`text-label-bold text-center ${
+                              selected
+                                ? "text-background"
+                                : "text-foreground"
+                            }`}
+                          >
+                            {roleOption.label}
+                          </Text>
                         </Pressable>
                       );
                     })}
@@ -319,16 +288,18 @@ export default function Onboarding() {
 
               {currentStep === 2 && (
                 <>
-                  <Text className="mb-2 text-2xl font-bold">Your Identity</Text>
-                  <Text className="text-muted-foreground mb-6 text-center">
+                  <Text className="text-headline-lg">Your Identity</Text>
+                  <Text className="text-body-md text-muted-foreground mb-6">
                     Choose your nickname and weight class
                   </Text>
 
                   <View className="gap-4">
                     <View className="gap-2">
-                      <Text className="text-sm font-medium">Nickname *</Text>
+                      <Text className="text-label-bold text-foreground">
+                        Nickname *
+                      </Text>
                       <TextInput
-                        className="border-input bg-background text-foreground rounded-md border px-3 py-2"
+                        className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
                         value={nickname}
                         onChangeText={setNickname}
                         placeholder="Enter your nickname"
@@ -338,7 +309,7 @@ export default function Onboarding() {
 
                     {(role === "fighter" || role === "both") && (
                       <View className="gap-2">
-                        <Text className="text-sm font-medium">
+                        <Text className="text-label-bold text-foreground">
                           Weight Class
                         </Text>
                         <View className="flex-row flex-wrap gap-2">
@@ -348,14 +319,14 @@ export default function Onboarding() {
                               <Pressable
                                 key={wc.value}
                                 onPress={() => setWeightClass(wc.value)}
-                                className={`rounded-full px-3 py-1 ${
-                                  selected ? "bg-primary" : "bg-muted"
+                                className={`rounded-none px-3 py-1 ${
+                                  selected ? "bg-foreground" : "bg-muted"
                                 }`}
                               >
                                 <Text
-                                  className={`text-xs font-medium ${
+                                  className={`text-label-sm ${
                                     selected
-                                      ? "text-primary-foreground"
+                                      ? "text-background"
                                       : "text-foreground"
                                   }`}
                                 >
@@ -365,11 +336,6 @@ export default function Onboarding() {
                             );
                           })}
                         </View>
-                        <Text className="text-muted-foreground mt-2 text-xs">
-                          flyweight, bantamweight, featherweight, lightweight,
-                          welterweight, middleweight, light_heavyweight,
-                          heavyweight
-                        </Text>
                       </View>
                     )}
                   </View>
@@ -378,17 +344,19 @@ export default function Onboarding() {
 
               {currentStep === 3 && (
                 <>
-                  <Text className="mb-2 text-2xl font-bold">Your Record</Text>
-                  <Text className="text-muted-foreground mb-6 text-center">
+                  <Text className="text-headline-lg">Your Record</Text>
+                  <Text className="text-body-md text-muted-foreground mb-6">
                     Add your fight record and location
                   </Text>
 
                   <View className="gap-4">
                     <View className="flex-row gap-3">
                       <View className="flex-1 gap-2">
-                        <Text className="text-sm font-medium">Wins</Text>
+                        <Text className="text-label-bold text-foreground">
+                          Wins
+                        </Text>
                         <TextInput
-                          className="border-input bg-background text-foreground rounded-md border px-3 py-2"
+                          className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
                           value={wins}
                           onChangeText={setWins}
                           keyboardType="number-pad"
@@ -396,9 +364,11 @@ export default function Onboarding() {
                         />
                       </View>
                       <View className="flex-1 gap-2">
-                        <Text className="text-sm font-medium">Losses</Text>
+                        <Text className="text-label-bold text-foreground">
+                          Losses
+                        </Text>
                         <TextInput
-                          className="border-input bg-background text-foreground rounded-md border px-3 py-2"
+                          className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
                           value={losses}
                           onChangeText={setLosses}
                           keyboardType="number-pad"
@@ -408,9 +378,11 @@ export default function Onboarding() {
                     </View>
 
                     <View className="gap-2">
-                      <Text className="text-sm font-medium">Location</Text>
+                      <Text className="text-label-bold text-foreground">
+                        Location
+                      </Text>
                       <TextInput
-                        className="border-input bg-background text-foreground rounded-md border px-3 py-2"
+                        className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
                         value={location}
                         onChangeText={setLocation}
                         placeholder="City, Country"
@@ -422,110 +394,125 @@ export default function Onboarding() {
 
               {currentStep === 4 && (
                 <>
-                  <Text className="mb-2 text-2xl font-bold">Your Bio</Text>
-                  <Text className="text-muted-foreground mb-6 text-center">
+                  <Text className="text-headline-lg">Your Bio</Text>
+                  <Text className="text-body-md text-muted-foreground mb-6">
                     Tell us about yourself (optional)
                   </Text>
 
                   <View className="gap-4">
-                    <View className="gap-2">
-                      <TextInput
-                        className="border-input bg-background text-foreground h-32 rounded-md border px-3 py-2"
-                        value={bio}
-                        onChangeText={setBio}
-                        placeholder="Tell us about your fighting style, goals, or anything else..."
-                        multiline
-                      />
-                    </View>
+                    <TextInput
+                      className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-32 rounded-none border-2 bg-transparent px-4"
+                      value={bio}
+                      onChangeText={setBio}
+                      placeholder="Tell us about your fighting style, goals, or anything else..."
+                      multiline
+                    />
                   </View>
                 </>
               )}
 
               {currentStep === 5 && (
                 <>
-                  <Text className="mb-2 text-2xl font-bold">Almost done!</Text>
-                  <Text className="text-muted-foreground mb-6 text-center">
+                  <Text className="text-headline-lg">Almost done!</Text>
+                  <Text className="text-body-md text-muted-foreground mb-6">
                     Review your profile before submitting
                   </Text>
 
-                  <View className="bg-card border-border rounded-2xl border p-6">
-                    <View className="gap-4">
-                      <View className="flex-row justify-between">
-                        <Text className="font-medium">Role:</Text>
-                        <Text className="font-medium">
-                          {role === "fighter"
-                            ? "Fighter"
-                            : role === "judge"
-                              ? "Judge"
-                              : "Both"}
-                        </Text>
-                      </View>
-
-                      {nickname && (
-                        <View className="flex-row justify-between">
-                          <Text className="font-medium">Nickname:</Text>
-                          <Text className="font-medium">{nickname}</Text>
-                        </View>
-                      )}
-
-                      {(role === "fighter" || role === "both") &&
-                        weightClass && (
-                          <View className="flex-row justify-between">
-                            <Text className="font-medium">Weight Class:</Text>
-                            <Text className="font-medium">
-                              {
-                                weightClasses.find(
-                                  (wc) => wc.value === weightClass,
-                                )?.label
-                              }
-                            </Text>
-                          </View>
-                        )}
-
-                      <View className="flex-row justify-between">
-                        <Text className="font-medium">Record:</Text>
-                        <Text className="font-medium">
-                          {parseInt(wins, 10) || 0}-{parseInt(losses, 10) || 0}
-                        </Text>
-                      </View>
-
-                      {location && (
-                        <View className="flex-row justify-between">
-                          <Text className="font-medium">Location:</Text>
-                          <Text className="font-medium">{location}</Text>
-                        </View>
-                      )}
-
-                      {bio && (
-                        <View className="gap-2">
-                          <Text className="font-medium">Bio:</Text>
-                          <Text className="text-muted-foreground">{bio}</Text>
-                        </View>
-                      )}
+                  <View className="border-border bg-card gap-4 rounded-none border p-6">
+                    <View className="flex-row justify-between">
+                      <Text className="text-label-bold text-foreground">
+                        Role
+                      </Text>
+                      <Text className="text-body-md text-foreground">
+                        {role === "fighter"
+                          ? "Fighter"
+                          : role === "judge"
+                            ? "Judge"
+                            : "Both"}
+                      </Text>
                     </View>
+
+                    {nickname ? (
+                      <View className="flex-row justify-between">
+                        <Text className="text-label-bold text-foreground">
+                          Nickname
+                        </Text>
+                        <Text className="text-body-md text-foreground">
+                          {nickname}
+                        </Text>
+                      </View>
+                    ) : null}
+
+                    {(role === "fighter" || role === "both") &&
+                    weightClass ? (
+                      <View className="flex-row justify-between">
+                        <Text className="text-label-bold text-foreground">
+                          Weight Class
+                        </Text>
+                        <Text className="text-body-md text-foreground">
+                          {
+                            weightClasses.find(
+                              (wc) => wc.value === weightClass,
+                            )?.label
+                          }
+                        </Text>
+                      </View>
+                    ) : null}
+
+                    <View className="flex-row justify-between">
+                      <Text className="text-label-bold text-foreground">
+                        Record
+                      </Text>
+                      <Text className="text-body-md text-foreground">
+                        {parseInt(wins, 10) || 0}-{parseInt(losses, 10) || 0}
+                      </Text>
+                    </View>
+
+                    {location ? (
+                      <View className="flex-row justify-between">
+                        <Text className="text-label-bold text-foreground">
+                          Location
+                        </Text>
+                        <Text className="text-body-md text-foreground">
+                          {location}
+                        </Text>
+                      </View>
+                    ) : null}
+
+                    {bio ? (
+                      <View className="gap-2">
+                        <Text className="text-label-bold text-foreground">
+                          Bio
+                        </Text>
+                        <Text className="text-body-md text-muted-foreground">
+                          {bio}
+                        </Text>
+                      </View>
+                    ) : null}
                   </View>
                 </>
               )}
             </ScrollView>
 
             {/* Navigation buttons */}
-            <View className="bg-background border-border border-t p-6">
-              <View className="flex-row justify-between">
-                {currentStep > 1 && (
-                  <Pressable
-                    onPress={handleBack}
-                    className="text-muted-foreground"
-                  >
-                    <Text className="font-medium">Back</Text>
+            <View className="border-border border-t bg-background p-6">
+              <View className="flex-row items-center justify-between">
+                {currentStep > 1 ? (
+                  <Pressable onPress={handleBack}>
+                    <Text className="text-label-bold text-muted-foreground">
+                      Back
+                    </Text>
                   </Pressable>
+                ) : (
+                  <View />
                 )}
                 {currentStep < 5 ? (
                   <Pressable
                     onPress={handleNext}
                     disabled={isLoading}
-                    className="bg-primary rounded-md px-4 py-2"
+                    className="bg-primary text-primary-foreground border-2 border-primary h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
                   >
-                    <Text className="text-primary-foreground font-semibold">
+                    <Text className="text-label-bold text-primary-foreground">
                       {currentStep === 4 ? "Review" : "Next"}
                     </Text>
                   </Pressable>
@@ -533,17 +520,11 @@ export default function Onboarding() {
                   <Pressable
                     onPress={handleSubmit}
                     disabled={updateProfile.isPending || isLoading}
-                    className="bg-primary rounded-md px-4 py-2"
+                    className="bg-primary text-primary-foreground border-2 border-primary h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
                   >
-                    {updateProfile.isPending ? (
-                      <Text className="text-primary-foreground font-semibold">
-                        Creating...
-                      </Text>
-                    ) : (
-                      <Text className="text-primary-foreground font-semibold">
-                        Create Profile
-                      </Text>
-                    )}
+                    <Text className="text-label-bold text-primary-foreground">
+                      {updateProfile.isPending ? "Creating..." : "Create Profile"}
+                    </Text>
                   </Pressable>
                 )}
               </View>

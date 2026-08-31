@@ -316,14 +316,6 @@ export function FightDetail({ fightId }: { fightId: string }) {
                   </>
                 )}
               </div>
-              <Button
-                variant="outline"
-                onClick={() => cancel.mutate({ fightId })}
-                disabled={cancel.isPending}
-                className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
-              >
-                {cancel.isPending ? "Cancelando..." : "Cancelar luta"}
-              </Button>
             </div>
           )}
 

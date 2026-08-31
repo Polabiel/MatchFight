@@ -93,7 +93,7 @@ export function SwipeCandidates() {
             setWeightClass((e.target.value || undefined) as typeof weightClass);
             setCurrentIndex(0);
           }}
-          className="border-border bg-background placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 border-2 px-4"
+          className="border-border bg-background placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 px-4"
           aria-label="Filter by weight class"
         >
           {weightClasses.map((wc) => (

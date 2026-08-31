@@ -9,7 +9,7 @@ function Logo() {
   return (
     <Link href="/" className="flex items-baseline gap-1">
       <span className="text-foreground text-headline-md">Match</span>
-      <span className="text-primary text-headline-md">Fight</span>
+      <span className="text-foreground text-headline-md">Fight</span>
     </Link>
   );
 }
@@ -110,8 +110,8 @@ function Feature({
   description: string;
 }) {
   return (
-    <div className="border-border border-border flex flex-col gap-3 border-t pt-6">
-      <span className="text-primary text-body-md">{index}</span>
+    <div className="border-border flex flex-col gap-4 border-t pt-8">
+      <span className="text-muted-foreground text-label-bold uppercase">{index}</span>
       <h3 className="text-headline-md">{title}</h3>
       <p className="text-muted-foreground text-body-md">{description}</p>
     </div>
@@ -128,16 +128,15 @@ export default async function HomePage() {
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="border-border relative overflow-hidden border-b">
-          <div className="relative mx-auto flex max-w-6xl flex-col items-center px-6 pt-28 pb-24 text-center sm:pt-36 sm:pb-32">
-            <span className="border-border bg-background text-muted-foreground text-body-md mb-8 inline-flex items-center rounded-none border-2 px-4 py-2">
-              Onde lutadores se encontram
-            </span>
+<section className="border-border relative overflow-hidden border-b">
+  <div className="relative mx-auto flex max-w-6xl flex-col items-center px-6 pt-28 pb-24 text-center sm:pt-36 sm:pb-32">
+<span className="border-border bg-background text-muted-foreground text-label-bold mb-8 inline-flex items-center border-2 px-4 py-2 uppercase">
+  Onde lutadores se encontram
+</span>
             <h1 className="text-display-lg max-w-4xl text-balance">
               Encontre seu próximo{" "}
-              <span className="text-primary">oponente</span>.
-            </h1>
-            <p className="text-muted-foreground text-body-lg mt-6 max-w-xl leading-relaxed">
+              <span className="text-foreground">oponente</span>.
+            </h1>            <p className="text-muted-foreground text-body-lg mt-6 max-w-xl leading-relaxed">
               Deslize, combine e agende lutas com lutadores da sua categoria.
               Com a supervisão de juízes e a conversa certa antes de entrar no
               octógono.
@@ -175,8 +174,8 @@ export default async function HomePage() {
         </section>
 
         {/* How it works */}
-        <section className="border-border border-y">
-          <div className="mx-auto grid max-w-6xl gap-10 px-6 py-20 sm:grid-cols-3">
+<section className="border-border border-y">
+  <div className="mx-auto grid max-w-6xl gap-10 px-6 py-20 sm:grid-cols-3">
             <Feature
               index="01"
               title="Swipe"
@@ -216,9 +215,9 @@ export default async function HomePage() {
               </Button>
             ) : (
               <SignInButton
-                variant="default"
+                variant="outline"
                 size="lg"
-                className="bg-primary text-primary-foreground border-primary hover:bg-foreground hover:border-foreground text-label-bold h-12 border-2 px-6"
+                className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
                 formAction={async () => {
                   "use server";
                   const res = await auth.api.signInSocial({
@@ -233,8 +232,8 @@ export default async function HomePage() {
         </section>
       </main>
 
-      <footer className="border-border border-t">
-        <div className="text-muted-foreground text-body-md mx-auto flex max-w-6xl items-center justify-between px-6 py-8">
+<footer className="border-border border-t">
+  <div className="text-muted-foreground text-body-md mx-auto flex max-w-6xl items-center justify-between px-6 py-8">
           <Logo />
           <p>© {new Date().getFullYear()} MatchFight</p>
         </div>

@@ -1,6 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Button } from "@acme/ui/button";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { Separator } from "@acme/ui/separator";
@@ -8,6 +10,7 @@ import { Separator } from "@acme/ui/separator";
 import { useTRPC } from "~/trpc/react";
 
 export function ProfileView() {
+  const router = useRouter();
   const trpc = useTRPC();
 
   const { data: profile } = useSuspenseQuery(trpc.profile.getMe.queryOptions());
@@ -17,7 +20,7 @@ export function ProfileView() {
       <div className="flex min-h-[24rem] flex-col items-center justify-center p-6 text-center">
         <div className="mb-6">
           <div className="bg-muted flex h-16 w-16 items-center justify-center rounded-none">
-            <span className="text-muted-foreground text-lg">👤</span>
+            <span className="text-muted-foreground text-body-lg">👤</span>
           </div>
         </div>
         <h1 className="text-headline-lg mb-4">No profile yet</h1>
@@ -97,7 +100,7 @@ export function ProfileView() {
         )}
         <div className="space-y-2">
           <h3 className="text-label-bold">Details</h3>
-          <div className="grid gap-2 text-sm">
+          <div className="grid gap-2 text-body-md">
             {profile.weightClass && (
               <div className="flex items-center gap-2">
                 <span className="text-label-sm">Weight class:</span>
@@ -131,9 +134,13 @@ export function ProfileView() {
       </div>
 
       <div className="flex justify-center">
-        <Link href="/profile/edit" className="button button-outline">
+        <Button
+          variant="outline"
+          onClick={() => router.push("/profile/edit")}
+          className="h-12 px-6"
+        >
           Edit Profile
-        </Link>
+        </Button>
       </div>
     </div>
   );

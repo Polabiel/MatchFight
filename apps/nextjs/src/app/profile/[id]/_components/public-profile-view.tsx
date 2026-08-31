@@ -1,14 +1,16 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { Separator } from "@acme/ui/separator";
 
 import { useTRPC } from "~/trpc/react";
+import { Button } from "@acme/ui/button";
 
 export function PublicProfileView({ userId }: { userId: string }) {
   const trpc = useTRPC();
+  const router = useRouter();
 
   const { data: profile } = useSuspenseQuery(
     trpc.profile.getByUser.queryOptions({ userId }),
@@ -19,7 +21,7 @@ export function PublicProfileView({ userId }: { userId: string }) {
       <div className="flex min-h-[24rem] flex-col items-center justify-center p-6 text-center">
         <div className="mb-6">
           <div className="bg-muted flex h-16 w-16 items-center justify-center rounded-none">
-            <span className="text-muted-foreground text-lg">❓</span>
+            <span className="text-muted-foreground text-body-lg">❓</span>
           </div>
         </div>
         <h1 className="text-headline-lg mb-4">Profile not found</h1>
@@ -27,9 +29,13 @@ export function PublicProfileView({ userId }: { userId: string }) {
           The profile you're looking for doesn't exist or hasn't been created
           yet.
         </p>
-        <Link href="/profile" className="button button-outline">
+        <Button
+          variant="outline"
+          onClick={() => router.push("/profile")}
+          className="h-12 px-6"
+        >
           Back to your profile
-        </Link>
+        </Button>
       </div>
     );
   }
@@ -78,7 +84,7 @@ export function PublicProfileView({ userId }: { userId: string }) {
         )}
         <div className="space-y-2">
           <h3 className="text-label-bold">Details</h3>
-          <div className="grid gap-2 text-sm">
+          <div className="grid gap-2 text-body-md">
             {profile.weightClass && (
               <div className="flex items-center gap-2">
                 <span className="text-label-sm">Weight class:</span>
@@ -106,12 +112,13 @@ export function PublicProfileView({ userId }: { userId: string }) {
       </div>
 
       <div className="flex justify-center">
-        <Link
-          href={`/swipe?target=${userId}`}
-          className="button bg-primary text-primary-foreground border-primary hover:bg-foreground hover:border-foreground text-label-bold h-12 border-2 px-6"
+        <Button
+          variant="action"
+          onClick={() => router.push(`/swipe?target=${userId}`)}
+          className="h-12 px-6"
         >
           Send Fight Request
-        </Link>
+        </Button>
       </div>
     </div>
   );

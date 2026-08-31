@@ -19,9 +19,6 @@ const roles = [
   { value: "both", label: "Both" },
 ] as const;
 
-const inputClass =
-  "border-input bg-background text-foreground rounded-md border px-3 py-2";
-
 export default function ProfileEdit() {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -86,26 +83,26 @@ export default function ProfileEdit() {
       <Stack.Screen
         options={{ title: isEditMode ? "Edit Profile" : "Create Profile" }}
       />
-      <ScrollView className="bg-background flex-1">
-        <View className="gap-4 p-4">
-          <Text className="text-2xl font-bold">
+      <ScrollView className="bg-background flex-1 p-6">
+        <View className="gap-6 p-4">
+          <Text className="text-headline-lg">
             {isEditMode ? "Edit Profile" : "Create Profile"}
           </Text>
 
-          <View className="gap-1">
-            <Text className="text-sm font-medium">Nickname *</Text>
+          <View className="gap-4">
+            <Text className="text-label-bold">Nickname *</Text>
             <TextInput
-              className={inputClass}
+              className="border-input bg-background text-foreground rounded-none border px-3 py-2"
               value={nickname}
               onChangeText={setNickname}
               placeholder="Enter your nickname"
             />
           </View>
 
-          <View className="gap-1">
-            <Text className="text-sm font-medium">Bio</Text>
+          <View className="gap-4">
+            <Text className="text-label-bold">Bio</Text>
             <TextInput
-              className={`${inputClass} h-24`}
+              className={`${"border-input bg-background text-foreground rounded-none border px-3 py-2"} h-24`}
               value={bio}
               onChangeText={setBio}
               placeholder="Tell us about yourself..."
@@ -113,8 +110,8 @@ export default function ProfileEdit() {
             />
           </View>
 
-          <View className="gap-1">
-            <Text className="text-sm font-medium">Role</Text>
+          <View className="gap-4">
+            <Text className="text-label-bold">Role</Text>
             <View className="flex-row gap-2">
               {roles.map((r) => {
                 const active = role === r.value;
@@ -122,12 +119,12 @@ export default function ProfileEdit() {
                   <Pressable
                     key={r.value}
                     onPress={() => setRole(r.value)}
-                    className={`rounded-full px-3 py-1.5 ${
+                    className={`rounded-none px-3 py-1.5 ${
                       active ? "bg-primary" : "bg-muted"
                     }`}
                   >
                     <Text
-                      className={`text-sm font-medium ${
+                      className={`text-label-sm ${
                         active ? "text-primary-foreground" : "text-foreground"
                       }`}
                     >
@@ -139,16 +136,16 @@ export default function ProfileEdit() {
             </View>
           </View>
 
-          <View className="gap-1">
-            <Text className="text-sm font-medium">Weight Class</Text>
+          <View className="gap-4">
+            <Text className="text-label-bold">Weight Class</Text>
             <TextInput
-              className={inputClass}
+              className="border-input bg-background text-foreground rounded-none border px-3 py-2"
               value={weightClass}
               onChangeText={setWeightClass}
               placeholder="e.g. lightweight, heavyweight"
               autoCapitalize="none"
             />
-            <Text className="text-muted-foreground text-xs">
+            <Text className="text-body-md text-muted-foreground">
               flyweight, bantamweight, featherweight, lightweight, welterweight,
               middleweight, light_heavyweight, heavyweight
             </Text>
@@ -156,18 +153,18 @@ export default function ProfileEdit() {
 
           <View className="flex-row gap-3">
             <View className="flex-1 gap-1">
-              <Text className="text-sm font-medium">Wins</Text>
+              <Text className="text-label-bold">Wins</Text>
               <TextInput
-                className={inputClass}
+                className="border-input bg-background text-foreground rounded-none border px-3 py-2"
                 value={wins}
                 onChangeText={setWins}
                 keyboardType="number-pad"
               />
             </View>
             <View className="flex-1 gap-1">
-              <Text className="text-sm font-medium">Losses</Text>
+              <Text className="text-label-bold">Losses</Text>
               <TextInput
-                className={inputClass}
+                className="border-input bg-background text-foreground rounded-none border px-3 py-2"
                 value={losses}
                 onChangeText={setLosses}
                 keyboardType="number-pad"
@@ -175,10 +172,10 @@ export default function ProfileEdit() {
             </View>
           </View>
 
-          <View className="gap-1">
-            <Text className="text-sm font-medium">Location</Text>
+          <View className="gap-4">
+            <Text className="text-label-bold">Location</Text>
             <TextInput
-              className={inputClass}
+              className="border-input bg-background text-foreground rounded-none border px-3 py-2"
               value={location}
               onChangeText={setLocation}
               placeholder="City, Country"
@@ -188,9 +185,9 @@ export default function ProfileEdit() {
           <Pressable
             onPress={handleSubmit}
             disabled={update.isPending || !nickname.trim()}
-            className="bg-primary items-center rounded-md py-3"
+            className="bg-primary text-primary-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
           >
-            <Text className="text-primary-foreground font-semibold">
+            <Text className="text-label-bold">
               {update.isPending
                 ? "Saving..."
                 : isEditMode

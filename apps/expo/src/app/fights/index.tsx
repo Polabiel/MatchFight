@@ -6,10 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 import { trpc } from "~/utils/api";
 
 const statusStyles: Record<string, string> = {
-  pending: "bg-yellow-500/10 text-yellow-500",
-  scheduled: "bg-blue-500/10 text-blue-500",
-  completed: "bg-green-500/10 text-green-500",
-  cancelled: "bg-red-500/10 text-red-500",
+  pending: "bg-foreground text-background",
+  scheduled: "bg-foreground text-background",
+  completed: "bg-foreground text-background",
+  cancelled: "bg-foreground text-background",
 };
 
 const statusLabels: Record<string, string> = {
@@ -41,23 +41,23 @@ function FightRow({
 
   return (
     <Link href={`/fights/${id}`} asChild>
-      <Pressable className="border-border bg-card flex flex-col gap-2 rounded-2xl border p-5">
+      <Pressable className="border-border bg-card flex flex-col gap-2 rounded-none border p-5">
         <View className="flex-row items-center justify-between gap-2">
           <Text className="font-semibold">
             {fighter1Name} <Text className="text-muted-foreground">vs</Text>{" "}
             {fighter2Name}
           </Text>
           <Text
-            className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${style}`}
+            className={`rounded-none px-3 py-1 text-label-sm ${style}`}
           >
             {statusLabels[status] ?? status}
           </Text>
         </View>
         <View className="gap-1">
           {location ? (
-            <Text className="text-muted-foreground text-sm">📍 {location}</Text>
+            <Text className="text-body-md text-muted-foreground">📍 {location}</Text>
           ) : null}
-          <Text className="text-muted-foreground text-sm">🗓 {scheduled}</Text>
+          <Text className="text-body-md text-muted-foreground">🗓 {scheduled}</Text>
         </View>
       </Pressable>
     </Link>
@@ -80,10 +80,10 @@ function FightSection({
 }) {
   if (fights.length === 0) return null;
   return (
-    <View className="gap-3">
-      <Text className="text-lg font-semibold">
+    <View className="gap-4">
+      <Text className="text-headline-md">
         {title}{" "}
-        <Text className="text-muted-foreground text-sm">({fights.length})</Text>
+        <Text className="text-body-md text-muted-foreground">({fights.length})</Text>
       </Text>
       {fights.map((fight) => (
         <FightRow
@@ -117,31 +117,31 @@ export default function Fights() {
   return (
     <SafeAreaView className="bg-background flex-1">
       <Stack.Screen options={{ title: "Fights" }} />
-      <View className="bg-background h-full w-full gap-6 p-4">
-        <Text className="text-3xl font-extrabold">Fights</Text>
+      <View className="bg-background flex-1 gap-6 p-4">
+        <Text className="text-headline-lg">Fights</Text>
 
         <FightSection
           title="Available to officiate"
           fights={judgeFights.data ?? []}
         />
 
-        <View className="gap-3">
-          <Text className="text-lg font-semibold">
+        <View className="gap-4">
+          <Text className="text-headline-md">
             Your fights{" "}
-            <Text className="text-muted-foreground text-sm">
+            <Text className="text-body-md text-muted-foreground">
               ({(myFights.data ?? []).length})
             </Text>
           </Text>
           {(myFights.data ?? []).length === 0 ? (
-            <View className="border-border flex items-center gap-3 rounded-2xl border border-dashed p-8">
-              <Text className="text-4xl">🥊</Text>
-              <Text className="font-semibold">No fights yet</Text>
-              <Text className="text-muted-foreground text-center text-sm">
+            <View className="border-border flex items-center gap-3 rounded-none border border-dashed p-8">
+              <Text className="text-headline-lg">🥊</Text>
+              <Text className="text-headline-lg">No fights yet</Text>
+              <Text className="text-body-md text-muted-foreground text-center">
                 Swipe and match with other fighters to schedule your first
                 fight.
               </Text>
-              <Link href="/" className="bg-primary mt-2 rounded-md px-4 py-2">
-                <Text className="text-primary-foreground font-semibold">
+              <Link href="/" className="bg-primary text-primary-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center">
+                <Text className="text-label-bold">
                   Find opponents
                 </Text>
               </Link>

@@ -14,10 +14,10 @@ import { trpc } from "~/utils/api";
 import { authClient } from "~/utils/auth";
 
 const statusStyles: Record<string, string> = {
-  pending: "bg-yellow-500/10 text-yellow-500",
-  scheduled: "bg-blue-500/10 text-blue-500",
-  completed: "bg-green-500/10 text-green-500",
-  cancelled: "bg-red-500/10 text-red-500",
+  pending: "bg-foreground text-background",
+  scheduled: "bg-foreground text-background",
+  completed: "bg-foreground text-background",
+  cancelled: "bg-foreground text-background",
 };
 
 const statusLabels: Record<string, string> = {
@@ -81,7 +81,7 @@ export default function FightDetail() {
     return (
       <SafeAreaView className="bg-background flex-1">
         <View className="flex-1 items-center justify-center p-6">
-          <Text className="text-muted-foreground">Fight not found</Text>
+          <Text className="text-body-md text-muted-foreground">Fight not found</Text>
         </View>
       </SafeAreaView>
     );
@@ -109,58 +109,60 @@ export default function FightDetail() {
   return (
     <SafeAreaView className="bg-background flex-1">
       <Stack.Screen options={{ title: "Fight" }} />
-      <View className="bg-background h-full w-full gap-5 p-4">
+      <View className="bg-background flex-1 gap-5 p-4">
         <View className="flex-row items-center justify-between">
-          <Text className="text-3xl font-extrabold">Fight</Text>
+          <Text className="text-headline-lg">
+            Fight
+          </Text>
           <Text
-            className={`rounded-full px-3 py-1 text-sm font-medium ${style}`}
+            className={`rounded-none px-3 py-1 text-label-sm ${style}`}
           >
             {statusLabels[fight.status] ?? fight.status}
           </Text>
         </View>
 
         {/* Fighters */}
-        <View className="border-border bg-card flex-row items-center justify-center gap-6 rounded-2xl border p-6">
+        <View className="border-border bg-card flex-row items-center justify-center gap-6 rounded-none border p-6">
           {[fight.fighter1, fight.fighter2].map((fighter) => (
             <View key={fighter.id} className="items-center gap-2">
-              <View className="bg-muted h-20 w-20 items-center justify-center rounded-full">
+              <View className="bg-muted h-20 w-20 items-center justify-center rounded-none">
                 <Text className="text-2xl">🥊</Text>
               </View>
-              <Text className="font-semibold">{fighter.name}</Text>
+              <Text className="text-headline-md">{fighter.name}</Text>
               {fighter.nickname ? (
-                <Text className="text-muted-foreground text-sm">
+                <Text className="text-body-md text-muted-foreground">
                   "{fighter.nickname}"
                 </Text>
               ) : null}
             </View>
           ))}
-          <Text className="text-muted-foreground text-2xl font-bold">VS</Text>
+          <Text className="text-headline-lg text-muted-foreground">VS</Text>
         </View>
 
         {/* Details */}
-        <View className="border-border bg-card gap-2 rounded-2xl border p-5">
+        <View className="border-border bg-card gap-2 rounded-none border p-5">
           <View className="flex-row justify-between">
-            <Text className="text-muted-foreground">Location</Text>
-            <Text className="font-medium">{fight.location ?? "TBD"}</Text>
+            <Text className="text-body-md text-muted-foreground">Location</Text>
+            <Text className="text-body-md">{fight.location ?? "TBD"}</Text>
           </View>
           <View className="flex-row justify-between">
-            <Text className="text-muted-foreground">Scheduled</Text>
-            <Text className="font-medium">
+            <Text className="text-body-md text-muted-foreground">Scheduled</Text>
+            <Text className="text-body-md">
               {fight.scheduledAt
                 ? new Date(fight.scheduledAt).toLocaleString()
                 : "TBD"}
             </Text>
           </View>
           <View className="flex-row justify-between">
-            <Text className="text-muted-foreground">Judge</Text>
-            <Text className="font-medium">
+            <Text className="text-body-md text-muted-foreground">Judge</Text>
+            <Text className="text-body-md">
               {fight.judge ? fight.judge.name : "Not assigned"}
             </Text>
           </View>
           {fight.winnerId ? (
             <View className="flex-row justify-between">
-              <Text className="text-muted-foreground">Winner</Text>
-              <Text className="font-medium text-green-500">
+              <Text className="text-body-md text-muted-foreground">Winner</Text>
+              <Text className="text-body-md">
                 {fight.winnerId === fight.fighter1Id
                   ? fight.fighter1.name
                   : fight.fighter2.name}
@@ -171,15 +173,15 @@ export default function FightDetail() {
 
         {/* Actions */}
         {isParticipant && fight.status !== "completed" ? (
-          <View className="border-border bg-card gap-3 rounded-2xl border p-5">
+          <View className="border-border bg-card gap-3 rounded-none border p-5">
             {fight.status === "pending" ? (
               <>
                 {!hasProposal && (isFighter1 || isFighter2) ? (
                   <Pressable
                     onPress={() => setShowPropose((v) => !v)}
-                    className="bg-primary items-center rounded-md py-2.5"
+                    className="bg-primary text-primary-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
                   >
-                    <Text className="text-primary-foreground font-semibold">
+                    <Text className="text-label-bold">
                       Propose fight details
                     </Text>
                   </Pressable>
@@ -188,13 +190,13 @@ export default function FightDetail() {
                 {showPropose ? (
                   <View className="gap-3">
                     <TextInput
-                      className="border-input bg-background text-foreground rounded-md border px-3 py-2"
+                      className="border-input bg-background text-foreground rounded-none border px-3 py-2"
                       value={location}
                       onChangeText={setLocation}
                       placeholder="Location / Gym"
                     />
                     <TextInput
-                      className="border-input bg-background text-foreground rounded-md border px-3 py-2"
+                      className="border-input bg-background text-foreground rounded-none border px-3 py-2"
                       value={scheduledAt}
                       onChangeText={setScheduledAt}
                       placeholder="YYYY-MM-DDTHH:mm"
@@ -203,11 +205,9 @@ export default function FightDetail() {
                     <Pressable
                       onPress={handlePropose}
                       disabled={propose.isPending}
-                      className="bg-primary items-center rounded-md py-2.5"
+                      className="bg-primary text-primary-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
                     >
-                      <Text className="text-primary-foreground font-semibold">
-                        {propose.isPending ? "Sending..." : "Send proposal"}
-                      </Text>
+                      {propose.isPending ? "Sending..." : "Send proposal"}
                     </Pressable>
                   </View>
                 ) : null}
@@ -216,11 +216,9 @@ export default function FightDetail() {
                   <Pressable
                     onPress={() => confirm.mutate({ fightId: fight.id })}
                     disabled={confirm.isPending}
-                    className="bg-primary items-center rounded-md py-2.5"
+                    className="bg-primary text-primary-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
                   >
-                    <Text className="text-primary-foreground font-semibold">
-                      {confirm.isPending ? "Confirming..." : "Confirm fight"}
-                    </Text>
+                    {confirm.isPending ? "Confirming..." : "Confirm fight"}
                   </Pressable>
                 ) : null}
 
@@ -228,13 +226,11 @@ export default function FightDetail() {
                   <Pressable
                     onPress={() => acceptJudge.mutate({ fightId: fight.id })}
                     disabled={acceptJudge.isPending}
-                    className="bg-muted items-center rounded-md py-2.5"
+                    className="bg-muted text-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
                   >
-                    <Text className="font-medium">
-                      {acceptJudge.isPending
-                        ? "Accepting..."
-                        : "Accept as judge"}
-                    </Text>
+                    {acceptJudge.isPending
+                      ? "Accepting..."
+                      : "Accept as judge"}
                   </Pressable>
                 ) : null}
               </>
@@ -253,9 +249,9 @@ export default function FightDetail() {
                           })
                         }
                         disabled={complete.isPending}
-                        className="bg-primary flex-1 items-center rounded-md py-2.5"
+                        className="bg-background border-foreground text-foreground flex-1 h-12 px-6 text-label-bold rounded-none border-2 items-center justify-center"
                       >
-                        <Text className="text-primary-foreground font-semibold">
+                        <Text className="text-label-bold">
                           {fight.fighter1.name} wins
                         </Text>
                       </Pressable>
@@ -267,24 +263,15 @@ export default function FightDetail() {
                           })
                         }
                         disabled={complete.isPending}
-                        className="bg-primary flex-1 items-center rounded-md py-2.5"
+                        className="bg-background border-foreground text-foreground flex-1 h-12 px-6 text-label-bold rounded-none border-2 items-center justify-center"
                       >
-                        <Text className="text-primary-foreground font-semibold">
+                        <Text className="text-label-bold">
                           {fight.fighter2.name} wins
                         </Text>
                       </Pressable>
                     </>
                   ) : null}
                 </View>
-                <Pressable
-                  onPress={() => cancel.mutate({ fightId: fight.id })}
-                  disabled={cancel.isPending}
-                  className="items-center rounded-md py-2.5"
-                >
-                  <Text className="text-destructive font-medium">
-                    {cancel.isPending ? "Cancelling..." : "Cancel fight"}
-                  </Text>
-                </Pressable>
               </>
             ) : null}
 
@@ -292,19 +279,17 @@ export default function FightDetail() {
               <Pressable
                 onPress={() => cancel.mutate({ fightId: fight.id })}
                 disabled={cancel.isPending}
-                className="items-center rounded-md py-1"
+                className="text-destructive h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
               >
-                <Text className="text-destructive">
-                  {cancel.isPending ? "Cancelling..." : "Cancel fight"}
-                </Text>
+                {cancel.isPending ? "Cancelling..." : "Cancel fight"}
               </Pressable>
             ) : null}
           </View>
         ) : null}
 
         {!isParticipant ? (
-          <View className="border-border bg-card items-center rounded-2xl border p-4">
-            <Text className="text-muted-foreground text-sm">
+          <View className="border-border bg-card items-center rounded-none border p-4">
+            <Text className="text-body-md text-muted-foreground">
               You are not a participant in this fight.
             </Text>
           </View>
@@ -312,10 +297,10 @@ export default function FightDetail() {
 
         <View className="flex-row justify-center gap-4">
           <Link href={`/fights/${fight.id}/chat`} className="py-2">
-            <Text className="text-primary font-medium">💬 Chat</Text>
+            <Text className="text-body-md text-foreground">💬 Chat</Text>
           </Link>
           <Link href="/fights" className="py-2">
-            <Text className="text-muted-foreground">← Back to fights</Text>
+            <Text className="text-body-md text-muted-foreground">← Back to fights</Text>
           </Link>
         </View>
       </View>

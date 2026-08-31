@@ -174,7 +174,7 @@ export default function OnboardingPage() {
               <div
                 key={index}
                 className={`h-2 w-2 rounded-none transition-colors ${
-                  carouselIndex === index ? "bg-primary" : "bg-muted"
+                  carouselIndex === index ? "bg-foreground" : "bg-muted"
                 }`}
               />
             ))}
@@ -196,7 +196,6 @@ export default function OnboardingPage() {
               variant="ghost"
               size="sm"
               onClick={handleCarouselSkip}
-              className="text-muted-foreground hover:text-foreground"
             >
               Pular
             </Button>
@@ -221,25 +220,21 @@ export default function OnboardingPage() {
                     <div
                       key={index}
                       className={`h-1.5 flex-1 rounded-none transition-colors ${
-                        index < currentStep - 1
-                          ? "bg-primary"
-                          : index === currentStep - 1
-                            ? "bg-primary"
-                            : "bg-muted"
+                        index <= currentStep - 1
+                          ? "bg-foreground"
+                          : "bg-muted"
                       }`}
                     />
                   ))}
                 </div>
-                <div className="text-muted-foreground flex gap-2 text-xs">
+                <div className="text-muted-foreground flex gap-2 text-label-sm">
                   {wizardSteps.map((step, index) => (
                     <span
                       key={index}
-                      className={`flex-1 text-center font-medium ${
-                        index < currentStep - 1
-                          ? "text-primary-foreground"
-                          : index === currentStep - 1
-                            ? "text-primary-foreground"
-                            : "text-muted-foreground"
+                      className={`flex-1 text-center ${
+                        index <= currentStep - 1
+                          ? "text-foreground"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {step.title}
@@ -257,7 +252,7 @@ export default function OnboardingPage() {
                   <p className="text-muted-foreground mb-8 text-center">
                     Selecione sua função para começar
                   </p>
-                  <div className="flex gap-3">
+                  <div className="flex gap-4">
                     {[
                       { value: "fighter", label: "Lutador", emoji: "🥊" },
                       { value: "judge", label: "Juiz", emoji: "👓" },
@@ -276,8 +271,10 @@ export default function OnboardingPage() {
                             )
                           }
                         >
-                          <span className="text-3xl">{roleOption.emoji}</span>
-                          <span className="text-lg font-semibold">
+                          <span className="text-headline-lg">
+                            {roleOption.emoji}
+                          </span>
+                          <span className="text-body-lg font-semibold">
                             {roleOption.label}
                           </span>
                         </Button>
@@ -296,7 +293,7 @@ export default function OnboardingPage() {
                     Escolha seu apelido e categoria de peso
                   </p>
 
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     <Field orientation="vertical">
                       <FieldLabel>
                         <Label className="text-label-bold">Apelido *</Label>
@@ -336,7 +333,7 @@ export default function OnboardingPage() {
                               );
                             })}
                           </div>
-                          <p className="text-muted-foreground mt-2 text-xs">
+                          <p className="text-muted-foreground mt-2 text-label-sm">
                             flyweight, bantamweight, featherweight, lightweight,
                             welterweight, middleweight, light_heavyweight,
                             heavyweight
@@ -412,7 +409,7 @@ export default function OnboardingPage() {
                     Conte sobre você (opcional)
                   </p>
 
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     <Field orientation="vertical">
                       <FieldContent>
                         <textarea
@@ -487,7 +484,7 @@ export default function OnboardingPage() {
                       )}
 
                       {bio && (
-                        <div className="space-y-2">
+                        <div className="space-y-4">
                           <span className="font-medium">Bio:</span>
                           <p className="text-muted-foreground">{bio}</p>
                         </div>

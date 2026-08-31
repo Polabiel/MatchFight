@@ -28,21 +28,21 @@ export default function Profile() {
   return (
     <SafeAreaView className="bg-background flex-1">
       <Stack.Screen options={{ title: "Profile" }} />
-      <View className="bg-background h-full w-full gap-5 p-4">
-        <Text className="text-3xl font-extrabold">Profile</Text>
+      <View className="bg-background flex-1 gap-6 p-4">
+        <Text className="text-headline-lg">Profile</Text>
 
         {!profile ? (
           <View className="flex-1 items-center justify-center gap-4 p-6">
-            <Text className="text-4xl">👤</Text>
-            <Text className="text-xl font-bold">No profile yet</Text>
-            <Text className="text-muted-foreground text-center">
+            <Text className="text-headline-lg">👤</Text>
+            <Text className="text-headline-lg">No profile yet</Text>
+            <Text className="text-body-md text-muted-foreground text-center">
               Create your profile to get started on MatchFight.
             </Text>
             <Link
               href="/profile/edit"
-              className="bg-primary rounded-md px-4 py-2"
+              className="bg-primary text-primary-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
             >
-              <Text className="text-primary-foreground font-semibold">
+              <Text className="text-label-bold">
                 Create your profile
               </Text>
             </Link>
@@ -50,51 +50,51 @@ export default function Profile() {
         ) : (
           <>
             <View className="flex-row items-center gap-4">
-              <View className="bg-muted h-20 w-20 items-center justify-center rounded-full">
+              <View className="bg-muted h-20 w-20 items-center justify-center rounded-none">
                 <Text className="text-2xl">👤</Text>
               </View>
               <View className="gap-1">
-                <Text className="text-2xl font-bold">{profile.user.name}</Text>
-                <Text className="text-lg font-semibold">
+                <Text className="text-headline-md">{profile.user.name}</Text>
+                <Text className="text-body-lg font-semibold">
                   "{profile.nickname}"
                 </Text>
-                <Text className="bg-primary/10 text-primary self-start rounded-full px-2.5 py-0.5 text-xs font-medium">
+                <View className="bg-primary/10 text-primary rounded-none px-2.5 py-0.5 text-xs font-medium">
                   {profile.role === "fighter"
                     ? "Fighter"
                     : profile.role === "judge"
                       ? "Judge"
                       : "Both"}
-                </Text>
+                </View>
               </View>
             </View>
 
-            <View className="border-border bg-card gap-3 rounded-2xl border p-5">
+            <View className="border-border bg-card gap-3 rounded-none border p-5">
               {profile.bio ? (
                 <View className="gap-1">
-                  <Text className="font-semibold">Bio</Text>
-                  <Text className="text-muted-foreground">{profile.bio}</Text>
+                  <Text className="text-body-md font-semibold">Bio</Text>
+                  <Text className="text-body-md text-muted-foreground">{profile.bio}</Text>
                 </View>
               ) : null}
               <View className="gap-2">
-                <Text className="font-semibold">Details</Text>
+                <Text className="text-body-md font-semibold">Details</Text>
                 {profile.weightClass ? (
                   <View className="flex-row justify-between">
-                    <Text className="text-muted-foreground">Weight class:</Text>
-                    <Text className="font-medium">
+                    <Text className="text-body-md text-muted-foreground">Weight class:</Text>
+                    <Text className="text-body-md">
                       {weightLabel(profile.weightClass)}
                     </Text>
                   </View>
                 ) : null}
                 <View className="flex-row justify-between">
-                  <Text className="text-muted-foreground">Record:</Text>
-                  <Text className="font-medium">
+                  <Text className="text-body-md text-muted-foreground">Record:</Text>
+                  <Text className="text-body-md">
                     {profile.wins}-{profile.losses}
                   </Text>
                 </View>
                 {profile.location ? (
                   <View className="flex-row justify-between">
-                    <Text className="text-muted-foreground">Location:</Text>
-                    <Text className="font-medium">{profile.location}</Text>
+                    <Text className="text-body-md text-muted-foreground">Location:</Text>
+                    <Text className="text-body-md">{profile.location}</Text>
                   </View>
                 ) : null}
               </View>
@@ -102,9 +102,9 @@ export default function Profile() {
 
             <Link
               href="/profile/edit"
-              className="bg-muted items-center rounded-md py-2.5"
+              className="bg-background border-2 border-foreground text-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
             >
-              <Text className="font-medium">Edit Profile</Text>
+              <Text className="text-label-bold">Edit Profile</Text>
             </Link>
           </>
         )}

@@ -19,8 +19,8 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="flex flex-col items-center gap-6 text-center">
-      <div className="space-y-2">
+<div className="flex flex-col items-center gap-8 text-center">
+      <div className="space-y-4">
         <h1 className="text-display-lg">Criar conta</h1>
         <p className="text-muted-foreground text-body-lg">
           Use sua conta Discord para começar no MatchFight.
@@ -43,10 +43,10 @@ export default function SignUpPage() {
 
       <p className="text-muted-foreground text-body-md">
         Já tem conta?{" "}
-        <a href="/sign-in" className="text-primary font-medium hover:underline">
+        <a href="/sign-in" className="font-medium hover:underline">
           Entrar
         </a>
       </p>
-    </div>
+</div>
   );
 }

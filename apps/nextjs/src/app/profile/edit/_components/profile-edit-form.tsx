@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   useMutation,
@@ -205,9 +204,13 @@ export function ProfileEditForm() {
                 : "Create Profile"}
           </Button>
 
-          <Link href="/profile" className="button button-outline">
+          <Button
+            variant="outline"
+            onClick={() => router.push("/profile")}
+            className="h-12 px-6"
+          >
             Cancel
-          </Link>
+          </Button>
         </div>
       </form>
     </div>
