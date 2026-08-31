@@ -92,7 +92,7 @@ export default function ProfileEdit() {
           <View className="gap-4">
             <Text className="text-label-bold">Nickname *</Text>
             <TextInput
-              className="border-input bg-background text-foreground rounded-none border px-3 py-2"
+              className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
               value={nickname}
               onChangeText={setNickname}
               placeholder="Enter your nickname"
@@ -102,7 +102,7 @@ export default function ProfileEdit() {
           <View className="gap-4">
             <Text className="text-label-bold">Bio</Text>
             <TextInput
-              className={`${"border-input bg-background text-foreground rounded-none border px-3 py-2"} h-24`}
+              className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-24 rounded-none border-2 bg-transparent px-4"
               value={bio}
               onChangeText={setBio}
               placeholder="Tell us about yourself..."
@@ -139,7 +139,7 @@ export default function ProfileEdit() {
           <View className="gap-4">
             <Text className="text-label-bold">Weight Class</Text>
             <TextInput
-              className="border-input bg-background text-foreground rounded-none border px-3 py-2"
+              className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
               value={weightClass}
               onChangeText={setWeightClass}
               placeholder="e.g. lightweight, heavyweight"
@@ -155,7 +155,7 @@ export default function ProfileEdit() {
             <View className="flex-1 gap-1">
               <Text className="text-label-bold">Wins</Text>
               <TextInput
-                className="border-input bg-background text-foreground rounded-none border px-3 py-2"
+                className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
                 value={wins}
                 onChangeText={setWins}
                 keyboardType="number-pad"
@@ -164,7 +164,7 @@ export default function ProfileEdit() {
             <View className="flex-1 gap-1">
               <Text className="text-label-bold">Losses</Text>
               <TextInput
-                className="border-input bg-background text-foreground rounded-none border px-3 py-2"
+                className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
                 value={losses}
                 onChangeText={setLosses}
                 keyboardType="number-pad"
@@ -175,7 +175,7 @@ export default function ProfileEdit() {
           <View className="gap-4">
             <Text className="text-label-bold">Location</Text>
             <TextInput
-              className="border-input bg-background text-foreground rounded-none border px-3 py-2"
+              className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
               value={location}
               onChangeText={setLocation}
               placeholder="City, Country"

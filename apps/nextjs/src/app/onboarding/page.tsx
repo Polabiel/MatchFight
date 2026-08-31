@@ -436,8 +436,8 @@ export default function OnboardingPage() {
                   <div className="bg-background border-border rounded-none border p-6">
                     <div className="space-y-4">
                       <div className="flex justify-between">
-                        <span className="font-medium">Função:</span>
-                        <span className="font-medium">
+                        <span className="text-label-bold">Função</span>
+                        <span className="text-body-md">
                           {role === "fighter"
                             ? "Lutador"
                             : role === "judge"
@@ -448,18 +448,18 @@ export default function OnboardingPage() {
 
                       {nickname && (
                         <div className="flex justify-between">
-                          <span className="font-medium">Apelido:</span>
-                          <span className="font-medium">{nickname}</span>
+                          <span className="text-label-bold">Apelido</span>
+                          <span className="text-body-md">{nickname}</span>
                         </div>
                       )}
 
                       {(role === "fighter" || role === "both") &&
                         weightClass && (
                           <div className="flex justify-between">
-                            <span className="font-medium">
-                              Categoria de Peso:
+                            <span className="text-label-bold">
+                              Categoria de Peso
                             </span>
-                            <span className="font-medium">
+                            <span className="text-body-md">
                               {
                                 weightClasses.find(
                                   (wc) => wc.value === weightClass,
@@ -470,23 +470,23 @@ export default function OnboardingPage() {
                         )}
 
                       <div className="flex justify-between">
-                        <span className="font-medium">Cartel:</span>
-                        <span className="font-medium">
+                        <span className="text-label-bold">Cartel</span>
+                        <span className="text-body-md">
                           {parseInt(wins, 10) || 0}-{parseInt(losses, 10) || 0}
                         </span>
                       </div>
 
                       {location && (
                         <div className="flex justify-between">
-                          <span className="font-medium">Localização:</span>
-                          <span className="font-medium">{location}</span>
+                          <span className="text-label-bold">Localização</span>
+                          <span className="text-body-md">{location}</span>
                         </div>
                       )}
 
                       {bio && (
                         <div className="space-y-4">
-                          <span className="font-medium">Bio:</span>
-                          <p className="text-muted-foreground">{bio}</p>
+                          <span className="text-label-bold">Bio</span>
+                          <p className="text-body-md text-muted-foreground">{bio}</p>
                         </div>
                       )}
                     </div>
