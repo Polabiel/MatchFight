@@ -96,6 +96,7 @@ export default function ProfileEdit() {
               value={nickname}
               onChangeText={setNickname}
               placeholder="Enter your nickname"
+              maxLength={64}
             />
           </View>
 
@@ -107,6 +108,7 @@ export default function ProfileEdit() {
               onChangeText={setBio}
               placeholder="Tell us about yourself..."
               multiline
+              maxLength={500}
             />
           </View>
 
@@ -179,6 +181,7 @@ export default function ProfileEdit() {
               value={location}
               onChangeText={setLocation}
               placeholder="City, Country"
+              maxLength={128}
             />
           </View>
 

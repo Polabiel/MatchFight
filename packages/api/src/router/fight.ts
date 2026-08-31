@@ -5,6 +5,7 @@ import { z } from "zod";
 import * as schema from "@acme/db/schema";
 import { fightSchemas } from "@acme/validators";
 
+import { validateLocation } from "../lib/geocode";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 // Workaround: Drizzle não infere nested `with: { profile: true }` para `one` dentro de `one`
@@ -250,6 +251,14 @@ export const fightRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { fightId, location, lat, lng, scheduledAt } = input;
       const userId = ctx.session.user.id;
+
+      // Valida que o local da luta é uma cidade/região existente
+      if (!(await validateLocation(location))) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Local inválido. Informe uma cidade existente.",
+        });
+      }
 
       // Check if the user is fighter1 or fighter2 of the fight
       const fight = await ctx.db.query.Fight.findFirst({

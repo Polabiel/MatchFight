@@ -304,6 +304,7 @@ export default function Onboarding() {
                         onChangeText={setNickname}
                         placeholder="Enter your nickname"
                         autoCapitalize="none"
+                        maxLength={64}
                       />
                     </View>
 
@@ -386,6 +387,7 @@ export default function Onboarding() {
                         value={location}
                         onChangeText={setLocation}
                         placeholder="City, Country"
+                        maxLength={128}
                       />
                     </View>
                   </View>
@@ -406,6 +408,7 @@ export default function Onboarding() {
                       onChangeText={setBio}
                       placeholder="Tell us about your fighting style, goals, or anything else..."
                       multiline
+                      maxLength={500}
                     />
                   </View>
                 </>

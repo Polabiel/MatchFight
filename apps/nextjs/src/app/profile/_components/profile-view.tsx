@@ -29,9 +29,9 @@ export function ProfileView() {
           bio, role, weight class and more to connect with other fighters and
           judges.
         </p>
-        <Link href="/profile/edit" className="button">
-          Create your profile
-        </Link>
+        <Button asChild variant="action" size="lg">
+          <Link href="/profile/edit">Create your profile</Link>
+        </Button>
       </div>
     );
   }
@@ -51,7 +51,7 @@ export function ProfileView() {
   else joinedDate = `${Math.ceil(diffDays / 365)} years ago`;
 
   return (
-    <div className="space-y-8 p-6">
+    <div className="mx-auto w-full max-w-2xl space-y-8 p-6">
       <div className="flex items-center gap-6">
         <div className="flex-shrink-0">
           {profile.user.image ? (

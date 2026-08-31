@@ -190,10 +190,11 @@ export default function FightDetail() {
                 {showPropose ? (
                   <View className="gap-3">
                     <TextInput
-                      className="border-input bg-background text-foreground rounded-none border px-3 py-2"
+                      className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
                       value={location}
                       onChangeText={setLocation}
                       placeholder="Location / Gym"
+                      maxLength={256}
                     />
                     <TextInput
                       className="border-input bg-background text-foreground rounded-none border px-3 py-2"

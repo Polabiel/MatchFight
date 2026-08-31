@@ -92,6 +92,7 @@ export function ProfileEditForm() {
               defaultValue={profile?.nickname ?? ""}
               name="nickname"
               required
+              maxLength={64}
               className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
             />
           </FieldContent>
@@ -104,6 +105,7 @@ export function ProfileEditForm() {
               defaultValue={profile?.bio ?? ""}
               name="bio"
               placeholder="Tell us about yourself..."
+              maxLength={500}
               className="border-foreground focus:bg-muted focus:border-foreground text-body-md h-12 resize-none rounded-none border-2 bg-transparent px-4"
               rows={4}
             />
@@ -186,6 +188,7 @@ export function ProfileEditForm() {
               defaultValue={profile?.location ?? ""}
               name="location"
               placeholder="City, Country"
+              maxLength={128}
               className="border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
             />
           </FieldContent>

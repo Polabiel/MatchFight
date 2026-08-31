@@ -304,6 +304,7 @@ export default function OnboardingPage() {
                           onChange={(e) => setNickname(e.target.value)}
                           placeholder="Digite seu apelido"
                           autoComplete="nickname"
+                          maxLength={64}
                         />
                       </FieldContent>
                     </Field>
@@ -395,6 +396,7 @@ export default function OnboardingPage() {
                           value={location}
                           onChange={(e) => setLocation(e.target.value)}
                           placeholder="Cidade, País"
+                          maxLength={128}
                         />
                       </FieldContent>
                     </Field>
@@ -417,6 +419,7 @@ export default function OnboardingPage() {
                           value={bio}
                           onChange={(e) => setBio(e.target.value)}
                           placeholder="Conte sobre seu estilo de luta, objetivos ou qualquer outra coisa..."
+                          maxLength={500}
                         />
                       </FieldContent>
                     </Field>

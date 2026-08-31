@@ -224,7 +224,8 @@ export function FightDetail({ fightId }: { fightId: string }) {
                         placeholder="Academia / Cidade"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
-                        className="border-border bg-background focus:bg-muted focus:border-border text-body-md h-12 rounded-none border-2 px-4"
+                        maxLength={256}
+                        className="border-foreground bg-background focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 px-4"
                       />
                     </FieldContent>
                   </Field>
