@@ -42,7 +42,7 @@ export default function SignUpPage() {
 
       <p className="text-muted-foreground text-body-md">
         Já tem conta?{" "}
-        <a href="/sign-in" className="font-medium hover:underline">
+        <a href="/sign-in" className="text-foreground underline hover:no-underline">
           Entrar
         </a>
       </p>

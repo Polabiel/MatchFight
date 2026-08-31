@@ -42,7 +42,7 @@ return (
 
     <p className="text-body-md text-muted-foreground">
       Não tem conta?{" "}
-      <a href="/sign-up" className="text-foreground font-medium hover:underline">
+      <a href="/sign-up" className="text-foreground underline hover:no-underline">
         Crie uma
       </a>
     </p>

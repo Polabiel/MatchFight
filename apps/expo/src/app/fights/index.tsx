@@ -43,7 +43,7 @@ function FightRow({
     <Link href={`/fights/${id}`} asChild>
       <Pressable className="border-border bg-card flex flex-col gap-2 rounded-none border p-5">
         <View className="flex-row items-center justify-between gap-2">
-          <Text className="font-semibold">
+          <Text className="text-headline-md">
             {fighter1Name} <Text className="text-muted-foreground">vs</Text>{" "}
             {fighter2Name}
           </Text>
