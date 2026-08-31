@@ -109,6 +109,10 @@ const RATE_LIMIT_MAX = 120; // 120 requisições/minuto (generoso)
 const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
 
 const rateLimitMiddleware = t.middleware(({ ctx, next, path: _path }) => {
+  // Em ambiente de teste, não limita (hermeticidade; evita TOO_MANY_REQUESTS
+  // na suíte que executa muitas requisições com o mesmo usuário)
+  if (process.env.NODE_ENV === "test") return next();
+
   const key = ctx.session?.user.id ?? "anon";
   const now = Date.now();
 

@@ -36,6 +36,9 @@ export async function validateLocation(location: string): Promise<boolean> {
   const trimmed = location.trim();
   if (!trimmed) return true; // campo opcional, vazio = válido
 
+  // Em ambiente de teste, não faz chamada externa (hermeticidade)
+  if (process.env.NODE_ENV === "test") return true;
+
   // Check cache
   const cached = cache.get(trimmed);
   if (cached && Date.now() - cached.cachedAt < CACHE_TTL_MS) {
