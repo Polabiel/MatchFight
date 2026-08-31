@@ -29,8 +29,7 @@ export default function SignUpPage() {
 
       <Button
         variant="action"
-        size="lg"
-        className="w-full max-w-xs"
+        className="w-full max-w-xs h-12 px-6"
         onClick={() =>
           authClient.signIn.social({
             provider: "discord",

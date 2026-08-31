@@ -22,7 +22,9 @@ function SignInContent() {
 return (
   <div className="flex flex-col items-center gap-8 text-center">
     <div className="space-y-8">
-      <h1 className="text-display-lg">MatchFight</h1>
+      <h1 className="text-display-lg">
+        Match<span className="text-primary">Fight</span>
+      </h1>
       <p className="text-muted-foreground text-body-lg">
         Entre com sua conta Discord para continuar.
       </p>
@@ -30,7 +32,6 @@ return (
 
 <Button
   variant="action"
-  size="lg"
   className="w-full max-w-xs h-12 px-6"
   onClick={() =>
     authClient.signIn.social({ provider: "discord", callbackURL: "/" })
@@ -38,6 +39,13 @@ return (
 >
   Entrar com Discord
 </Button>
+
+    <p className="text-body-md text-muted-foreground">
+      Não tem conta?{" "}
+      <a href="/sign-up" className="text-foreground font-medium hover:underline">
+        Crie uma
+      </a>
+    </p>
   </div>
 );
 }

@@ -9,7 +9,7 @@ function Logo() {
   return (
     <Link href="/" className="flex items-baseline gap-1">
       <span className="text-foreground text-headline-md">Match</span>
-      <span className="text-foreground text-headline-md">Fight</span>
+      <span className="text-primary text-headline-md">Fight</span>
     </Link>
   );
 }
