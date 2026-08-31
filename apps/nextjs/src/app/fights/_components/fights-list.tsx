@@ -129,7 +129,7 @@ export function FightsList() {
         </h2>
         {myFights.length === 0 ? (
           <div className="border-border flex flex-col items-center gap-6 border p-10 text-center">
-            <div className="text-6xl">🥊</div>
+            <div className="text-headline-lg">🥊</div>
             <p className="text-headline-md">Nenhuma luta ainda</p>
             <p className="text-body-md max-w-md">
               Deslize, combine e marque seu primeiro combate.

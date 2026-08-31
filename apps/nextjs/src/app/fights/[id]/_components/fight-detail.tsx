@@ -336,7 +336,7 @@ export function FightDetail({ fightId }: { fightId: string }) {
       )}
 
       {!isParticipant && (
-        <p className="border-border bg-background border-t p-4 text-center text-sm">
+        <p className="border-border bg-background border-t p-4 text-center text-body-md">
           Você não é participante desta luta.
         </p>
       )}

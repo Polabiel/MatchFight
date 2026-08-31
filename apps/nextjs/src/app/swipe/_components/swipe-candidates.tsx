@@ -134,7 +134,7 @@ export function SwipeCandidates() {
                 className="mb-6 h-56 w-full rounded-none object-cover"
               />
             ) : (
-              <div className="bg-muted border-foreground mb-6 flex h-56 w-full items-center justify-center rounded-none border text-6xl">
+              <div className="bg-muted border-foreground mb-6 flex h-56 w-full items-center justify-center rounded-none border text-headline-lg">
                 🥊
               </div>
             )}
@@ -203,7 +203,7 @@ export function SwipeCandidates() {
       {matchUser && (
         <div className="bg-background/50 fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="border-border bg-background flex w-full max-w-sm flex-col items-center gap-6 border-2 p-6">
-            <div className="text-6xl">🎉</div>
+            <div className="text-headline-lg">🎉</div>
             <h2 className="text-headline-lg">It&apos;s a Match!</h2>
             <p className="text-body-md text-muted-foreground">
               You and{" "}

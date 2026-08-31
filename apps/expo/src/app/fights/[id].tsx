@@ -126,7 +126,7 @@ export default function FightDetail() {
           {[fight.fighter1, fight.fighter2].map((fighter) => (
             <View key={fighter.id} className="items-center gap-2">
               <View className="bg-muted h-20 w-20 items-center justify-center rounded-none">
-                <Text className="text-2xl">🥊</Text>
+                <Text className="text-headline-lg">🥊</Text>
               </View>
               <Text className="text-headline-md">{fighter.name}</Text>
               {fighter.nickname ? (

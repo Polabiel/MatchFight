@@ -119,8 +119,8 @@ export default function ProfileEdit() {
                   <Pressable
                     key={r.value}
                     onPress={() => setRole(r.value)}
-                    className={`rounded-none px-3 py-1.5 ${
-                      active ? "bg-primary" : "bg-muted"
+                    className={`rounded-none px-3 py-2 ${
+                      active ? "bg-foreground" : "bg-muted"
                     }`}
                   >
                     <Text

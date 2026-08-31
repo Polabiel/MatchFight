@@ -51,19 +51,19 @@ export default function Profile() {
           <>
             <View className="flex-row items-center gap-4">
               <View className="bg-muted h-20 w-20 items-center justify-center rounded-none">
-                <Text className="text-2xl">👤</Text>
+                <Text className="text-headline-lg">👤</Text>
               </View>
               <View className="gap-1">
                 <Text className="text-headline-md">{profile.user.name}</Text>
                 <Text className="text-body-lg font-semibold">
                   "{profile.nickname}"
                 </Text>
-                <View className="bg-primary/10 text-primary rounded-none px-2.5 py-0.5 text-xs font-medium">
+                <View className="bg-foreground text-background rounded-none px-3 py-1 text-label-sm">
                   {profile.role === "fighter"
-                    ? "Fighter"
+                    ? "FIGHTER"
                     : profile.role === "judge"
-                      ? "Judge"
-                      : "Both"}
+                      ? "JUDGE"
+                      : "BOTH"}
                 </View>
               </View>
             </View>
@@ -71,12 +71,12 @@ export default function Profile() {
             <View className="border-border bg-card gap-3 rounded-none border p-5">
               {profile.bio ? (
                 <View className="gap-1">
-                  <Text className="text-body-md font-semibold">Bio</Text>
+                  <Text className="text-label-bold">Bio</Text>
                   <Text className="text-body-md text-muted-foreground">{profile.bio}</Text>
                 </View>
               ) : null}
               <View className="gap-2">
-                <Text className="text-body-md font-semibold">Details</Text>
+                <Text className="text-label-bold">Details</Text>
                 {profile.weightClass ? (
                   <View className="flex-row justify-between">
                     <Text className="text-body-md text-muted-foreground">Weight class:</Text>
