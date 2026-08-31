@@ -64,8 +64,8 @@
   --accent: oklch(0.96 0 0); /* muted */
   --accent-foreground: oklch(0.11 0 0); /* foreground */
 
-  /* ===== SPACING BASE 8px ===== */
-  --spacing: 8px;
+  /* ===== SPACING BASE 8px (--spacing Tailwind v4 = 0.25rem; h-12=48px, px-6=24px) ===== */
+  --spacing: 0.25rem;
 }
 
 .dark {
@@ -205,8 +205,8 @@
   --text-label-sm--letter-spacing: 0.05em;
   --text-label-sm--text-transform: uppercase;
 
-  /* ===== SPACING BASE 8px ===== */
-  --spacing: 8px;
+  /* ===== SPACING BASE 8px (0.25rem para h-12=48px, px-6=24px, gap-4=16px) ===== */
+  --spacing: 0.25rem;
 
   /* ===== BREAKPOINTS ===== */
   --breakpoint-sm: 640px;
