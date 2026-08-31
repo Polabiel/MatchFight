@@ -170,7 +170,7 @@ function SwipeCard() {
 
       {!current ? (
         <View className="flex-1 items-center justify-center gap-4 p-6">
-          <Text className="text-headline-lg">🥊</Text>
+          <Text className="text-headline-lg">LUTAR</Text>
           <Text className="text-headline-lg">No more candidates</Text>
           <Text className="text-body-md text-muted-foreground text-center">
             You've seen everyone in this weight class.
@@ -199,7 +199,7 @@ function SwipeCard() {
                 />
               ) : (
                 <View className="h-full items-center justify-center">
-                  <Text className="text-headline-lg">🥊</Text>
+                  <Text className="text-headline-lg">LUTAR</Text>
                 </View>
               )}
             </View>
@@ -224,7 +224,7 @@ function SwipeCard() {
                 </View>
                 {current.location ? (
                   <View className="rounded-none px-3 py-1 bg-foreground text-background text-label-sm">
-                    📍 {current.location}
+                    LOCAL {current.location}
                   </View>
                 ) : null}
               </View>
@@ -254,7 +254,9 @@ function SwipeCard() {
               className="absolute inset-0 z-50 items-center justify-center bg-foreground/50 p-4"
             >
               <View className="border-border bg-card w-full max-w-sm items-center gap-4 rounded-none border p-8">
-                <Text className="text-display-lg">🎉</Text>
+                <View className="bg-foreground flex h-16 w-16 items-center justify-center rounded-none">
+                  <Text className="text-background text-label-bold">MATCH</Text>
+                </View>
                 <Text className="text-headline-lg">It's a Match!</Text>
                 <Text className="text-body-md text-muted-foreground text-center">
                   You and{" "}

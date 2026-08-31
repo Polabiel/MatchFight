@@ -107,7 +107,7 @@ export function SwipeCandidates() {
       {!current ? (
         <div className="flex flex-col items-center gap-6 text-center">
           <div className="bg-muted text-headline-md flex h-24 w-24 items-center justify-center rounded-none">
-            🥊
+            <span className="text-label-bold uppercase">LUTAR</span>
           </div>
           <h2 className="text-headline-md">No more candidates</h2>
           <p className="text-body-md text-muted-foreground max-w-md">
@@ -135,7 +135,7 @@ export function SwipeCandidates() {
               />
             ) : (
               <div className="bg-muted border-foreground mb-6 flex h-56 w-full items-center justify-center rounded-none border text-headline-lg">
-                🥊
+                <span className="text-label-bold uppercase">LUTAR</span>
               </div>
             )}
             <div className="relative">
@@ -169,7 +169,7 @@ export function SwipeCandidates() {
                 </span>
                 {current.location && (
                   <span className="bg-foreground text-background text-label-sm rounded-none px-3 py-1">
-                    📍 {current.location}
+                    <span className="text-label-bold uppercase">LOCAL</span> {current.location}
                   </span>
                 )}
               </div>
@@ -203,7 +203,7 @@ export function SwipeCandidates() {
       {matchUser && (
         <div className="bg-background/50 fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="border-border bg-background flex w-full max-w-sm flex-col items-center gap-6 border-2 p-6">
-            <div className="text-headline-lg">🎉</div>
+            <span className="text-label-bold uppercase">CONECTADO</span>
             <h2 className="text-headline-lg">It&apos;s a Match!</h2>
             <p className="text-body-md text-muted-foreground">
               You and{" "}

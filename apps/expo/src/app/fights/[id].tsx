@@ -126,7 +126,7 @@ export default function FightDetail() {
           {[fight.fighter1, fight.fighter2].map((fighter) => (
             <View key={fighter.id} className="items-center gap-2">
               <View className="bg-muted h-20 w-20 items-center justify-center rounded-none">
-                <Text className="text-headline-lg">🥊</Text>
+                <Text className="text-label-bold uppercase">LUTAR</Text>
               </View>
               <Text className="text-headline-md">{fighter.name}</Text>
               {fighter.nickname ? (
@@ -298,7 +298,7 @@ export default function FightDetail() {
 
         <View className="flex-row justify-center gap-4">
           <Link href={`/fights/${fight.id}/chat`} className="py-2">
-            <Text className="text-body-md text-foreground">💬 Chat</Text>
+            <Text className="text-body-md text-foreground">CHAT</Text>
           </Link>
           <Link href="/fights" className="py-2">
             <Text className="text-body-md text-muted-foreground">← Back to fights</Text>

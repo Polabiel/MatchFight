@@ -78,7 +78,7 @@ export default function FightChat() {
               keyExtractor={(m) => m.id}
               ListEmptyComponent={
                 <View className="items-center gap-2 py-12">
-                  <Text className="text-headline-lg">💬</Text>
+                  <Text className="text-headline-lg">CHAT</Text>
                   <Text className="text-headline-md">No messages yet</Text>
                   <Text className="text-body-md text-muted-foreground">
                     Send the first message to coordinate your fight.

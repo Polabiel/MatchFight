@@ -55,9 +55,9 @@ function FightRow({
         </View>
         <View className="gap-1">
           {location ? (
-            <Text className="text-body-md text-muted-foreground">📍 {location}</Text>
+            <Text className="text-body-md text-muted-foreground">LOCAL {location}</Text>
           ) : null}
-          <Text className="text-body-md text-muted-foreground">🗓 {scheduled}</Text>
+          <Text className="text-body-md text-muted-foreground">DATA {scheduled}</Text>
         </View>
       </Pressable>
     </Link>
@@ -134,7 +134,7 @@ export default function Fights() {
           </Text>
           {(myFights.data ?? []).length === 0 ? (
             <View className="border-border flex items-center gap-3 rounded-none border border-dashed p-8">
-              <Text className="text-headline-lg">🥊</Text>
+              <Text className="text-headline-lg">LUTAR</Text>
               <Text className="text-headline-lg">No fights yet</Text>
               <Text className="text-body-md text-muted-foreground text-center">
                 Swipe and match with other fighters to schedule your first

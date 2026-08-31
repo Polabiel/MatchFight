@@ -254,9 +254,9 @@ export default function OnboardingPage() {
                   </p>
                   <div className="flex gap-4">
                     {[
-                      { value: "fighter", label: "Lutador", emoji: "🥊" },
-                      { value: "judge", label: "Juiz", emoji: "👓" },
-                      { value: "both", label: "Ambos", emoji: "🥊👓" },
+                      { value: "fighter", label: "Lutador" },
+                      { value: "judge", label: "Juiz" },
+                      { value: "both", label: "Ambos" },
                     ].map((roleOption) => {
                       const selected = role === roleOption.value;
                       return (
@@ -272,9 +272,6 @@ export default function OnboardingPage() {
                           }
                         >
                           <span className="text-headline-lg">
-                            {roleOption.emoji}
-                          </span>
-                          <span className="text-body-lg font-semibold">
                             {roleOption.label}
                           </span>
                         </Button>

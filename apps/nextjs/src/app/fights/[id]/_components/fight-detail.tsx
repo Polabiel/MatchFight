@@ -347,7 +347,7 @@ export function FightDetail({ fightId }: { fightId: string }) {
           variant="outline"
           onClick={() => router.push(`/fights/${fightId}/chat`)}
         >
-          💬 Chat
+          <span className="text-label-bold uppercase">CHAT</span>
         </Button>
         <Button variant="outline" onClick={() => router.push("/fights")}>
           ← Back to fights

@@ -71,8 +71,8 @@ function FightCard({
           </div>
         </div>
         <div className="text-body-md flex items-center gap-2">
-          {location && <span>📍 {location}</span>}
-          <span>🗓 {scheduled}</span>
+          {location && <span className="text-label-bold uppercase">LOCAL {location}</span>}
+          <span className="text-label-bold uppercase">DATA</span> {scheduled}
         </div>
         <div className="mt-2 self-end">
           <span className={statusClass}>
@@ -129,7 +129,9 @@ export function FightsList() {
         </h2>
         {myFights.length === 0 ? (
           <div className="border-border flex flex-col items-center gap-6 border p-10 text-center">
-            <div className="text-headline-lg">🥊</div>
+            <div className="text-headline-lg">
+<span className="text-label-bold uppercase">LUTAR</span>
+</div>
             <p className="text-headline-md">Nenhuma luta ainda</p>
             <p className="text-body-md max-w-md">
               Deslize, combine e marque seu primeiro combate.
