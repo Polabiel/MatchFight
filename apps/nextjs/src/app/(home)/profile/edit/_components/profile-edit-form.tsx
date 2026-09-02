@@ -24,12 +24,12 @@ export function ProfileEditForm() {
   const mutation = useMutation(
     trpc.profile.update.mutationOptions({
       onSuccess: () => {
-        toast.success("Profile updated successfully");
+        toast.success("Perfil atualizado com sucesso");
         void queryClient.invalidateQueries({ queryKey: ["profile"] });
         void router.push("/profile");
       },
       onError: (error) => {
-        toast.error(error.message || "Failed to update profile");
+        toast.error(error.message || "Falha ao atualizar perfil");
       },
     }),
   );
@@ -60,7 +60,7 @@ export function ProfileEditForm() {
     };
 
     if (!data.nickname || data.nickname.trim() === "") {
-      toast.error("Nickname is required");
+      toast.error("Apelido é obrigatório");
       return;
     }
 
@@ -73,27 +73,26 @@ export function ProfileEditForm() {
     <div className="mx-auto max-w-2xl p-6">
       <div className="mb-6">
         <h1 className="text-headline-lg">
-          {isEditMode ? "Edit Profile" : "Create Profile"}
+          {isEditMode ? "Editar Perfil" : "Criar Perfil"}
         </h1>
         <p className="text-body-md text-muted-foreground mt-2">
           {isEditMode
-            ? "Update your profile information"
-            : "Get started by creating your profile"}
+            ? "Atualize suas informações"
+            : "Comece criando seu perfil"}
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="border-border space-y-6 border-2 p-6">
         <Field>
-          <FieldLabel className="text-label-bold">Nickname</FieldLabel>
+          <FieldLabel className="text-label-bold">Apelido</FieldLabel>
           <FieldContent>
             <Input
               type="text"
-              placeholder="Enter your nickname"
+              placeholder="Digite seu apelido"
               defaultValue={profile?.nickname ?? ""}
               name="nickname"
               required
               maxLength={64}
-              className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
             />
           </FieldContent>
         </Field>
@@ -104,40 +103,40 @@ export function ProfileEditForm() {
             <textarea
               defaultValue={profile?.bio ?? ""}
               name="bio"
-              placeholder="Tell us about yourself..."
+              placeholder="Conte sobre você..."
               maxLength={500}
-              className="border-foreground focus:bg-muted focus:border-foreground text-body-md h-12 resize-none rounded-none border-2 bg-transparent px-4"
+              className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md w-full resize-none rounded-none border-2 bg-transparent px-4 py-3 outline-none disabled:opacity-50"
               rows={4}
             />
           </FieldContent>
         </Field>
 
         <Field>
-          <FieldLabel className="text-label-bold">Role</FieldLabel>
+          <FieldLabel className="text-label-bold">Função</FieldLabel>
           <FieldContent>
             <select
               defaultValue={profile?.role ?? "fighter"}
               name="role"
-              className="border-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
+              className="border-foreground focus:bg-muted focus:border-foreground text-body-md h-12 w-full rounded-none border-2 bg-transparent px-4 outline-none"
             >
-              <option value="fighter">Fighter</option>
-              <option value="judge">Judge</option>
-              <option value="both">Both</option>
+              <option value="fighter">Lutador</option>
+              <option value="judge">Juiz</option>
+              <option value="both">Ambos</option>
             </select>
           </FieldContent>
         </Field>
 
         <Field>
           <FieldLabel className="text-label-bold">
-            Weight Class (optional)
+            Categoria de Peso (opcional)
           </FieldLabel>
           <FieldContent>
             <select
               defaultValue={profile?.weightClass ?? ""}
               name="weightClass"
-              className="border-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
+              className="border-foreground focus:bg-muted focus:border-foreground text-body-md h-12 w-full rounded-none border-2 bg-transparent px-4 outline-none"
             >
-              <option value="">Select weight class</option>
+              <option value="">Selecione a categoria</option>
               <option value="flyweight">Flyweight</option>
               <option value="bantamweight">Bantamweight</option>
               <option value="featherweight">Featherweight</option>
@@ -151,7 +150,7 @@ export function ProfileEditForm() {
         </Field>
 
         <Field>
-          <FieldLabel className="text-label-bold">Wins</FieldLabel>
+          <FieldLabel className="text-label-bold">Vitórias</FieldLabel>
           <FieldContent>
             <Input
               type="number"
@@ -159,13 +158,12 @@ export function ProfileEditForm() {
               defaultValue={(profile?.wins ?? 0).toString()}
               name="wins"
               placeholder="0"
-              className="border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
             />
           </FieldContent>
         </Field>
 
         <Field>
-          <FieldLabel className="text-label-bold">Losses</FieldLabel>
+          <FieldLabel className="text-label-bold">Derrotas</FieldLabel>
           <FieldContent>
             <Input
               type="number"
@@ -173,23 +171,21 @@ export function ProfileEditForm() {
               defaultValue={(profile?.losses ?? 0).toString()}
               name="losses"
               placeholder="0"
-              className="border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
             />
           </FieldContent>
         </Field>
 
         <Field>
           <FieldLabel className="text-label-bold">
-            Location (optional)
+            Localização (opcional)
           </FieldLabel>
           <FieldContent>
             <Input
               type="text"
               defaultValue={profile?.location ?? ""}
               name="location"
-              placeholder="City, Country"
+              placeholder="Cidade, País"
               maxLength={128}
-              className="border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
             />
           </FieldContent>
         </Field>
@@ -197,22 +193,21 @@ export function ProfileEditForm() {
         <div className="flex items-center gap-4">
           <Button
             type="submit"
+            variant="action"
             disabled={mutation.isPending}
-            className="bg-primary text-primary-foreground border-primary hover:bg-foreground hover:border-foreground text-label-bold h-12 border-2 px-6"
           >
             {mutation.isPending
-              ? "Saving..."
+              ? "Salvando..."
               : isEditMode
-                ? "Update Profile"
-                : "Create Profile"}
+                ? "Atualizar Perfil"
+                : "Criar Perfil"}
           </Button>
 
           <Button
             variant="outline"
             onClick={() => router.push("/profile")}
-            className="h-12 px-6"
           >
-            Cancel
+            Cancelar
           </Button>
         </div>
       </form>

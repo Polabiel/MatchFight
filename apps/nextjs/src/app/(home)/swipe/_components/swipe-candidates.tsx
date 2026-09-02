@@ -13,7 +13,7 @@ import { toast } from "@acme/ui/toast";
 import { useTRPC } from "~/trpc/react";
 
 const weightClasses = [
-  { value: "", label: "All weight classes" },
+  { value: "", label: "Todas as categorias" },
   { value: "flyweight", label: "Flyweight" },
   { value: "bantamweight", label: "Bantamweight" },
   { value: "featherweight", label: "Featherweight" },
@@ -58,7 +58,7 @@ export function SwipeCandidates() {
         setCurrentIndex((i) => i + 1);
       },
       onError: (error) => {
-        toast.error(error.message || "Failed to like candidate");
+        toast.error(error.message || "Falha ao dar match");
       },
     }),
   );
@@ -69,7 +69,7 @@ export function SwipeCandidates() {
         setCurrentIndex((i) => i + 1);
       },
       onError: (error) => {
-        toast.error(error.message || "Failed to pass candidate");
+        toast.error(error.message || "Falha ao passar candidato");
       },
     }),
   );
@@ -83,7 +83,7 @@ export function SwipeCandidates() {
 
   return (
     <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-2xl flex-col items-center justify-center gap-6 p-6">
-      <h1 className="text-headline-lg">Find your opponent</h1>
+      <h1 className="text-headline-lg">Encontre seu oponente</h1>
 
       {/* Weight class filter */}
       <div className="w-full max-w-md">
@@ -93,8 +93,8 @@ export function SwipeCandidates() {
             setWeightClass((e.target.value || undefined) as typeof weightClass);
             setCurrentIndex(0);
           }}
-          className="border-border bg-background placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 px-4"
-          aria-label="Filter by weight class"
+          className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
+          aria-label="Filtrar por categoria de peso"
         >
           {weightClasses.map((wc) => (
             <option key={wc.value} value={wc.value}>
@@ -109,28 +109,24 @@ export function SwipeCandidates() {
           <div className="bg-muted text-headline-md flex h-24 w-24 items-center justify-center rounded-none">
             <span className="text-label-bold uppercase">LUTAR</span>
           </div>
-          <h2 className="text-headline-md">No more candidates</h2>
+          <h2 className="text-headline-md">Sem mais candidatos</h2>
           <p className="text-body-md text-muted-foreground max-w-md">
-            You've seen everyone in this weight class. Check back later for new
-            fighters or adjust your filter.
+            Você já viu todos os lutadores desta categoria. Volte mais tarde
+            para novos lutadores ou ajuste o filtro.
           </p>
-          <Button
-            onClick={refresh}
-            variant="outline"
-            className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
-          >
-            Refresh
+          <Button onClick={refresh} variant="outline">
+            Atualizar
           </Button>
         </div>
       ) : (
         <>
           {/* Candidate card */}
-          <div className="border-border bg-background hover:bg-muted border-2 p-6 transition-colors">
+          <div className="border-border bg-background w-full max-w-md border-2 p-6">
             {current.image ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={current.image}
-                alt={`${current.name} avatar`}
+                alt={`Avatar de ${current.name}`}
                 className="mb-6 h-56 w-full rounded-none object-cover"
               />
             ) : (
@@ -138,59 +134,55 @@ export function SwipeCandidates() {
                 <span className="text-label-bold uppercase">LUTAR</span>
               </div>
             )}
-            <div className="relative">
-              <div className="bg-muted/50 absolute inset-x-0 bottom-0 p-4 pt-12">
-                <h2 className="text-headline-md text-foreground">
-                  {current.name}
-                </h2>
-                <p className="text-label-bold text-foreground/90 uppercase">
+            <div className="mb-6 text-center">
+              <h2 className="text-headline-md">{current.name}</h2>
+              {current.nickname && (
+                <p className="text-label-bold text-muted-foreground mt-1 uppercase">
                   "{current.nickname}"
                 </p>
-              </div>
+              )}
             </div>
 
-            <div className="mt-6">
-              {current.bio && (
-                <p className="text-body-md text-muted-foreground">
-                  {current.bio}
-                </p>
-              )}
+            {current.bio && (
+              <p className="text-body-md text-muted-foreground">
+                {current.bio}
+              </p>
+            )}
 
-              <div className="mt-4 flex flex-wrap gap-2">
-                {current.weightClass && (
-                  <span className="bg-foreground text-background text-label-sm rounded-none px-3 py-1">
-                    {current.weightClass
-                      .replace("_", " ")
-                      .replace(/\b\w/g, (c) => c.toUpperCase())}
-                  </span>
-                )}
+            <div className="mt-4 flex flex-wrap gap-2">
+              {current.weightClass && (
                 <span className="bg-foreground text-background text-label-sm rounded-none px-3 py-1">
-                  {current.wins}-{current.losses}
+                  {current.weightClass
+                    .replace("_", " ")
+                    .replace(/\b\w/g, (c) => c.toUpperCase())}
                 </span>
-                {current.location && (
-                  <span className="bg-foreground text-background text-label-sm rounded-none px-3 py-1">
-                    <span className="text-label-bold uppercase">LOCAL</span> {current.location}
-                  </span>
-                )}
-              </div>
+              )}
+              <span className="bg-foreground text-background text-label-sm rounded-none px-3 py-1">
+                {current.wins}-{current.losses}
+              </span>
+              {current.location && (
+                <span className="bg-foreground text-background text-label-sm rounded-none px-3 py-1">
+                  <span className="text-label-bold uppercase">LOCAL</span>{" "}
+                  {current.location}
+                </span>
+              )}
             </div>
 
             {/* Actions */}
             <div className="mt-8 flex items-center justify-center gap-6">
               <Button
                 variant="outline"
-                aria-label="Pass"
+                aria-label="Passar"
                 disabled={pass.isPending || like.isPending}
                 onClick={() => pass.mutate({ targetId: current.id })}
-                className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
               >
                 Passar
               </Button>
               <Button
-                aria-label="Like"
+                variant="action"
+                aria-label="Dar Match"
                 disabled={pass.isPending || like.isPending}
                 onClick={() => like.mutate({ targetId: current.id })}
-                className="bg-primary text-primary-foreground border-primary hover:bg-foreground hover:border-foreground text-label-bold h-12 border-2 px-6"
               >
                 Dar Match
               </Button>
@@ -201,17 +193,17 @@ export function SwipeCandidates() {
 
       {/* Match modal */}
       {matchUser && (
-        <div className="bg-background/50 fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="bg-muted fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="border-border bg-background flex w-full max-w-sm flex-col items-center gap-6 border-2 p-6">
             <span className="text-label-bold uppercase">CONECTADO</span>
-            <h2 className="text-headline-lg">It&apos;s a Match!</h2>
+            <h2 className="text-headline-lg">Deu Match!</h2>
             <p className="text-body-md text-muted-foreground">
-              You and{" "}
+              Você e{" "}
               <span className="text-foreground font-semibold">
                 {matchUser.name}
               </span>{" "}
-              ({matchUser.nickname}) liked each other. Time to schedule your
-              fight.
+              ({matchUser.nickname}) gostaram um do outro. Hora de marcar a
+              luta.
             </p>
             <div className="flex w-full flex-col gap-4">
               <Button
@@ -219,16 +211,16 @@ export function SwipeCandidates() {
                   setMatchUser(null);
                   refresh();
                 }}
-                className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
+                className="w-full"
               >
-                Keep swiping
+                Continuar vendo
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setMatchUser(null)}
-                className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
+                className="w-full"
               >
-                Close
+                Fechar
               </Button>
             </div>
           </div>

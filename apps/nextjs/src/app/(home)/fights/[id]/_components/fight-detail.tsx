@@ -47,53 +47,53 @@ export function FightDetail({ fightId }: { fightId: string }) {
   const propose = useMutation(
     trpc.fight.propose.mutationOptions({
       onSuccess: () => {
-        toast.success("Proposal sent");
+        toast.success("Proposta enviada");
         setShowPropose(false);
         setLocation("");
         setScheduledAt("");
         void invalidate();
       },
-      onError: (e) => toast.error(e.message || "Failed to propose"),
+      onError: (e) => toast.error(e.message || "Falha ao enviar proposta"),
     }),
   );
 
   const confirm = useMutation(
     trpc.fight.confirm.mutationOptions({
       onSuccess: () => {
-        toast.success("Fight confirmed");
+        toast.success("Luta confirmada");
         void invalidate();
       },
-      onError: (e) => toast.error(e.message || "Failed to confirm"),
+      onError: (e) => toast.error(e.message || "Falha ao confirmar luta"),
     }),
   );
 
   const acceptJudge = useMutation(
     trpc.fight.acceptJudge.mutationOptions({
       onSuccess: () => {
-        toast.success("You are now the judge");
+        toast.success("Você agora é o juiz");
         void invalidate();
       },
-      onError: (e) => toast.error(e.message || "Failed to accept"),
+      onError: (e) => toast.error(e.message || "Falha ao aceitar como juiz"),
     }),
   );
 
   const complete = useMutation(
     trpc.fight.complete.mutationOptions({
       onSuccess: () => {
-        toast.success("Fight completed");
+        toast.success("Luta concluída");
         void invalidate();
       },
-      onError: (e) => toast.error(e.message || "Failed to complete"),
+      onError: (e) => toast.error(e.message || "Falha ao concluir luta"),
     }),
   );
 
   const cancel = useMutation(
     trpc.fight.cancel.mutationOptions({
       onSuccess: () => {
-        toast.success("Fight cancelled");
+        toast.success("Luta cancelada");
         void invalidate();
       },
-      onError: (e) => toast.error(e.message || "Failed to cancel"),
+      onError: (e) => toast.error(e.message || "Falha ao cancelar luta"),
     }),
   );
 
@@ -107,7 +107,7 @@ export function FightDetail({ fightId }: { fightId: string }) {
   const handlePropose = (e: React.FormEvent) => {
     e.preventDefault();
     if (!scheduledAt) {
-      toast.error("Please choose a date and time");
+      toast.error("Escolha uma data e horário");
       return;
     }
     propose.mutate({
@@ -130,7 +130,7 @@ export function FightDetail({ fightId }: { fightId: string }) {
       </div>
 
       {/* Fighters */}
-      <div className="border-border bg-background grid grid-cols-[1fr_auto_1fr] items-center gap-6 border-t p-6">
+      <div className="border-border bg-background grid grid-cols-[1fr_auto_1fr] items-center gap-6 border-2 p-6">
         {[fight.fighter1, fight.fighter2].map((fighter) => (
           <div
             key={fighter.id}
@@ -141,10 +141,10 @@ export function FightDetail({ fightId }: { fightId: string }) {
               <img
                 src={fighter.image}
                 alt={fighter.name}
-                className="border-border h-10 w-10 rounded-none border object-cover"
+                className="border-border h-24 w-24 rounded-none border-2 object-cover"
               />
             ) : (
-              <div className="bg-foreground text-background flex h-10 w-10 items-center justify-center rounded-none">
+              <div className="bg-foreground text-background text-headline-lg flex h-24 w-24 items-center justify-center rounded-none border-2 border-foreground">
                 {fighter.name.charAt(0)}
               </div>
             )}
@@ -160,7 +160,7 @@ export function FightDetail({ fightId }: { fightId: string }) {
       </div>
 
       {/* Details */}
-      <div className="border-border bg-background space-y-4 border-t p-6">
+      <div className="border-border bg-background space-y-4 border-2 p-6">
         <div className="flex justify-between">
           <span className="text-label-bold">LOCAL</span>
           <span className="text-body-md">{fight.location ?? "TBD"}</span>
@@ -201,13 +201,13 @@ export function FightDetail({ fightId }: { fightId: string }) {
 
       {/* Actions */}
       {isParticipant && fight.status !== "completed" && (
-        <div className="border-border bg-background space-y-6 border-t p-6">
+        <div className="border-border bg-background space-y-6 border-2 p-6">
           {/* Pending: propose / confirm / accept judge / cancel */}
           {fight.status === "pending" && (
             <>
               {!hasProposal && (isFighter1 || isFighter2) && (
                 <Button
-                  className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
+                  variant="outline"
                   onClick={() => setShowPropose((v) => !v)}
                 >
                   Propor detalhes da luta
@@ -225,7 +225,6 @@ export function FightDetail({ fightId }: { fightId: string }) {
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
                         maxLength={256}
-                        className="border-foreground bg-background focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 px-4"
                       />
                     </FieldContent>
                   </Field>
@@ -237,7 +236,6 @@ export function FightDetail({ fightId }: { fightId: string }) {
                         value={scheduledAt}
                         onChange={(e) => setScheduledAt(e.target.value)}
                         required
-                        className="border-border bg-background focus:bg-muted focus:border-border text-body-md h-12 rounded-none border-2 px-4"
                       />
                     </FieldContent>
                   </Field>
@@ -245,7 +243,6 @@ export function FightDetail({ fightId }: { fightId: string }) {
                     <Button
                       type="submit"
                       disabled={propose.isPending}
-                      className="bg-foreground text-background border-foreground hover:bg-background hover:text-foreground text-label-bold h-12 border-2 px-6"
                     >
                       {propose.isPending ? "Enviando..." : "Enviar proposta"}
                     </Button>
@@ -253,7 +250,6 @@ export function FightDetail({ fightId }: { fightId: string }) {
                       type="button"
                       variant="outline"
                       onClick={() => setShowPropose(false)}
-                      className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
                     >
                       Cancelar
                     </Button>
@@ -263,7 +259,7 @@ export function FightDetail({ fightId }: { fightId: string }) {
 
               {hasProposal && !isProposer && (isFighter1 || isFighter2) && (
                 <Button
-                  className="bg-primary text-primary-foreground border-primary hover:bg-foreground hover:border-foreground text-label-bold h-12 border-2 px-6"
+                  variant="action"
                   onClick={() => confirm.mutate({ fightId })}
                   disabled={confirm.isPending}
                 >
@@ -276,7 +272,6 @@ export function FightDetail({ fightId }: { fightId: string }) {
                   variant="outline"
                   onClick={() => acceptJudge.mutate({ fightId })}
                   disabled={acceptJudge.isPending}
-                  className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
                 >
                   {acceptJudge.isPending ? "Aceitando..." : "Aceitar como juiz"}
                 </Button>
@@ -292,7 +287,6 @@ export function FightDetail({ fightId }: { fightId: string }) {
                   <>
                     <Button
                       variant="outline"
-                      className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
                       onClick={() =>
                         complete.mutate({ fightId, winnerId: fight.fighter1Id })
                       }
@@ -304,7 +298,6 @@ export function FightDetail({ fightId }: { fightId: string }) {
                     </Button>
                     <Button
                       variant="outline"
-                      className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
                       onClick={() =>
                         complete.mutate({ fightId, winnerId: fight.fighter2Id })
                       }
@@ -327,7 +320,6 @@ export function FightDetail({ fightId }: { fightId: string }) {
                 variant="outline"
                 onClick={() => cancel.mutate({ fightId })}
                 disabled={cancel.isPending}
-                className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
               >
                 {cancel.isPending ? "Cancelando..." : "Cancelar luta"}
               </Button>

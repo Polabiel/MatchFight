@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
+import { Button } from "@acme/ui/button";
+
 import { useSession } from "~/auth/hooks";
 import { useTRPC } from "~/trpc/react";
 
@@ -12,6 +14,25 @@ const statusLabels: Record<string, string> = {
   completed: "CONCLUÍDA",
   cancelled: "CANCELADA",
 };
+
+function FighterAvatar({
+  fighter,
+}: {
+  fighter: { id: string; name: string; image: string | null };
+}) {
+  return fighter.image ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={fighter.image}
+      alt={fighter.name}
+      className="border-border h-10 w-10 rounded-none border object-cover"
+    />
+  ) : (
+    <div className="bg-foreground text-background flex h-10 w-10 items-center justify-center rounded-none">
+      {fighter.name.charAt(0)}
+    </div>
+  );
+}
 
 function FightCard({
   id,
@@ -37,36 +58,16 @@ function FightCard({
     "bg-foreground text-background px-3 py-1 text-label-sm rounded-none";
 
   return (
-    <Link href={`/fights/${id}`} className="border-border border-b py-6">
+    <Link href={`/fights/${id}`} className="border-border bg-background hover:bg-muted block border-2 p-6 transition-colors">
       <div className="flex flex-col items-start gap-4">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3">
-            {fighter1.image ? (
-              <img
-                src={fighter1.image}
-                alt={fighter1.name}
-                className="border-border h-10 w-10 rounded-none border object-cover"
-              />
-            ) : (
-              <div className="bg-foreground text-background flex h-10 w-10 items-center justify-center rounded-none">
-                {fighter1.name.charAt(0)}
-              </div>
-            )}
+            <FighterAvatar fighter={fighter1} />
             <p className="text-headline-md">{fighter1.name}</p>
           </div>
           <span className="text-muted-foreground">vs</span>
           <div className="flex items-center gap-3">
-            {fighter2.image ? (
-              <img
-                src={fighter2.image}
-                alt={fighter2.name}
-                className="border-border h-10 w-10 rounded-none border object-cover"
-              />
-            ) : (
-              <div className="bg-foreground text-background flex h-10 w-10 items-center justify-center rounded-none">
-                {fighter2.name.charAt(0)}
-              </div>
-            )}
+            <FighterAvatar fighter={fighter2} />
             <p className="text-headline-md">{fighter2.name}</p>
           </div>
         </div>
@@ -130,18 +131,17 @@ export function FightsList() {
         {myFights.length === 0 ? (
           <div className="border-border flex flex-col items-center gap-6 border p-10 text-center">
             <div className="text-headline-lg">
-<span className="text-label-bold uppercase">LUTAR</span>
-</div>
+              <span className="text-label-bold uppercase">LUTAR</span>
+            </div>
             <p className="text-headline-md">Nenhuma luta ainda</p>
             <p className="text-body-md max-w-md">
               Deslize, combine e marque seu primeiro combate.
             </p>
-            <Link
-              href="/swipe"
-              className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
-            >
-              Encontrar oponentes
-            </Link>
+            <Button asChild variant="outline">
+              <Link href="/swipe">
+                Encontrar oponentes
+              </Link>
+            </Button>
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 sm:gap-8">

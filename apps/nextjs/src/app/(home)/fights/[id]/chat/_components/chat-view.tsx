@@ -32,7 +32,7 @@ export function ChatView({ fightId }: { fightId: string }) {
         setContent("");
         await queryClient.invalidateQueries(trpc.chat.pathFilter());
       },
-      onError: (e) => toast.error(e.message || "Failed to send message"),
+      onError: (e) => toast.error(e.message || "Falha ao enviar mensagem"),
     }),
   );
 
@@ -51,8 +51,8 @@ export function ChatView({ fightId }: { fightId: string }) {
   };
 
   // Placeholder for opponent name and status - TODO: fetch from trpc.fight
-  const opponentName = "Opponent Name";
-  const status = "Scheduled";
+  const opponentName = "Oponente";
+  const status = "Agendada";
 
   return (
     <div className="mx-auto flex h-[calc(100vh-4rem)] w-full max-w-2xl flex-col p-6">
@@ -61,7 +61,7 @@ export function ChatView({ fightId }: { fightId: string }) {
           href={`/fights/${fightId}`}
           className="text-body-md text-muted-foreground hover:text-foreground"
         >
-          ← Back to fight
+          ← Voltar à luta
         </Link>
         <div className="flex flex-col items-center">
           <h1 className="text-headline-md">{opponentName}</h1>
@@ -77,9 +77,9 @@ export function ChatView({ fightId }: { fightId: string }) {
         {messages.length === 0 ? (
           <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-2 text-center">
             <div className="text-headline-lg">CHAT</div>
-            <p className="text-headline-md text-foreground">No messages yet</p>
+            <p className="text-headline-md text-foreground">Nenhuma mensagem ainda</p>
             <p className="text-body-md text-muted-foreground">
-              Send the first message to coordinate your fight.
+              Envie a primeira mensagem para coordenar sua luta.
             </p>
           </div>
         ) : (
@@ -91,7 +91,7 @@ export function ChatView({ fightId }: { fightId: string }) {
               return (
                 <div key={msg.id} className="flex flex-col items-center">
                   <div className="bg-muted text-muted-foreground text-label-sm rounded-none px-4 py-2">
-                    <p className="break-words whitespace-pre-wrap">
+                    <p className="wrap-break-word whitespace-pre-wrap">
                       {msg.content}
                     </p>
                   </div>
@@ -105,13 +105,12 @@ export function ChatView({ fightId }: { fightId: string }) {
                 className={`flex flex-col ${mine ? "items-end" : "items-start"}`}
               >
                 <div
-                  className={`text-body-md max-w-[80%] rounded-none px-4 py-2 ${
-                    mine
+                  className={`text-body-md max-w-[80%] rounded-none px-4 py-2 ${mine
                       ? "bg-foreground text-background border-foreground border"
                       : "bg-background border-foreground text-foreground border-2"
-                  }`}
+                    }`}
                 >
-                  <p className="break-words whitespace-pre-wrap">
+                  <p className="wrap-break-word whitespace-pre-wrap">
                     {msg.content}
                   </p>
                 </div>
@@ -135,17 +134,16 @@ export function ChatView({ fightId }: { fightId: string }) {
           type="text"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="Type a message..."
+          placeholder="Digite uma mensagem..."
           maxLength={2000}
           disabled={send.isPending}
-          className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
         />
         <Button
           type="submit"
+          variant="action"
           disabled={send.isPending || !content.trim()}
-          className="bg-primary text-primary-foreground border-primary hover:bg-foreground hover:border-foreground text-label-bold h-12 rounded-none border-2 px-6"
         >
-          {send.isPending ? "Sending..." : "Send"}
+          {send.isPending ? "Enviando..." : "Enviar"}
         </Button>
       </form>
     </div>
