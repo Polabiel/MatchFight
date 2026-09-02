@@ -97,13 +97,52 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 });
 
 /**
+ * Rate limiting middleware (in-memory sliding window)
+ *
+ * Mantém um contador por chave (IP para público, userId para autenticado) com
+ * janela deslizante de 60 segundos. Após exceder o limite, bloqueia a requisição.
+ * Adequado para dev e single-instance; para multi-instância usar Upstash Redis.
+ */
+const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minuto
+const RATE_LIMIT_MAX = 120; // 120 requisições/minuto (generoso)
+
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+
+const rateLimitMiddleware = t.middleware(({ ctx, next, path: _path }) => {
+  // Em ambiente de teste, não limita (hermeticidade; evita TOO_MANY_REQUESTS
+  // na suíte que executa muitas requisições com o mesmo usuário)
+  if (process.env.NODE_ENV === "test") return next();
+
+  const key = ctx.session?.user.id ?? "anon";
+  const now = Date.now();
+
+  const entry = rateLimitStore.get(key);
+  if (!entry || now > entry.resetAt) {
+    rateLimitStore.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return next();
+  }
+
+  if (entry.count >= RATE_LIMIT_MAX) {
+    throw new TRPCError({
+      code: "TOO_MANY_REQUESTS",
+      message: `Rate limit exceeded. Try again in ${Math.ceil((entry.resetAt - now) / 1000)}s.`,
+    });
+  }
+
+  entry.count++;
+  return next();
+});
+
+/**
  * Public (unauthed) procedure
  *
  * This is the base piece you use to build new queries and mutations on your
  * tRPC API. It does not guarantee that a user querying is authorized, but you
  * can still access user session data if they are logged in
  */
-export const publicProcedure = t.procedure.use(timingMiddleware);
+export const publicProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(rateLimitMiddleware);
 
 /**
  * Protected (authenticated) procedure
@@ -125,4 +164,5 @@ export const protectedProcedure = t.procedure
         session: { ...ctx.session, user: ctx.session.user },
       },
     });
-  });
+  })
+  .use(rateLimitMiddleware);

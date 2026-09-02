@@ -1,8 +1,11 @@
+import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 import * as schema from "@acme/db/schema";
+import { profileSchemas } from "@acme/validators";
 
+import { validateLocation } from "../lib/geocode";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const profileRouter = createTRPCRouter({
@@ -59,31 +62,24 @@ export const profileRouter = createTRPCRouter({
 
   update: protectedProcedure
     .input(
-      z.object({
-        nickname: z.string().min(1),
-        bio: z.string().optional(),
+      profileSchemas.updateProfile.extend({
+        // Mantém nickname e role obrigatórios (o fluxo sempre envia ambos)
+        nickname: z.string().min(1).max(64),
         role: z.enum(["fighter", "judge", "both"]),
-        weightClass: z
-          .enum([
-            "flyweight",
-            "bantamweight",
-            "featherweight",
-            "lightweight",
-            "welterweight",
-            "middleweight",
-            "light_heavyweight",
-            "heavyweight",
-          ])
-          .optional(),
-        wins: z.number().int().nonnegative().default(0),
-        losses: z.number().int().nonnegative().default(0),
-        location: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
       const { nickname, bio, role, weightClass, wins, losses, location } =
         input;
+
+      // Valida que a cidade informada existe (se fornecida)
+      if (location && !(await validateLocation(location))) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Localização inválida. Informe uma cidade existente.",
+        });
+      }
 
       // Check if profile exists
       const existingProfile = await ctx.db.query.Profile.findFirst({

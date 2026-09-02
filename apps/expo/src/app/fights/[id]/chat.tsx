@@ -60,7 +60,7 @@ export default function FightChat() {
         <Stack.Screen options={{ title: "Fight Chat" }} />
         <View className="bg-background h-full w-full p-4">
           <Link href={`/fights/${id}`} className="mb-2">
-            <Text className="text-muted-foreground text-sm">
+            <Text className="text-body-md text-muted-foreground">
               ← Back to fight
             </Text>
           </Link>
@@ -72,15 +72,15 @@ export default function FightChat() {
           ) : (
             <FlatList
               ref={listRef}
-              className="border-border bg-card flex-1 rounded-2xl border"
-              contentContainerStyle={{ padding: 12, gap: 8 }}
+              className="border-border bg-background flex-1 rounded-none border"
+              contentContainerStyle={{ padding: 16, gap: 8 }}
               data={messages}
               keyExtractor={(m) => m.id}
               ListEmptyComponent={
                 <View className="items-center gap-2 py-12">
-                  <Text className="text-4xl">💬</Text>
-                  <Text className="font-semibold">No messages yet</Text>
-                  <Text className="text-muted-foreground text-sm">
+                  <Text className="text-headline-lg">CHAT</Text>
+                  <Text className="text-headline-md">No messages yet</Text>
+                  <Text className="text-body-md text-muted-foreground">
                     Send the first message to coordinate your fight.
                   </Text>
                 </View>
@@ -101,17 +101,19 @@ export default function FightChat() {
                     className={`flex-col ${mine ? "items-end" : "items-start"}`}
                   >
                     <View
-                      className={`max-w-[80%] rounded-2xl px-4 py-2 shadow-sm ${
-                        mine ? "bg-primary" : "bg-muted"
+                      className={`max-w-[80%] rounded-none px-4 py-2 ${
+                        mine
+                          ? "bg-foreground text-background"
+                          : "bg-background border-2 border-foreground"
                       }`}
                     >
                       <Text
-                        className={`${mine ? "text-primary-foreground" : "text-foreground"}`}
+                        className={`${mine ? "text-background" : "text-foreground"}`}
                       >
                         {item.content}
                       </Text>
                     </View>
-                    <Text className="text-muted-foreground mt-1 px-1 text-xs">
+                    <Text className="text-label-sm text-muted-foreground mt-2 px-2">
                       {new Date(item.createdAt).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -126,7 +128,7 @@ export default function FightChat() {
           {/* Composer */}
           <View className="mt-3 flex-row gap-2">
             <TextInput
-              className="border-input bg-background text-foreground flex-1 rounded-md border px-3 py-2"
+              className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 flex-1 rounded-none border-2 bg-transparent px-4"
               value={content}
               onChangeText={setContent}
               placeholder="Type a message..."
@@ -136,9 +138,9 @@ export default function FightChat() {
             <Pressable
               onPress={handleSend}
               disabled={send.isPending || !content.trim()}
-              className="bg-primary items-center justify-center rounded-md px-4"
+              className="bg-primary text-primary-foreground border-primary items-center justify-center rounded-none border-2 px-6"
             >
-              <Text className="text-primary-foreground font-semibold">
+              <Text className="text-label-bold text-primary-foreground">
                 {send.isPending ? "..." : "Send"}
               </Text>
             </Pressable>

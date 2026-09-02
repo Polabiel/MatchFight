@@ -49,19 +49,19 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   if (!session) {
     return (
       <View className="flex-1 items-center justify-center gap-6 p-6">
-        <Text className="text-5xl font-extrabold">
+        <Text className="text-display-lg">
           Match<Text className="text-primary">Fight</Text>
         </Text>
-        <Text className="text-muted-foreground text-center">
+        <Text className="text-body-md text-muted-foreground text-center">
           Find your next opponent. Swipe, match, fight.
         </Text>
         <Pressable
           onPress={() =>
             authClient.signIn.social({ provider: "discord", callbackURL: "/" })
           }
-          className="bg-primary flex items-center rounded-md px-6 py-3"
+          className="bg-primary text-primary-foreground border-2 border-primary h-12 px-6 text-label-bold flex items-center justify-center"
         >
-          <Text className="text-primary-foreground font-semibold">
+          <Text className="text-label-bold">
             Sign in with Discord
           </Text>
         </Pressable>
@@ -132,7 +132,7 @@ function SwipeCard() {
   if (candidatesQuery.isError) {
     return (
       <View className="flex-1 items-center justify-center p-6">
-        <Text className="text-destructive text-center">
+        <Text className="text-body-md text-destructive text-center">
           Failed to load candidates
         </Text>
       </View>
@@ -152,12 +152,12 @@ function SwipeCard() {
                 setWeightClass(wc.value || undefined);
                 setIndex(0);
               }}
-              className={`rounded-full px-3 py-1 ${
+              className={`rounded-none px-3 py-1 ${
                 active ? "bg-primary" : "bg-muted"
               }`}
             >
               <Text
-                className={`text-xs font-medium ${
+                className={`text-label-sm ${
                   active ? "text-primary-foreground" : "text-foreground"
                 }`}
               >
@@ -170,9 +170,9 @@ function SwipeCard() {
 
       {!current ? (
         <View className="flex-1 items-center justify-center gap-4 p-6">
-          <Text className="text-4xl">🥊</Text>
-          <Text className="text-xl font-bold">No more candidates</Text>
-          <Text className="text-muted-foreground text-center">
+          <Text className="text-headline-lg">LUTAR</Text>
+          <Text className="text-headline-lg">No more candidates</Text>
+          <Text className="text-body-md text-muted-foreground text-center">
             You've seen everyone in this weight class.
           </Text>
           <Pressable
@@ -182,15 +182,15 @@ function SwipeCard() {
                 trpc.swipe.candidates.pathFilter(),
               );
             }}
-            className="bg-muted rounded-md px-4 py-2"
+            className="bg-background border-2 border-foreground text-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
           >
-            <Text className="font-medium">Refresh</Text>
+            <Text className="text-label-bold">Refresh</Text>
           </Pressable>
         </View>
       ) : (
         <>
-          <View className="border-border bg-card w-full overflow-hidden rounded-2xl border shadow-lg">
-            <View className="bg-muted h-64 w-full overflow-hidden">
+          <View className="border-border bg-card w-full overflow-hidden rounded-none border">
+            <View className="bg-muted w-full h-48 overflow-hidden">
               {current.image ? (
                 <Image
                   source={{ uri: current.image }}
@@ -199,91 +199,90 @@ function SwipeCard() {
                 />
               ) : (
                 <View className="h-full items-center justify-center">
-                  <Text className="text-6xl">🥊</Text>
+                  <Text className="text-headline-lg">LUTAR</Text>
                 </View>
               )}
-              <View className="absolute inset-x-0 bottom-0 bg-black/70 p-4">
-                <Text className="text-2xl font-bold text-white">
-                  {current.name}
-                </Text>
-                <Text className="text-sm text-white/90">
-                  "{current.nickname}"
-                </Text>
-              </View>
             </View>
 
             <View className="gap-3 p-5">
               {current.bio ? (
-                <Text className="text-muted-foreground text-sm">
+                <Text className="text-body-md text-muted-foreground">
                   {current.bio}
                 </Text>
               ) : null}
               <View className="flex-row flex-wrap gap-2">
                 {current.weightClass ? (
-                  <Text className="bg-primary/10 text-primary rounded-full px-2.5 py-0.5 text-xs font-medium">
+                  <View className="rounded-none px-3 py-1 bg-primary text-primary-foreground text-label-sm">
                     {current.weightClass
                       .replace("_", " ")
-                      .replace(/\b\w/g, (c) => c.toUpperCase())}
-                  </Text>
+                      .replace(/\b\w/g, (c) => c.toUpperCase())
+                    }
+                  </View>
                 ) : null}
-                <Text className="bg-muted rounded-full px-2.5 py-0.5 text-xs font-medium">
+                <View className="rounded-none px-3 py-1 bg-foreground text-background text-label-sm">
                   {current.wins}-{current.losses}
-                </Text>
+                </View>
                 {current.location ? (
-                  <Text className="bg-muted rounded-full px-2.5 py-0.5 text-xs font-medium">
-                    📍 {current.location}
-                  </Text>
+                  <View className="rounded-none px-3 py-1 bg-foreground text-background text-label-sm">
+                    LOCAL {current.location}
+                  </View>
                 ) : null}
               </View>
 
-              <View className="mt-2 flex-row items-center justify-center gap-8">
+              <View className="mt-2 flex-row items-center justify-center gap-6">
                 <Pressable
                   onPress={() => pass.mutate({ targetId: current.id })}
                   disabled={pass.isPending || like.isPending}
-                  className="bg-muted h-14 w-14 items-center justify-center rounded-full"
+                  className="bg-background border-2 border-foreground text-foreground h-12 w-12 rounded-none flex items-center justify-center"
                 >
-                  <Text className="text-xl">✕</Text>
+                  <Text>✕</Text>
                 </Pressable>
                 <Pressable
                   onPress={() => like.mutate({ targetId: current.id })}
                   disabled={pass.isPending || like.isPending}
-                  className="bg-primary h-14 w-14 items-center justify-center rounded-full"
+                  className="bg-foreground text-background h-12 w-12 rounded-none flex items-center justify-center"
                 >
-                  <Text className="text-primary-foreground text-xl">✓</Text>
+                  <Text>✓</Text>
                 </Pressable>
               </View>
             </View>
           </View>
+
+          {/* Match modal */}
+          {matched ? (
+            <View
+              className="absolute inset-0 z-50 items-center justify-center bg-foreground/50 p-4"
+            >
+              <View className="border-border bg-card w-full max-w-sm items-center gap-4 rounded-none border p-8">
+                <View className="bg-foreground flex h-16 w-16 items-center justify-center rounded-none">
+                  <Text className="text-background text-label-bold">MATCH</Text>
+                </View>
+                <Text className="text-headline-lg">It's a Match!</Text>
+                <Text className="text-body-md text-muted-foreground text-center">
+                  You and{" "}
+                  <Text className="text-body-md">
+                    {matched.name}
+                  </Text>{" "}
+                  ({matched.nickname}) liked each other.
+                </Text>
+                <Link
+                  href={`/fights/${matched.fightId}`}
+                  className="bg-background border-2 border-foreground text-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
+                >
+                  <Text className="text-label-bold">
+                    View fight
+                  </Text>
+                </Link>
+                <Pressable onPress={() => setMatched(null)}>
+                  <Text className="text-body-md text-muted-foreground">
+                    Keep swiping
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          ) : null}
         </>
       )}
-
-      {/* Match modal */}
-      {matched ? (
-        <View className="absolute inset-0 z-50 items-center justify-center bg-black/70 p-4">
-          <View className="border-border bg-card w-full max-w-sm items-center gap-4 rounded-2xl border p-8">
-            <Text className="text-6xl">🎉</Text>
-            <Text className="text-3xl font-extrabold">It's a Match!</Text>
-            <Text className="text-muted-foreground text-center">
-              You and{" "}
-              <Text className="text-foreground font-semibold">
-                {matched.name}
-              </Text>{" "}
-              ({matched.nickname}) liked each other.
-            </Text>
-            <Link
-              href={`/fights/${matched.fightId}`}
-              className="bg-primary w-full items-center rounded-md py-2"
-            >
-              <Text className="text-primary-foreground font-semibold">
-                View fight
-              </Text>
-            </Link>
-            <Pressable onPress={() => setMatched(null)}>
-              <Text className="text-muted-foreground">Keep swiping</Text>
-            </Pressable>
-          </View>
-        </View>
-      ) : null}
     </>
   );
 }
@@ -292,17 +291,21 @@ export default function Index() {
   return (
     <SafeAreaView className="bg-background flex-1">
       <Stack.Screen options={{ title: "Find your opponent" }} />
-      <View className="bg-background h-full w-full gap-4 p-4">
+      <View className="bg-background flex-1 gap-4 p-4">
         <View className="flex-row items-center justify-between">
-          <Text className="text-2xl font-extrabold">
+          <Text className="text-display-lg">
             Match<Text className="text-primary">Fight</Text>
           </Text>
           <View className="flex-row gap-4">
             <Link href="/fights">
-              <Text className="text-primary font-medium">Fights</Text>
+              <Text className="text-body-md text-foreground">
+                Fights
+              </Text>
             </Link>
             <Link href="/profile">
-              <Text className="text-primary font-medium">Profile</Text>
+              <Text className="text-body-md text-foreground">
+                Profile
+              </Text>
             </Link>
           </View>
         </View>

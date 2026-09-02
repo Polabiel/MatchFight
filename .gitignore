@@ -55,3 +55,6 @@ dist/
 
 # tanstack
 .tanstack
+
+# superpowers plugin (cloned external repo, not part of this project)
+superpowers-skills/
