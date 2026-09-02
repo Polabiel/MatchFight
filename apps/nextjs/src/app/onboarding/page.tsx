@@ -8,6 +8,7 @@ import { Button } from "@acme/ui/button";
 import { Field, FieldContent, FieldLabel } from "@acme/ui/field";
 import { Input } from "@acme/ui/input";
 import { Label } from "@acme/ui/label";
+import { toast } from "@acme/ui/toast";
 
 import { useTRPC } from "~/trpc/react";
 
@@ -22,36 +23,30 @@ const weightClasses = [
   { value: "heavyweight", label: "Heavyweight" },
 ] as const;
 
-const carouselSlides = [
-  {
-    title: "Descubra",
-    description: "Encontre lutadores e juízes por categoria de peso",
-  },
-  {
-    title: "Combine",
-    description: "Interesse mútuo forma uma dupla, um juiz pode arbitrar",
-  },
-  {
-    title: "Lute",
-    description:
-      "Agende local, data, regras — acompanhe o status até o resultado",
-  },
-];
+const welcomeMessage = {
+  title: "Prepare-se para lutar",
+  description:
+    "Vamos configurar seu perfil para encontrar oponentes e marcar combates.",
+};
 
-const wizardSteps = [
-  { title: "Função", description: "Quem é você?" },
-  { title: "Identidade", description: "Apelido e categoria de peso" },
-  { title: "Cartel", description: "Vitórias, derrotas e localização" },
-  { title: "Bio", description: "Conte sobre você" },
-];
+const wizardSteps = (role: string | null) => {
+  const steps = [
+    { title: "Função", description: "Quem é você?" },
+    { title: "Identidade", description: "Apelido e categoria de peso" },
+  ];
+  if (role === "judge") {
+    steps.push({ title: "Localização", description: "Onde você atua" });
+  } else {
+    steps.push({ title: "Cartel", description: "Vitórias, derrotas e localização" });
+  }
+  steps.push({ title: "Bio", description: "Conte sobre você" });
+  return steps;
+};
 
 export default function OnboardingPage() {
   const router = useRouter();
   const trpc = useTRPC();
   const [currentStep, setCurrentStep] = useState(0);
-
-  // Welcome carousel state
-  const [carouselIndex, setCarouselIndex] = useState(0);
 
   // Form state
   const [role, setRole] = useState<"fighter" | "judge" | "both" | null>(null);
@@ -71,6 +66,7 @@ export default function OnboardingPage() {
   const [losses, setLosses] = useState("");
   const [location, setLocation] = useState("");
   const [bio, setBio] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const updateProfile = useMutation(
     trpc.profile.update.mutationOptions({
@@ -78,61 +74,51 @@ export default function OnboardingPage() {
         router.replace("/swipe");
       },
       onError: (error) => {
-        console.error("Failed to create profile:", error);
+        setError(error.message || "Não foi possível salvar seu perfil. Tente novamente.");
+        toast.error(error.message || "Não foi possível salvar seu perfil");
       },
     }),
   );
 
-  // Handle welcome carousel navigation
-  const handleCarouselNext = () => {
-    if (carouselIndex < 2) {
-      setCarouselIndex(carouselIndex + 1);
-    } else {
-      // Move to profile wizard
-      setCurrentStep(1);
-    }
-  };
-
-  const handleCarouselSkip = () => {
-    // Skip to profile wizard
-    setCurrentStep(1);
-  };
-
-  // Handle profile wizard navigation
-  const handleBack = () => {
-    if (currentStep === 0) {
-      // On welcome carousel, go back would exit (but we don't allow exiting)
-    } else if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
+  // Jump from a step to the next valid one
   const handleNext = () => {
+    setError(null);
     // Validate current step before moving to next
     if (currentStep === 0) {
-      // Welcome carousel - handled by carousel navigation
-      handleCarouselNext();
+      // Welcome — start the wizard
+      setCurrentStep(1);
     } else if (currentStep === 1) {
       // Role step
       if (role) {
         setCurrentStep(2);
+      } else {
+        setError("Selecione sua função para continuar");
       }
     } else if (currentStep === 2) {
       // Identity step
       if (nickname.trim()) {
         setCurrentStep(3);
+      } else {
+        setError("Digite seu apelido para continuar");
       }
     } else if (currentStep === 3) {
-      // Record step
-      const winsNum = parseInt(wins, 10);
-      const lossesNum = parseInt(losses, 10);
-      if (
-        !isNaN(winsNum) &&
-        !isNaN(lossesNum) &&
-        winsNum >= 0 &&
-        lossesNum >= 0
-      ) {
+      if (role === "judge") {
+        // Judges only fill location — it's optional
         setCurrentStep(4);
+      } else {
+        // Record step
+        const winsNum = parseInt(wins, 10);
+        const lossesNum = parseInt(losses, 10);
+        if (
+          !isNaN(winsNum) &&
+          !isNaN(lossesNum) &&
+          winsNum >= 0 &&
+          lossesNum >= 0
+        ) {
+          setCurrentStep(4);
+        } else {
+          setError("Preencha vitórias e derrotas com números válidos");
+        }
       }
     } else if (currentStep === 4) {
       // Bio step - move to submit
@@ -140,14 +126,30 @@ export default function OnboardingPage() {
     }
   };
 
+  const handleBack = () => {
+    setError(null);
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
   const handleSubmit = () => {
     // Final validation before submitting
-    if (!nickname.trim() || !role) return;
-
-    const winsNum = wins ? parseInt(wins, 10) : 0;
-    const lossesNum = losses ? parseInt(losses, 10) : 0;
-    if (isNaN(winsNum) || isNaN(lossesNum) || winsNum < 0 || lossesNum < 0)
+    if (!nickname.trim() || !role) {
+      setError("Preencha os campos obrigatórios");
       return;
+    }
+
+    const winsNum = role === "judge" ? 0 : wins ? parseInt(wins, 10) : 0;
+    const lossesNum =
+      role === "judge" ? 0 : losses ? parseInt(losses, 10) : 0;
+    if (
+      role !== "judge" &&
+      (isNaN(winsNum) || isNaN(lossesNum) || winsNum < 0 || lossesNum < 0)
+    ) {
+      setError("Preencha o cartel com números válidos");
+      return;
+    }
 
     updateProfile.mutate({
       nickname: nickname.trim(),
@@ -166,27 +168,14 @@ export default function OnboardingPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       {currentStep === 0 ? (
-        // Welcome Carousel
+        // Welcome screen
         <div className="flex flex-1 flex-col items-center justify-center gap-8 p-6">
-          {/* Slide indicator dots */}
-          <div className="flex gap-2">
-            {carouselSlides.map((_, index) => (
-              <div
-                key={index}
-                className={`h-2 w-2 rounded-none transition-colors ${
-                  carouselIndex === index ? "bg-foreground" : "bg-muted"
-                }`}
-              />
-            ))}
-          </div>
-
-          {/* Slide content */}
           <div className="max-w-2xl items-center gap-4 text-center">
             <h1 className="text-headline-lg font-extrabold tracking-tight">
-              {carouselSlides[carouselIndex]?.title ?? ""}
+              {welcomeMessage.title}
             </h1>
             <p className="text-body-md text-muted-foreground max-w-md">
-              {carouselSlides[carouselIndex]?.description ?? ""}
+              {welcomeMessage.description}
             </p>
           </div>
 
@@ -195,16 +184,16 @@ export default function OnboardingPage() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={handleCarouselSkip}
+              onClick={() => setCurrentStep(1)}
             >
               Pular
             </Button>
             <Button
-              onClick={handleCarouselNext}
+              onClick={() => setCurrentStep(1)}
               className="w-full sm:w-auto"
               size="lg"
             >
-              {carouselIndex === 2 ? "Criar perfil" : "Próximo"}
+              Começar
             </Button>
           </div>
         </div>
@@ -216,32 +205,40 @@ export default function OnboardingPage() {
               {/* Progress indicator */}
               <div className="mb-8">
                 <div className="mb-2 flex gap-2">
-                  {wizardSteps.map((_, index) => (
+                  {wizardSteps(role).map((_, index) => (
                     <div
                       key={index}
-                      className={`h-1.5 flex-1 rounded-none transition-colors ${
-                        index <= currentStep - 1
-                          ? "bg-foreground"
-                          : "bg-muted"
-                      }`}
+                      className={`h-1.5 flex-1 rounded-none transition-colors ${index <= currentStep - 1
+                        ? "bg-foreground"
+                        : "bg-muted"
+                        }`}
                     />
                   ))}
                 </div>
                 <div className="text-muted-foreground flex gap-2 text-label-sm">
-                  {wizardSteps.map((step, index) => (
+                  {wizardSteps(role).map((step, index) => (
                     <span
                       key={index}
-                      className={`flex-1 text-center ${
-                        index <= currentStep - 1
-                          ? "text-foreground"
-                          : "text-muted-foreground"
-                      }`}
+                      className={`flex-1 text-center ${index <= currentStep - 1
+                        ? "text-foreground"
+                        : "text-muted-foreground"
+                        }`}
                     >
                       {step.title}
                     </span>
                   ))}
                 </div>
               </div>
+
+              {/* Inline error message */}
+              {error && (
+                <p
+                  role="alert"
+                  className="text-destructive mb-6 text-body-md"
+                >
+                  {error}
+                </p>
+              )}
 
               {/* Step content */}
               {currentStep === 1 && (
@@ -264,7 +261,7 @@ export default function OnboardingPage() {
                           key={roleOption.value}
                           type="button"
                           variant={selected ? "default" : "outline"}
-                          className="flex-1 flex-col gap-2 rounded-none border-2 p-6 transition-all"
+                          className="flex-1 flex-col gap-2 p-6 transition-all"
                           onClick={() =>
                             setRole(
                               roleOption.value as "fighter" | "judge" | "both",
@@ -323,7 +320,6 @@ export default function OnboardingPage() {
                                   type="button"
                                   variant={selected ? "default" : "outline"}
                                   size="sm"
-                                  className="rounded-none"
                                   onClick={() => setWeightClass(wc.value)}
                                 >
                                   {wc.label}
@@ -331,11 +327,6 @@ export default function OnboardingPage() {
                               );
                             })}
                           </div>
-                          <p className="text-muted-foreground mt-2 text-label-sm">
-                            flyweight, bantamweight, featherweight, lightweight,
-                            welterweight, middleweight, light_heavyweight,
-                            heavyweight
-                          </p>
                         </FieldContent>
                       </Field>
                     )}
@@ -345,59 +336,88 @@ export default function OnboardingPage() {
 
               {currentStep === 3 && (
                 <>
-                  <h2 className="text-headline-lg mb-2 text-center">
-                    Seu Cartel
-                  </h2>
-                  <p className="text-muted-foreground mb-8 text-center">
-                    Adicione seu cartel de lutas e localização
-                  </p>
+                  {role === "judge" ? (
+                    <>
+                      <h2 className="text-headline-lg mb-2 text-center">
+                        Sua Localização
+                      </h2>
+                      <p className="text-muted-foreground mb-8 text-center">
+                        Informe onde você atua como juiz
+                      </p>
 
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4">
-                      <Field orientation="vertical">
-                        <FieldLabel>
-                          <Label className="text-label-bold">Vitórias</Label>
-                        </FieldLabel>
-                        <FieldContent>
-                          <Input
-                            type="number"
-                            value={wins}
-                            onChange={(e) => setWins(e.target.value)}
-                            placeholder="0"
-                            min="0"
-                          />
-                        </FieldContent>
-                      </Field>
-                      <Field orientation="vertical">
-                        <FieldLabel>
-                          <Label className="text-label-bold">Derrotas</Label>
-                        </FieldLabel>
-                        <FieldContent>
-                          <Input
-                            type="number"
-                            value={losses}
-                            onChange={(e) => setLosses(e.target.value)}
-                            placeholder="0"
-                            min="0"
-                          />
-                        </FieldContent>
-                      </Field>
-                    </div>
+                      <div className="space-y-6">
+                        <Field orientation="vertical">
+                          <FieldLabel>
+                            <Label className="text-label-bold">Localização</Label>
+                          </FieldLabel>
+                          <FieldContent>
+                            <Input
+                              value={location}
+                              onChange={(e) => setLocation(e.target.value)}
+                              placeholder="Cidade, País"
+                              maxLength={128}
+                            />
+                          </FieldContent>
+                        </Field>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <h2 className="text-headline-lg mb-2 text-center">
+                        Seu Cartel
+                      </h2>
+                      <p className="text-muted-foreground mb-8 text-center">
+                        Adicione seu cartel de lutas e localização
+                      </p>
 
-                    <Field orientation="vertical">
-                      <FieldLabel>
-                        <Label className="text-label-bold">Localização</Label>
-                      </FieldLabel>
-                      <FieldContent>
-                        <Input
-                          value={location}
-                          onChange={(e) => setLocation(e.target.value)}
-                          placeholder="Cidade, País"
-                          maxLength={128}
-                        />
-                      </FieldContent>
-                    </Field>
-                  </div>
+                      <div className="space-y-6">
+                        <div className="grid grid-cols-2 gap-4">
+                          <Field orientation="vertical">
+                            <FieldLabel>
+                              <Label className="text-label-bold">Vitórias</Label>
+                            </FieldLabel>
+                            <FieldContent>
+                              <Input
+                                type="number"
+                                value={wins}
+                                onChange={(e) => setWins(e.target.value)}
+                                placeholder="0"
+                                min="0"
+                              />
+                            </FieldContent>
+                          </Field>
+                          <Field orientation="vertical">
+                            <FieldLabel>
+                              <Label className="text-label-bold">Derrotas</Label>
+                            </FieldLabel>
+                            <FieldContent>
+                              <Input
+                                type="number"
+                                value={losses}
+                                onChange={(e) => setLosses(e.target.value)}
+                                placeholder="0"
+                                min="0"
+                              />
+                            </FieldContent>
+                          </Field>
+                        </div>
+
+                        <Field orientation="vertical">
+                          <FieldLabel>
+                            <Label className="text-label-bold">Localização</Label>
+                          </FieldLabel>
+                          <FieldContent>
+                            <Input
+                              value={location}
+                              onChange={(e) => setLocation(e.target.value)}
+                              placeholder="Cidade, País"
+                              maxLength={128}
+                            />
+                          </FieldContent>
+                        </Field>
+                      </div>
+                    </>
+                  )}
                 </>
               )}
 
@@ -412,7 +432,7 @@ export default function OnboardingPage() {
                     <Field orientation="vertical">
                       <FieldContent>
                         <textarea
-                          className="border-foreground bg-background text-foreground text-body-md focus-visible:border-ring focus-visible:ring-ring/50 placeholder:text-muted-foreground h-32 w-full min-w-0 resize-none rounded-none border-2 px-4 py-3 outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                          className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-32 w-full resize-none rounded-none border-2 bg-transparent px-4 py-3 outline-none disabled:opacity-50"
                           value={bio}
                           onChange={(e) => setBio(e.target.value)}
                           placeholder="Conte sobre seu estilo de luta, objetivos ou qualquer outra coisa..."
@@ -433,7 +453,7 @@ export default function OnboardingPage() {
                     Revise seu perfil antes de finalizar
                   </p>
 
-                  <div className="bg-background border-border rounded-none border p-6">
+                  <div className="bg-background border-border rounded-none border-2 p-6">
                     <div className="space-y-4">
                       <div className="flex justify-between">
                         <span className="text-label-bold">Função</span>
@@ -469,12 +489,15 @@ export default function OnboardingPage() {
                           </div>
                         )}
 
-                      <div className="flex justify-between">
-                        <span className="text-label-bold">Cartel</span>
-                        <span className="text-body-md">
-                          {parseInt(wins, 10) || 0}-{parseInt(losses, 10) || 0}
-                        </span>
-                      </div>
+                      {role !== "judge" && (
+                        <div className="flex justify-between">
+                          <span className="text-label-bold">Cartel</span>
+                          <span className="text-body-md">
+                            {parseInt(wins, 10) || 0}-
+                            {parseInt(losses, 10) || 0}
+                          </span>
+                        </div>
+                      )}
 
                       {location && (
                         <div className="flex justify-between">
