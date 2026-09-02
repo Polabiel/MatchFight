@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -68,13 +69,26 @@ function Feature({
   index,
   title,
   description,
+  image,
+  imageAlt,
 }: {
   index: string;
   title: string;
   description: string;
+  image: string;
+  imageAlt: string;
 }) {
   return (
     <div className="border-border flex flex-col gap-4 border-t pt-8">
+      <div className="border-border relative aspect-4/3 overflow-hidden border">
+        <Image
+          src={image}
+          alt={imageAlt}
+          fill
+          sizes="(min-width: 640px) 33vw, 100vw"
+          className="object-cover grayscale contrast-125"
+        />
+      </div>
       <span className="text-muted-foreground text-label-bold uppercase">{index}</span>
       <h3 className="text-headline-md">{title}</h3>
       <p className="text-muted-foreground text-body-md">{description}</p>
@@ -134,6 +148,16 @@ export default async function HomePage() {
                 </Link>
               </Button>
             </div>
+            <div className="border-border relative mt-16 aspect-21/9 w-full overflow-hidden border sm:mt-20">
+              <Image
+                src="/images/landing/hero.jpg"
+                alt="Lutador treinando em saco de pancada em academia escura"
+                fill
+                priority
+                sizes="(min-width: 1024px) 1152px, 100vw"
+                className="object-cover grayscale contrast-125"
+              />
+            </div>
           </div>
         </section>
 
@@ -144,17 +168,71 @@ export default async function HomePage() {
               index="01"
               title="Descobrir"
               description="Descubra lutadores e juízes da sua categoria de peso. Filtre pelo que importa para você."
+              image="/images/landing/feature-1.jpg"
+              imageAlt="Lutador de MMA em retrato de perfil"
             />
             <Feature
               index="02"
               title="Combinar"
               description="Quando há interesse mútuo, vocês formam um par. Um juiz pode assumir a arbitragem."
+              image="/images/landing/feature-2.jpg"
+              imageAlt="Luvas de boxe penduradas"
             />
             <Feature
               index="03"
               title="Lutar"
               description="Combine local, data e regras. Acompanhe o status até o resultado final."
+              image="/images/landing/feature-3.jpg"
+              imageAlt="Ringue de boxe vazio sob holofotes"
             />
+          </div>
+        </section>
+
+        {/* Galeria / Stats */}
+        <section className="border-border border-b">
+          <div className="mx-auto grid max-w-6xl gap-10 px-6 py-20 lg:grid-cols-2 lg:items-center">
+            <div className="border-border relative aspect-3/4 overflow-hidden border sm:aspect-4/3 lg:aspect-3/4">
+              <Image
+                src="/images/landing/gallery-wide.jpg"
+                alt="Lutadora treinando chutes em academia"
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-cover grayscale contrast-125"
+              />
+            </div>
+            <div className="flex flex-col gap-8">
+              <span className="text-muted-foreground text-label-bold uppercase">
+                A comunidade
+              </span>
+              <h2 className="text-headline-lg max-w-md text-balance">
+                Feito por quem vive o treino.
+              </h2>
+              <p className="text-muted-foreground text-body-lg max-w-md leading-relaxed">
+                Do primeiro sparring à luta oficial: perfis verificados,
+                categorias de peso reais e juízes credenciados para cada
+                encontro.
+              </p>
+              <dl className="border-border grid grid-cols-3 border-t pt-8">
+                <div className="flex flex-col gap-1">
+                  <dt className="text-muted-foreground text-label-sm uppercase">
+                    Lutadores
+                  </dt>
+                  <dd className="font-mono text-2xl font-bold">1.2k+</dd>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <dt className="text-muted-foreground text-label-sm uppercase">
+                    Lutas marcadas
+                  </dt>
+                  <dd className="font-mono text-2xl font-bold">340+</dd>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <dt className="text-muted-foreground text-label-sm uppercase">
+                    Juízes
+                  </dt>
+                  <dd className="font-mono text-2xl font-bold">58</dd>
+                </div>
+              </dl>
+            </div>
           </div>
         </section>
 
