@@ -54,4 +54,7 @@ dist/
 .turbo
 
 # tanstack
-.tanstackui-surface-map.md
+.tanstack
+
+# superpowers plugin (cloned external repo, not part of this project)
+superpowers-skills/
