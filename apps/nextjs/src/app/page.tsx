@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { Button } from "@acme/ui/button";
 
+import { SignInButton } from "~/app/_components/sign-in-button";
 import { auth, getSession } from "~/auth/server";
 
 function Logo() {
@@ -11,42 +12,6 @@ function Logo() {
       <span className="text-foreground text-headline-md">Match</span>
       <span className="text-primary text-headline-md">Fight</span>
     </Link>
-  );
-}
-
-type ButtonVariant =
-  | "default"
-  | "destructive"
-  | "outline"
-  | "secondary"
-  | "ghost"
-  | "link"
-  | "action";
-
-type ButtonSize = "default" | "sm" | "lg" | "icon";
-
-function SignInButton({
-  className,
-  variant,
-  size,
-  formAction,
-}: {
-  className: string;
-  variant: ButtonVariant;
-  size: ButtonSize;
-  formAction: () => Promise<void>;
-}) {
-  return (
-    <form>
-      <Button
-        variant={variant}
-        size={size}
-        className={className}
-        formAction={formAction}
-      >
-        Entrar
-      </Button>
-    </form>
   );
 }
 
@@ -60,7 +25,7 @@ function Navbar({ isAuthed }: { isAuthed: boolean }) {
             href="/swipe"
             className="hover:text-foreground transition-colors"
           >
-            Swipe
+            Encontrar
           </Link>
           <Link
             href="/fights"
@@ -81,12 +46,11 @@ function Navbar({ isAuthed }: { isAuthed: boolean }) {
           ) : (
             <SignInButton
               variant="outline"
-              size="sm"
-              className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
+              size="default"
               formAction={async () => {
                 "use server";
                 const res = await auth.api.signInSocial({
-                  body: { provider: "discord", callbackURL: "/" },
+                  body: { provider: "discord", callbackURL: "/swipe" },
                 });
                 if (!res.url)
                   throw new Error("No URL returned from signInSocial");
@@ -128,11 +92,11 @@ export default async function HomePage() {
 
       <main className="flex-1">
         {/* Hero */}
-<section className="border-border relative overflow-hidden border-b">
-  <div className="relative mx-auto flex max-w-6xl flex-col items-center px-6 pt-28 pb-24 text-center sm:pt-36 sm:pb-32">
-<span className="border-border bg-background text-muted-foreground text-label-bold mb-8 inline-flex items-center border-2 px-4 py-2 uppercase">
-  Onde lutadores se encontram
-</span>
+        <section className="border-border relative overflow-hidden border-b">
+          <div className="relative mx-auto flex max-w-6xl flex-col items-center px-6 pt-28 pb-24 text-center sm:pt-36 sm:pb-32">
+            <span className="text-muted-foreground text-label-bold mb-8 inline-flex items-center uppercase">
+              Onde lutadores se encontram
+            </span>
             <h1 className="text-display-lg max-w-4xl text-balance">
               Encontre seu próximo{" "}
               <span className="text-foreground">oponente</span>.
@@ -148,9 +112,8 @@ export default async function HomePage() {
                 </Button>
               ) : (
                 <SignInButton
-                  variant="default"
-                  size="lg"
-                  className="bg-primary text-primary-foreground border-primary hover:bg-foreground hover:border-foreground text-label-bold h-12 border-2 px-6"
+                  variant="action"
+                  size="default"
                   formAction={async () => {
                     "use server";
                     const res = await auth.api.signInSocial({
@@ -163,32 +126,33 @@ export default async function HomePage() {
               )}
               <Button
                 asChild
-                size="lg"
+                size="default"
                 variant="outline"
-                className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
               >
-                <Link href="/profile">Ver perfil</Link>
+                <Link href={isAuthed ? "/profile" : "/profile/edit"}>
+                  {isAuthed ? "Ver perfil" : "Criar perfil"}
+                </Link>
               </Button>
             </div>
           </div>
         </section>
 
         {/* How it works */}
-<section className="border-border border-y">
-  <div className="mx-auto grid max-w-6xl gap-10 px-6 py-20 sm:grid-cols-3">
+        <section className="border-border border-y">
+          <div className="mx-auto grid max-w-6xl gap-10 px-6 py-20 sm:grid-cols-3">
             <Feature
               index="01"
-              title="Swipe"
+              title="Descobrir"
               description="Descubra lutadores e juízes da sua categoria de peso. Filtre pelo que importa para você."
             />
             <Feature
               index="02"
-              title="Match"
+              title="Combinar"
               description="Quando há interesse mútuo, vocês formam um par. Um juiz pode assumir a arbitragem."
             />
             <Feature
               index="03"
-              title="Fight"
+              title="Lutar"
               description="Combine local, data e regras. Acompanhe o status até o resultado final."
             />
           </div>
@@ -207,17 +171,15 @@ export default async function HomePage() {
             {isAuthed ? (
               <Button
                 asChild
-                size="lg"
+                size="default"
                 variant="outline"
-                className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
               >
                 <Link href="/profile">Editar meu perfil</Link>
               </Button>
             ) : (
               <SignInButton
                 variant="outline"
-                size="lg"
-                className="bg-background border-foreground text-foreground hover:bg-foreground hover:text-background text-label-bold h-12 border-2 px-6"
+                size="default"
                 formAction={async () => {
                   "use server";
                   const res = await auth.api.signInSocial({
@@ -232,10 +194,27 @@ export default async function HomePage() {
         </section>
       </main>
 
-<footer className="border-border border-t">
-  <div className="text-muted-foreground text-body-md mx-auto flex max-w-6xl items-center justify-between px-6 py-8">
+      <footer className="border-border border-t">
+        <div className="text-muted-foreground text-body-md mx-auto flex max-w-6xl items-center justify-between px-6 py-8">
           <Logo />
-          <p>© {new Date().getFullYear()} MatchFight</p>
+          <div className="flex items-center gap-6">
+            <Link href="/sobre" className="hover:text-foreground transition-colors">
+              Sobre
+            </Link>
+            <Link
+              href="/termos"
+              className="hover:text-foreground transition-colors"
+            >
+              Termos
+            </Link>
+            <Link
+              href="/privacidade"
+              className="hover:text-foreground transition-colors"
+            >
+              Privacidade
+            </Link>
+            <p>© {new Date().getFullYear()} MatchFight</p>
+          </div>
         </div>
       </footer>
     </div>
