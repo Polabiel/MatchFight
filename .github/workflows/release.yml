@@ -1,0 +1,222 @@
+name: Release APK & iOS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Versão do release (semver, ex: 1.2.3). Se vazio, faz auto-bump do patch."
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  FORCE_COLOR: 3
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.resolve.outputs.tag }}
+      version: ${{ steps.resolve.outputs.version }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Resolve release version
+        id: resolve
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.version }}" ]; then
+            TAG="v${{ inputs.version }}"
+            VERSION="${{ inputs.version }}"
+          else
+            LAST_TAG="$(git describe --tags --abbrev=0 --match 'v[0-9]*' 2>/dev/null || true)"
+            if [ -z "$LAST_TAG" ] || ! [[ "$LAST_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              if [ -n "$LAST_TAG" ]; then
+                echo "::warning::Tag '$LAST_TAG' nao e semver (vX.Y.Z). Iniciando em v0.1.0"
+              else
+                echo "::warning::Nenhuma tag encontrada. Iniciando em v0.1.0"
+              fi
+              MAJOR=0
+              MINOR=1
+              PATCH=0
+            else
+              VERSION="${LAST_TAG#v}"
+              MAJOR="$(echo "$VERSION" | cut -d. -f1)"
+              MINOR="$(echo "$VERSION" | cut -d. -f2)"
+              PATCH="$(echo "$VERSION" | cut -d. -f3)"
+              PATCH=$((PATCH + 1))
+            fi
+            TAG="v${MAJOR}.${MINOR}.${PATCH}"
+            VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Release $TAG (version $VERSION)"
+
+  build-android:
+    needs: version
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    outputs:
+      asset_name: ${{ steps.download.outputs.asset_name }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./tooling/github/setup
+
+      - name: Set EAS project ID
+        shell: bash
+        run: echo "EAS_PROJECT_ID=${{ secrets.EAS_PROJECT_ID }}" >> "$GITHUB_ENV"
+
+      - name: Install EAS CLI
+        shell: bash
+        run: npm install -g eas-cli
+
+      - name: Build Android APK (EAS)
+        id: build
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          eas build --platform android --profile release --non-interactive --wait --json \
+            > "$RUNNER_TEMP/eas-android.json"
+
+      - name: Resolve APK artifact URL
+        id: artifact
+        shell: bash
+        run: |
+          BUILD_ID="$(jq -r 'if type == "array" then .[0].id else .id end' "$RUNNER_TEMP/eas-android.json")"
+          VIEW_JSON="$(eas build:view "$BUILD_ID" --json)"
+          ARTIFACT_URL="$(jq -r '.artifacts.buildUrl // .artifacts.applicationArchiveUrl // empty' <<< "$VIEW_JSON")"
+          if [ -z "$ARTIFACT_URL" ]; then
+            echo "::error::URL do APK nao encontrada no build $BUILD_ID"
+            exit 1
+          fi
+          echo "build_id=$BUILD_ID" >> "$GITHUB_OUTPUT"
+          echo "artifact_url=$ARTIFACT_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Download APK
+        id: download
+        shell: bash
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/release"
+          ASSET="matchfight-${{ needs.version.outputs.version }}-android.apk"
+          curl -L -H "Authorization: Bearer $EXPO_TOKEN" \
+            -o "$RUNNER_TEMP/release/$ASSET" \
+            "${{ steps.artifact.outputs.artifact_url }}"
+          ls -lh "$RUNNER_TEMP/release/$ASSET"
+          echo "asset_name=$ASSET" >> "$GITHUB_OUTPUT"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release
+          path: ${{ runner.temp }}/release/
+          if-no-files-found: error
+
+  build-ios:
+    needs: version
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    outputs:
+      asset_name: ${{ steps.download.outputs.asset_name }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./tooling/github/setup
+
+      - name: Set EAS project ID
+        shell: bash
+        run: echo "EAS_PROJECT_ID=${{ secrets.EAS_PROJECT_ID }}" >> "$GITHUB_ENV"
+
+      - name: Install EAS CLI
+        shell: bash
+        run: npm install -g eas-cli
+
+      - name: Build iOS (EAS)
+        id: build
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          eas build --platform ios --profile release --non-interactive --wait --json \
+            > "$RUNNER_TEMP/eas-ios.json"
+
+      - name: Resolve IPA artifact URL
+        id: artifact
+        shell: bash
+        run: |
+          BUILD_ID="$(jq -r 'if type == "array" then .[0].id else .id end' "$RUNNER_TEMP/eas-ios.json")"
+          VIEW_JSON="$(eas build:view "$BUILD_ID" --json)"
+          ARTIFACT_URL="$(jq -r '.artifacts.buildUrl // .artifacts.applicationArchiveUrl // empty' <<< "$VIEW_JSON")"
+          if [ -z "$ARTIFACT_URL" ]; then
+            echo "::error::URL do IPA nao encontrada no build $BUILD_ID"
+            exit 1
+          fi
+          echo "build_id=$BUILD_ID" >> "$GITHUB_OUTPUT"
+          echo "artifact_url=$ARTIFACT_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Download IPA
+        id: download
+        shell: bash
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/release"
+          ASSET="matchfight-${{ needs.version.outputs.version }}-ios.ipa"
+          curl -L -H "Authorization: Bearer $EXPO_TOKEN" \
+            -o "$RUNNER_TEMP/release/$ASSET" \
+            "${{ steps.artifact.outputs.artifact_url }}"
+          ls -lh "$RUNNER_TEMP/release/$ASSET"
+          echo "asset_name=$ASSET" >> "$GITHUB_OUTPUT"
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-release
+          path: ${{ runner.temp }}/release/
+          if-no-files-found: error
+
+  release:
+    needs: [version, build-android, build-ios]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release/
+          merge-multiple: true
+
+      - name: List artifacts
+        shell: bash
+        run: ls -lh release/
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          gh release create "${{ needs.version.outputs.tag }}" \
+            release/*.apk \
+            release/*.ipa \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "MatchFight ${{ needs.version.outputs.version }}" \
+            --generate-notes

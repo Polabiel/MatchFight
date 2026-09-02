@@ -61,9 +61,22 @@ if ! curl -sf "http://127.0.0.1:8081/status" > /dev/null 2>&1; then
   exit 1
 fi
 
-# 2b. Pré-aquecer o bundle do Metro (primeira compilação é lenta)
+# 2b. Pré-aquecer o bundle do Metro (primeira compilação é lenta; sem isso o
+#     assertVisible do Maestro pode estourar antes do app renderizar)
+#     A URL correta vem do manifest — /index.bundle sozinho retorna 404.
 echo "==> Pré-aquecendo bundle do Metro..."
-curl -sf "http://127.0.0.1:8081/index.bundle?platform=android&dev=true&minify=false" -o /tmp/warm.bundle.js || echo "warm falhou (prosseguindo mesmo assim)"
+WARM_URL=$(curl -sf -m 10 "http://127.0.0.1:8081/" \
+  -H "expo-platform: android" \
+  -H "expo-protocol-version: 1" 2>/dev/null \
+  | python3 -c "import json,sys; print(json.load(sys.stdin)['launchAsset']['url'])" 2>/dev/null || true)
+if [ -n "$WARM_URL" ]; then
+  echo "Bundle URL: $WARM_URL"
+  curl -sf --max-time 300 "$WARM_URL" -o /tmp/warm.bundle.js \
+    && echo "warm OK ($(wc -c < /tmp/warm.bundle.js 2>/dev/null) bytes)" \
+    || echo "warm falhou (prosseguindo mesmo assim)"
+else
+  echo "warm: não foi possível obter URL do bundle (prosseguindo)"
+fi
 
 # 3. Instalar APK debug (produzido pelo gradle assembleDebug)
 APK="apps/expo/android/app/build/outputs/apk/debug/app-debug.apk"
