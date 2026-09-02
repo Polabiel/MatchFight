@@ -68,6 +68,9 @@ jobs:
     needs: version
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: apps/expo
     outputs:
       asset_name: ${{ steps.download.outputs.asset_name }}
     steps:
@@ -133,6 +136,9 @@ jobs:
     needs: version
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: apps/expo
     outputs:
       asset_name: ${{ steps.download.outputs.asset_name }}
     steps:
