@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-01T00:00:00.000Z",
+  "title": "Design System: MatchFight",
+  "extensions": {
+    "colorMeta": {
+      "background": { "role": "neutral", "displayName": "Base White", "canonical": "oklch(1 0 0)", "tonalRamp": ["oklch(0.85 0 0)", "oklch(0.9 0 0)", "oklch(0.93 0 0)", "oklch(0.95 0 0)", "oklch(0.97 0 0)", "oklch(0.98 0 0)", "oklch(0.99 0 0)", "oklch(1 0 0)"] },
+      "charcoal": { "role": "neutral", "displayName": "Deep Charcoal", "canonical": "oklch(0.11 0 0)", "tonalRamp": ["oklch(0.05 0 0)", "oklch(0.08 0 0)", "oklch(0.11 0 0)", "oklch(0.2 0 0)", "oklch(0.3 0 0)", "oklch(0.45 0 0)", "oklch(0.6 0 0)", "oklch(0.8 0 0)"] },
+      "blood-red": { "role": "primary", "displayName": "Blood Red", "canonical": "oklch(0.577 0.245 27.3)", "tonalRamp": ["oklch(0.15 0.1 27.3)", "oklch(0.24 0.15 27.3)", "oklch(0.34 0.19 27.3)", "oklch(0.44 0.22 27.3)", "oklch(0.52 0.24 27.3)", "oklch(0.577 0.245 27.3)", "oklch(0.68 0.21 27.3)", "oklch(0.8 0.15 27.3)"] },
+      "tonal-muted": { "role": "neutral", "displayName": "Tonal Muted", "canonical": "oklch(0.96 0 0)", "tonalRamp": ["oklch(0.82 0 0)", "oklch(0.86 0 0)", "oklch(0.9 0 0)", "oklch(0.93 0 0)", "oklch(0.94 0 0)", "oklch(0.96 0 0)", "oklch(0.98 0 0)", "oklch(1 0 0)"] },
+      "muted-text": { "role": "neutral", "displayName": "Muted Text", "canonical": "oklch(0.45 0 0)", "tonalRamp": ["oklch(0.2 0 0)", "oklch(0.28 0 0)", "oklch(0.35 0 0)", "oklch(0.42 0 0)", "oklch(0.45 0 0)", "oklch(0.55 0 0)", "oklch(0.65 0 0)", "oklch(0.8 0 0)"] },
+      "dark-background": { "role": "neutral", "displayName": "Dark Background", "canonical": "oklch(0.06 0 0)", "tonalRamp": ["oklch(0.03 0 0)", "oklch(0.05 0 0)", "oklch(0.06 0 0)", "oklch(0.1 0 0)", "oklch(0.14 0 0)", "oklch(0.2 0 0)", "oklch(0.3 0 0)", "oklch(0.5 0 0)"] },
+      "dark-surface": { "role": "neutral", "displayName": "Dark Surface", "canonical": "oklch(0.11 0 0)", "tonalRamp": ["oklch(0.05 0 0)", "oklch(0.08 0 0)", "oklch(0.11 0 0)", "oklch(0.16 0 0)", "oklch(0.22 0 0)", "oklch(0.3 0 0)", "oklch(0.42 0 0)", "oklch(0.6 0 0)"] },
+      "dark-border": { "role": "neutral", "displayName": "Dark Border", "canonical": "oklch(0.2 0 0)", "tonalRamp": ["oklch(0.08 0 0)", "oklch(0.12 0 0)", "oklch(0.16 0 0)", "oklch(0.2 0 0)", "oklch(0.28 0 0)", "oklch(0.36 0 0)", "oklch(0.46 0 0)", "oklch(0.6 0 0)"] },
+      "dark-muted": { "role": "neutral", "displayName": "Dark Muted", "canonical": "oklch(0.15 0 0)", "tonalRamp": ["oklch(0.06 0 0)", "oklch(0.1 0 0)", "oklch(0.13 0 0)", "oklch(0.15 0 0)", "oklch(0.2 0 0)", "oklch(0.28 0 0)", "oklch(0.38 0 0)", "oklch(0.55 0 0)"] },
+      "dark-muted-text": { "role": "neutral", "displayName": "Dark Muted Text", "canonical": "oklch(0.65 0 0)", "tonalRamp": ["oklch(0.3 0 0)", "oklch(0.4 0 0)", "oklch(0.5 0 0)", "oklch(0.6 0 0)", "oklch(0.65 0 0)", "oklch(0.72 0 0)", "oklch(0.85 0 0)", "oklch(0.95 0 0)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headlines and the VS moment on fight detail only." },
+      "headline-lg": { "displayName": "Headline LG", "purpose": "Section titles — Swipe, Lutas, Perfil." },
+      "headline-md": { "displayName": "Headline MD", "purpose": "Fighter names, card titles, section headers." },
+      "body-lg": { "displayName": "Body LG", "purpose": "Landing hero copy, profile bios. Max ~65ch." },
+      "body-md": { "displayName": "Body MD", "purpose": "Default UI text, chat messages, table values." },
+      "label-bold": { "displayName": "Label Bold", "purpose": "Uppercase metadata labels and button text." },
+      "label-sm": { "displayName": "Label SM", "purpose": "Timestamps, status chips, counters, tags." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "color-transition", "value": "transition 0.15s ease", "purpose": "Background/border color state changes (hover, focus, invert)." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" },
+      { "name": "2xl", "value": "1536px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The default action: charcoal fill, white text, sharp 0px corners, 2px charcoal border.",
+      "html": "<button class=\"ds-btn-primary\">AGENDAR LUTA</button>",
+      "css": ".ds-btn-primary { background: oklch(0.11 0 0); color: oklch(1 0 0); border: 2px solid oklch(0.11 0 0); border-radius: 0; padding: 0 24px; height: 48px; font-family: 'Nunito Sans', ui-sans-serif, system-ui; font-size: 14px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; transition: background 0.15s ease, color 0.15s ease; cursor: pointer; } .ds-btn-primary:hover { background: oklch(1 0 0); color: oklch(0.11 0 0); } .ds-btn-primary:focus-visible { outline: 2px solid oklch(0.11 0 0); outline-offset: 2px; }"
+    },
+    {
+      "name": "Action Button (Blood Red)",
+      "kind": "button",
+      "refersTo": "button-action",
+      "description": "The single critical CTA per screen: red fill, white text, hover inverts to charcoal.",
+      "html": "<button class=\"ds-btn-action\">CONFIRMAR LUTA</button>",
+      "css": ".ds-btn-action { background: oklch(0.577 0.245 27.3); color: oklch(1 0 0); border: 2px solid oklch(0.577 0.245 27.3); border-radius: 0; padding: 0 24px; height: 48px; font-family: 'Nunito Sans', ui-sans-serif, system-ui; font-size: 14px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; transition: background 0.15s ease, border-color 0.15s ease; cursor: pointer; } .ds-btn-action:hover { background: oklch(0.11 0 0); border-color: oklch(0.11 0 0); } .ds-btn-action:focus-visible { outline: 2px solid oklch(0.11 0 0); outline-offset: 2px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary/cancel action: white fill, charcoal text, 2px charcoal border, hover inverts.",
+      "html": "<button class=\"ds-btn-outline\">CANCELAR</button>",
+      "css": ".ds-btn-outline { background: oklch(1 0 0); color: oklch(0.11 0 0); border: 2px solid oklch(0.11 0 0); border-radius: 0; padding: 0 24px; height: 48px; font-family: 'Nunito Sans', ui-sans-serif, system-ui; font-size: 14px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; transition: background 0.15s ease, color 0.15s ease; cursor: pointer; } .ds-btn-outline:hover { background: oklch(0.11 0 0); color: oklch(1 0 0); } .ds-btn-outline:focus-visible { outline: 2px solid oklch(0.11 0 0); outline-offset: 2px; }"
+    },
+    {
+      "name": "Input Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "2px charcoal border, transparent fill, muted placeholder; focus fills with muted tonal layer.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Academia / Cidade\" aria-label=\"Local\" />",
+      "css": ".ds-input { background: transparent; color: oklch(0.11 0 0); border: 2px solid oklch(0.11 0 0); border-radius: 0; height: 48px; padding: 0 16px; font-family: 'Nunito Sans', ui-sans-serif, system-ui; font-size: 16px; line-height: 1.5; outline: none; transition: background 0.15s ease, border-color 0.15s ease; } .ds-input::placeholder { color: oklch(0.45 0 0); } .ds-input:focus { background: oklch(0.96 0 0); } .ds-input:focus-visible { outline: 2px solid oklch(0.11 0 0); outline-offset: 0; } .ds-input:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Status Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Charcoal fill, white uppercase label-sm text, sharp corners. Used for weight class, record, status.",
+      "html": "<span class=\"ds-chip\">LIGHTWEIGHT</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; background: oklch(0.11 0 0); color: oklch(1 0 0); border-radius: 0; padding: 4px 12px; font-family: 'Nunito Sans', ui-sans-serif, system-ui; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; line-height: 1.4; }"
+    },
+    {
+      "name": "Winner Chip (Blood Red)",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "The only red element besides the CTA: Blood Red fill for live/winner state.",
+      "html": "<span class=\"ds-chip-winner\">WINNER</span>",
+      "css": ".ds-chip-winner { display: inline-flex; align-items: center; background: oklch(0.577 0.245 27.3); color: oklch(1 0 0); border-radius: 0; padding: 4px 12px; font-family: 'Nunito Sans', ui-sans-serif, system-ui; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; line-height: 1.4; }"
+    },
+    {
+      "name": "Candidate Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Sharp 2px charcoal frame, white fill, muted hover. Depth via border, never shadow.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card__ph\">LUTAR</div><h3 class=\"ds-card__title\">Fighter Name</h3></div>",
+      "css": ".ds-card { background: oklch(1 0 0); border: 2px solid oklch(0.11 0 0); border-radius: 0; padding: 24px; transition: background 0.15s ease; } .ds-card:hover { background: oklch(0.96 0 0); } .ds-card__ph { display: flex; align-items: center; justify-content: center; height: 224px; background: oklch(0.96 0 0); border: 1px solid oklch(0.11 0 0); border-radius: 0; font-family: 'Nunito Sans', ui-sans-serif, system-ui; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: oklch(0.45 0 0); } .ds-card__title { margin: 16px 0 0; font-family: 'Nunito Sans', ui-sans-serif, system-ui; font-size: clamp(22px, 3vw, 24px); font-weight: 700; line-height: 1.2; color: oklch(0.11 0 0); }"
+    },
+    {
+      "name": "Navigation Bar",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Sticky top bar, 64px, 1px charcoal bottom border. Logo: 'Match' charcoal + 'Fight' red.",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-nav__logo\" href=\"#\">Match<span>Fight</span></a><nav><a class=\"ds-nav__link\" href=\"#\">Swipe</a><a class=\"ds-nav__link\" href=\"#\">Lutas</a><a class=\"ds-nav__link\" href=\"#\">Perfil</a></nav></header>",
+      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; height: 64px; padding: 0 24px; background: oklch(1 0 0); border-bottom: 1px solid oklch(0.11 0 0); font-family: 'Nunito Sans', ui-sans-serif, system-ui; } .ds-nav__logo { font-size: clamp(22px, 3vw, 24px); font-weight: 700; color: oklch(0.11 0 0); text-decoration: none; } .ds-nav__logo span { color: oklch(0.577 0.245 27.3); } .ds-nav__link { margin-left: 24px; color: oklch(0.45 0 0); font-size: 16px; text-decoration: none; transition: color 0.15s ease; } .ds-nav__link:hover { color: oklch(0.11 0 0); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Weigh-In",
+    "overview": "MatchFight is a platform where fighters find opponents and judges arbitrate bouts. Its interface is the weigh-in: the moment of truth before combat, where everything is stripped to what matters and measured with absolute precision. There is no decoration, no friendliness, no 'platform warmth' — only the facts that decide a fight: who you are, your weight class, your record, and what comes next.\n\nThe system is a fusion of Japanese restraint (ma — the power of deliberate empty space) and athletic performance language (force, clarity, intent). Every element is deliberate: sharp 0px corners, flat surfaces with no shadows, a two-tone palette of Deep Charcoal and Base White with Blood Red reserved for the single critical action on a screen. Depth is never faked with elevation — it is drawn with borders and tonal layers, the way a referee's call is unambiguous.\n\nThis is not 'clean' minimalism and it is not a dashboard. It is tense control: high-stakes clarity where the interface communicates focus and respect, never generic friendliness. Typography carries the system's voice — heavy condensed headlines and uppercase micro-labels with letter-spacing read like fight-card typography, disciplined and authoritative.",
+    "keyCharacteristics": [
+      "Zero border-radius anywhere (0px), including buttons, inputs, cards, avatars, and modals",
+      "Zero box-shadows and zero backdrop-filters; depth via 1-2px charcoal borders and muted tonal layers",
+      "Blood Red (one accent) appears at most once per screen, only on the critical CTA or live/winner state",
+      "Nunito Sans exclusively, with a precise weight and letter-spacing hierarchy (900/800/700/400/600)",
+      "All spacing is a multiple of 8px; sections breathe at 80-120px vertical rhythm",
+      "Full dark mode with equal quality — semantic tokens invert, Blood Red stays identical",
+      "Portuguese (pt-BR) UI copy throughout"
+    ],
+    "rules": [
+      { "name": "The One Accent Rule", "body": "Blood Red appears at most once per screen on any functional element (buttons, states, chips). The logo 'Fight' span is exempt — it is a brand element, not a functional accent. When a screen contains the logo, Blood Red may still be used on the single critical CTA. Multiple reds on non-logo functional elements still cancel each other's authority.", "section": "colors" },
+      { "name": "The No-Hue Rule", "body": "The only chromatic color in the system is Blood Red. Everything else is neutral. Introducing a second hue breaks the discipline of the weigh-in.", "section": "colors" },
+      { "name": "The Uppercase Metadata Rule", "body": "All metadata labels and button text are uppercase with +0.05em tracking. This is the system's 'referee call' voice — authority through typography, not decoration.", "section": "typography" },
+      { "name": "The Weight Discipline Rule", "body": "Weights are not interchangeable: 900 only for display, 800 for headline-lg, 700 for headline-md, 700/600 for labels, 400 for body. Mixing a 700 into body copy breaks the measured hierarchy.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Surfaces are flat at rest and flat under interaction. Depth is drawn with borders and tonal shifts only — elevation (shadow, translate, scale) is banned.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use Blood Red once per screen, on the single critical action or live/winner state.",
+      "Do keep every corner at 0px — buttons, inputs, cards, avatars, modals, chips.",
+      "Do keep every spacing value a multiple of 8px.",
+      "Do express depth with 1-2px charcoal borders and muted tonal layers, never shadows.",
+      "Do use the strict weight hierarchy (900/800/700/600/400) and uppercase +0.05em labels.",
+      "Do write UI copy in Brazilian Portuguese (pt-BR), uppercase for labels and button text.",
+      "Do support dark mode with equal quality — semantic tokens invert, Blood Red stays identical."
+    ],
+    "donts": [
+      "Don't add border-radius, box-shadow, backdrop-filter, or gradient to any element.",
+      "Don't use Blood Red on secondary elements, hovers, links, or subtle backgrounds — one accent per screen, at most.",
+      "Don't introduce a second chromatic hue or an opacity-washed color.",
+      "Don't use hardcoded colors, sizes, or arbitrary Tailwind values (bg-red-500, text-xl, p-5) — only semantic tokens.",
+      "Don't mix font weights outside the hierarchy or drop the uppercase label treatment.",
+      "Don't make the interface read as a generic SaaS or friendly social platform — the tone is tense control, not warmth.",
+      "Don't squeeze sections; major sections need 80-120px of vertical breathing room."
+    ]
+  }
+}
