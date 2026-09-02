@@ -86,10 +86,12 @@ function Feature({
           alt={imageAlt}
           fill
           sizes="(min-width: 640px) 33vw, 100vw"
-          className="object-cover grayscale contrast-125"
+          className="object-cover contrast-125 grayscale"
         />
       </div>
-      <span className="text-muted-foreground text-label-bold uppercase">{index}</span>
+      <span className="text-muted-foreground text-label-bold uppercase">
+        {index}
+      </span>
       <h3 className="text-headline-md">{title}</h3>
       <p className="text-muted-foreground text-body-md">{description}</p>
     </div>
@@ -114,7 +116,8 @@ export default async function HomePage() {
             <h1 className="text-display-lg max-w-4xl text-balance">
               Encontre seu próximo{" "}
               <span className="text-foreground">oponente</span>.
-            </h1>            <p className="text-muted-foreground text-body-lg mt-6 max-w-xl leading-relaxed">
+            </h1>{" "}
+            <p className="text-muted-foreground text-body-lg mt-6 max-w-xl leading-relaxed">
               Deslize, combine e agende lutas com lutadores da sua categoria.
               Com a supervisão de juízes e a conversa certa antes de entrar no
               octógono.
@@ -138,11 +141,7 @@ export default async function HomePage() {
                   }}
                 />
               )}
-              <Button
-                asChild
-                size="default"
-                variant="outline"
-              >
+              <Button asChild size="default" variant="outline">
                 <Link href={isAuthed ? "/profile" : "/profile/edit"}>
                   {isAuthed ? "Ver perfil" : "Criar perfil"}
                 </Link>
@@ -155,7 +154,7 @@ export default async function HomePage() {
                 fill
                 priority
                 sizes="(min-width: 1024px) 1152px, 100vw"
-                className="object-cover grayscale contrast-125"
+                className="object-cover contrast-125 grayscale"
               />
             </div>
           </div>
@@ -197,7 +196,7 @@ export default async function HomePage() {
                 alt="Lutadora treinando chutes em academia"
                 fill
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover grayscale contrast-125"
+                className="object-cover contrast-125 grayscale"
               />
             </div>
             <div className="flex flex-col gap-8">
@@ -247,11 +246,7 @@ export default async function HomePage() {
           </p>
           <div className="mt-8">
             {isAuthed ? (
-              <Button
-                asChild
-                size="default"
-                variant="outline"
-              >
+              <Button asChild size="default" variant="outline">
                 <Link href="/profile">Editar meu perfil</Link>
               </Button>
             ) : (
@@ -276,7 +271,10 @@ export default async function HomePage() {
         <div className="text-muted-foreground text-body-md mx-auto flex max-w-6xl items-center justify-between px-6 py-8">
           <Logo />
           <div className="flex items-center gap-6">
-            <Link href="/sobre" className="hover:text-foreground transition-colors">
+            <Link
+              href="/sobre"
+              className="hover:text-foreground transition-colors"
+            >
               Sobre
             </Link>
             <Link

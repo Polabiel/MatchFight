@@ -82,7 +82,10 @@ export function ProfileEditForm() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="border-border space-y-6 border-2 p-6">
+      <form
+        onSubmit={handleSubmit}
+        className="border-border space-y-6 border-2 p-6"
+      >
         <Field>
           <FieldLabel className="text-label-bold">Apelido</FieldLabel>
           <FieldContent>
@@ -191,11 +194,7 @@ export function ProfileEditForm() {
         </Field>
 
         <div className="flex items-center gap-4">
-          <Button
-            type="submit"
-            variant="action"
-            disabled={mutation.isPending}
-          >
+          <Button type="submit" variant="action" disabled={mutation.isPending}>
             {mutation.isPending
               ? "Salvando..."
               : isEditMode
@@ -203,10 +202,7 @@ export function ProfileEditForm() {
                 : "Criar Perfil"}
           </Button>
 
-          <Button
-            variant="outline"
-            onClick={() => router.push("/profile")}
-          >
+          <Button variant="outline" onClick={() => router.push("/profile")}>
             Cancelar
           </Button>
         </div>

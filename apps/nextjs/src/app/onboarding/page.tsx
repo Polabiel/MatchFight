@@ -37,7 +37,10 @@ const wizardSteps = (role: string | null) => {
   if (role === "judge") {
     steps.push({ title: "Localização", description: "Onde você atua" });
   } else {
-    steps.push({ title: "Cartel", description: "Vitórias, derrotas e localização" });
+    steps.push({
+      title: "Cartel",
+      description: "Vitórias, derrotas e localização",
+    });
   }
   steps.push({ title: "Bio", description: "Conte sobre você" });
   return steps;
@@ -74,7 +77,10 @@ export default function OnboardingPage() {
         router.replace("/swipe");
       },
       onError: (error) => {
-        setError(error.message || "Não foi possível salvar seu perfil. Tente novamente.");
+        setError(
+          error.message ||
+            "Não foi possível salvar seu perfil. Tente novamente.",
+        );
         toast.error(error.message || "Não foi possível salvar seu perfil");
       },
     }),
@@ -141,8 +147,7 @@ export default function OnboardingPage() {
     }
 
     const winsNum = role === "judge" ? 0 : wins ? parseInt(wins, 10) : 0;
-    const lossesNum =
-      role === "judge" ? 0 : losses ? parseInt(losses, 10) : 0;
+    const lossesNum = role === "judge" ? 0 : losses ? parseInt(losses, 10) : 0;
     if (
       role !== "judge" &&
       (isNaN(winsNum) || isNaN(lossesNum) || winsNum < 0 || lossesNum < 0)
@@ -181,11 +186,7 @@ export default function OnboardingPage() {
 
           {/* Navigation buttons */}
           <div className="flex w-full max-w-2xl justify-between px-6">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setCurrentStep(1)}
-            >
+            <Button variant="ghost" size="sm" onClick={() => setCurrentStep(1)}>
               Pular
             </Button>
             <Button
@@ -208,21 +209,21 @@ export default function OnboardingPage() {
                   {wizardSteps(role).map((_, index) => (
                     <div
                       key={index}
-                      className={`h-1.5 flex-1 rounded-none transition-colors ${index <= currentStep - 1
-                        ? "bg-foreground"
-                        : "bg-muted"
-                        }`}
+                      className={`h-1.5 flex-1 rounded-none transition-colors ${
+                        index <= currentStep - 1 ? "bg-foreground" : "bg-muted"
+                      }`}
                     />
                   ))}
                 </div>
-                <div className="text-muted-foreground flex gap-2 text-label-sm">
+                <div className="text-muted-foreground text-label-sm flex gap-2">
                   {wizardSteps(role).map((step, index) => (
                     <span
                       key={index}
-                      className={`flex-1 text-center ${index <= currentStep - 1
-                        ? "text-foreground"
-                        : "text-muted-foreground"
-                        }`}
+                      className={`flex-1 text-center ${
+                        index <= currentStep - 1
+                          ? "text-foreground"
+                          : "text-muted-foreground"
+                      }`}
                     >
                       {step.title}
                     </span>
@@ -232,10 +233,7 @@ export default function OnboardingPage() {
 
               {/* Inline error message */}
               {error && (
-                <p
-                  role="alert"
-                  className="text-destructive mb-6 text-body-md"
-                >
+                <p role="alert" className="text-destructive text-body-md mb-6">
                   {error}
                 </p>
               )}
@@ -348,7 +346,9 @@ export default function OnboardingPage() {
                       <div className="space-y-6">
                         <Field orientation="vertical">
                           <FieldLabel>
-                            <Label className="text-label-bold">Localização</Label>
+                            <Label className="text-label-bold">
+                              Localização
+                            </Label>
                           </FieldLabel>
                           <FieldContent>
                             <Input
@@ -374,7 +374,9 @@ export default function OnboardingPage() {
                         <div className="grid grid-cols-2 gap-4">
                           <Field orientation="vertical">
                             <FieldLabel>
-                              <Label className="text-label-bold">Vitórias</Label>
+                              <Label className="text-label-bold">
+                                Vitórias
+                              </Label>
                             </FieldLabel>
                             <FieldContent>
                               <Input
@@ -388,7 +390,9 @@ export default function OnboardingPage() {
                           </Field>
                           <Field orientation="vertical">
                             <FieldLabel>
-                              <Label className="text-label-bold">Derrotas</Label>
+                              <Label className="text-label-bold">
+                                Derrotas
+                              </Label>
                             </FieldLabel>
                             <FieldContent>
                               <Input
@@ -404,7 +408,9 @@ export default function OnboardingPage() {
 
                         <Field orientation="vertical">
                           <FieldLabel>
-                            <Label className="text-label-bold">Localização</Label>
+                            <Label className="text-label-bold">
+                              Localização
+                            </Label>
                           </FieldLabel>
                           <FieldContent>
                             <Input
@@ -509,7 +515,9 @@ export default function OnboardingPage() {
                       {bio && (
                         <div className="space-y-4">
                           <span className="text-label-bold">Bio</span>
-                          <p className="text-body-md text-muted-foreground">{bio}</p>
+                          <p className="text-body-md text-muted-foreground">
+                            {bio}
+                          </p>
                         </div>
                       )}
                     </div>

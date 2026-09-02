@@ -58,7 +58,10 @@ function FightCard({
     "bg-foreground text-background px-3 py-1 text-label-sm rounded-none";
 
   return (
-    <Link href={`/fights/${id}`} className="border-border bg-background hover:bg-muted block border-2 p-6 transition-colors">
+    <Link
+      href={`/fights/${id}`}
+      className="border-border bg-background hover:bg-muted block border-2 p-6 transition-colors"
+    >
       <div className="flex flex-col items-start gap-4">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3">
@@ -72,7 +75,9 @@ function FightCard({
           </div>
         </div>
         <div className="text-body-md flex items-center gap-2">
-          {location && <span className="text-label-bold uppercase">LOCAL {location}</span>}
+          {location && (
+            <span className="text-label-bold uppercase">LOCAL {location}</span>
+          )}
           <span className="text-label-bold uppercase">DATA</span> {scheduled}
         </div>
         <div className="mt-2 self-end">
@@ -138,9 +143,7 @@ export function FightsList() {
               Deslize, combine e marque seu primeiro combate.
             </p>
             <Button asChild variant="outline">
-              <Link href="/swipe">
-                Encontrar oponentes
-              </Link>
+              <Link href="/swipe">Encontrar oponentes</Link>
             </Button>
           </div>
         ) : (

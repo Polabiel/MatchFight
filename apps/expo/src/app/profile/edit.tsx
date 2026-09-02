@@ -188,7 +188,7 @@ export default function ProfileEdit() {
           <Pressable
             onPress={handleSubmit}
             disabled={update.isPending || !nickname.trim()}
-            className="bg-primary text-primary-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
+            className="bg-primary text-primary-foreground text-label-bold flex h-12 items-center justify-center rounded-none px-6"
           >
             <Text className="text-label-bold">
               {update.isPending

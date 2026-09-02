@@ -130,7 +130,7 @@ export function SwipeCandidates() {
                 className="mb-6 h-56 w-full rounded-none object-cover"
               />
             ) : (
-              <div className="bg-muted border-foreground mb-6 flex h-56 w-full items-center justify-center rounded-none border text-headline-lg">
+              <div className="bg-muted border-foreground text-headline-lg mb-6 flex h-56 w-full items-center justify-center rounded-none border">
                 <span className="text-label-bold uppercase">LUTAR</span>
               </div>
             )}

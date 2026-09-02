@@ -35,11 +35,11 @@ export const Route = createFileRoute("/")({
 function RouteComponent() {
   return (
     <main className="container h-screen py-16">
-<div className="flex flex-col items-center justify-center gap-4">
-         <h1 className="text-display-lg font-sans">
-           Create <span className="text-primary">T3</span> Turbo
-         </h1>
-         <AuthShowcase />
+      <div className="flex flex-col items-center justify-center gap-4">
+        <h1 className="text-display-lg font-sans">
+          Create <span className="text-primary">T3</span> Turbo
+        </h1>
+        <AuthShowcase />
 
         <CreatePostForm />
         <div className="w-full max-w-2xl overflow-y-scroll">
@@ -99,65 +99,78 @@ function CreatePostForm() {
         void form.handleSubmit();
       }}
     >
-<FieldGroup>
-         <form.Field
-           name="title"
-           children={(field) => {
-             const isInvalid =
-               field.state.meta.isTouched && !field.state.meta.isValid;
-             return (
-               <Field data-invalid={isInvalid}>
-                 <FieldContent>
-                   <FieldLabel className="text-label-bold" htmlFor={field.name}>
-                     Bug Title
-                   </FieldLabel>
-                 </FieldContent>
-                   <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={isInvalid}
-                    placeholder="Title"
-                    className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
+      <FieldGroup>
+        <form.Field
+          name="title"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldContent>
+                  <FieldLabel className="text-label-bold" htmlFor={field.name}>
+                    Bug Title
+                  </FieldLabel>
+                </FieldContent>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={isInvalid}
+                  placeholder="Title"
+                  className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
+                />
+                {isInvalid && (
+                  <FieldError
+                    className="text-label-sm"
+                    errors={field.state.meta.errors}
                   />
-                 {isInvalid && <FieldError className="text-label-sm" errors={field.state.meta.errors} />}
-               </Field>
-             );
-           }}
-         />
-         <form.Field
-           name="content"
-           children={(field) => {
-             const isInvalid =
-               field.state.meta.isTouched && !field.state.meta.isValid;
-             return (
-               <Field data-invalid={isInvalid}>
-                 <FieldContent>
-                   <FieldLabel className="text-label-bold" htmlFor={field.name}>
-                     Content
-                   </FieldLabel>
-                 </FieldContent>
-                   <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={isInvalid}
-                    placeholder="Content"
-                    className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
+                )}
+              </Field>
+            );
+          }}
+        />
+        <form.Field
+          name="content"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldContent>
+                  <FieldLabel className="text-label-bold" htmlFor={field.name}>
+                    Content
+                  </FieldLabel>
+                </FieldContent>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={isInvalid}
+                  placeholder="Content"
+                  className="border-foreground placeholder:text-muted-foreground focus:bg-muted focus:border-foreground text-body-md h-12 rounded-none border-2 bg-transparent px-4"
+                />
+                {isInvalid && (
+                  <FieldError
+                    className="text-label-sm"
+                    errors={field.state.meta.errors}
                   />
-                 {isInvalid && <FieldError className="text-label-sm" errors={field.state.meta.errors} />}
-               </Field>
-             );
-           }}
-         />
-       </FieldGroup>
-       <Button type="submit" className="bg-foreground text-background border-foreground hover:bg-background hover:text-foreground text-label-bold h-12 border-2 px-6">
-            Create
-          </Button>
+                )}
+              </Field>
+            );
+          }}
+        />
+      </FieldGroup>
+      <Button
+        type="submit"
+        className="bg-foreground text-background border-foreground hover:bg-background hover:text-foreground text-label-bold h-12 border-2 px-6"
+      >
+        Create
+      </Button>
     </form>
   );
 }
@@ -184,64 +197,63 @@ function PostList() {
 }
 
 function PostCard(props: { post: RouterOutputs["post"]["all"][number] }) {
-   const trpc = useTRPC();
-   const queryClient = useQueryClient();
-   const deletePost = useMutation(
-     trpc.post.delete.mutationOptions({
-       onSuccess: async () => {
-         await queryClient.invalidateQueries(trpc.post.pathFilter());
-       },
-       onError: (err) => {
-         toast.error(
-           err.data?.code === "UNAUTHORIZED"
-             ? "You must be logged in to delete a post"
-             : "Failed to delete post",
-         );
-       },
-     }),
-   );
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+  const deletePost = useMutation(
+    trpc.post.delete.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(trpc.post.pathFilter());
+      },
+      onError: (err) => {
+        toast.error(
+          err.data?.code === "UNAUTHORIZED"
+            ? "You must be logged in to delete a post"
+            : "Failed to delete post",
+        );
+      },
+    }),
+  );
 
-   return (
-     <div className="border border-border bg-background hover:bg-muted flex flex-row p-4">
-       <div className="grow">
-         <h2 className="text-headline-lg text-foreground">{props.post.title}</h2>
-         <p className="mt-2 text-body-md text-muted-foreground">{props.post.content}</p>
-       </div>
-       <div>
-         <Button
-           variant="ghost"
-           className="text-muted-foreground hover:bg-muted hover:text-foreground"
-           onClick={() => deletePost.mutate(props.post.id)}
-         >
-           Delete
-         </Button>
-       </div>
-     </div>
-   );
- }
+  return (
+    <div className="border-border bg-background hover:bg-muted flex flex-row border p-4">
+      <div className="grow">
+        <h2 className="text-headline-lg text-foreground">{props.post.title}</h2>
+        <p className="text-body-md text-muted-foreground mt-2">
+          {props.post.content}
+        </p>
+      </div>
+      <div>
+        <Button
+          variant="ghost"
+          className="text-muted-foreground hover:bg-muted hover:text-foreground"
+          onClick={() => deletePost.mutate(props.post.id)}
+        >
+          Delete
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 function PostCardSkeleton(props: { pulse?: boolean }) {
-   const { pulse = true } = props;
-   return (
-     <div className="border border-border bg-background hover:bg-muted flex flex-row p-4">
-       <div className="grow">
-         <h2
-           className={cn(
-             "bg-primary w-1/4 h-[24px]",
-             pulse && "animate-pulse",
-           )}
-         >
-           &nbsp;
-         </h2>
-         <p
-           className={cn(
-             "mt-2 w-1/3 h-[20px] bg-current",
-             pulse && "animate-pulse",
-           )}
-         >
-           &nbsp;
-         </p>
-       </div>
-     </div>
-   );
- }
+  const { pulse = true } = props;
+  return (
+    <div className="border-border bg-background hover:bg-muted flex flex-row border p-4">
+      <div className="grow">
+        <h2
+          className={cn("bg-primary h-[24px] w-1/4", pulse && "animate-pulse")}
+        >
+          &nbsp;
+        </h2>
+        <p
+          className={cn(
+            "mt-2 h-[20px] w-1/3 bg-current",
+            pulse && "animate-pulse",
+          )}
+        >
+          &nbsp;
+        </p>
+      </div>
+    </div>
+  );
+}

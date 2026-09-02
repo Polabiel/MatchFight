@@ -72,7 +72,9 @@ export async function validateLocation(location: string): Promise<boolean> {
 
     if (!response.ok) {
       // Fail-open: se a API estiver com erro, não bloqueia o usuário
-      console.warn(`[geocode] Nominatim retornou ${response.status} para "${trimmed}"`);
+      console.warn(
+        `[geocode] Nominatim retornou ${response.status} para "${trimmed}"`,
+      );
       cache.set(trimmed, { valid: true, cachedAt: Date.now() });
       return true;
     }
@@ -90,7 +92,13 @@ export async function validateLocation(location: string): Promise<boolean> {
       cache.set(trimmed, { valid: false, cachedAt: Date.now() });
       return false;
     }
-    const validTypes = ["city", "town", "village", "municipality", "administrative"];
+    const validTypes = [
+      "city",
+      "town",
+      "village",
+      "municipality",
+      "administrative",
+    ];
     const isValid = result.type
       ? validTypes.includes(result.type)
       : // Se não tem type, aceita se tiver address (cidade/país)

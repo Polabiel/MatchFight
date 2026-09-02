@@ -200,7 +200,7 @@ export default function Onboarding() {
               </Pressable>
               <Pressable
                 onPress={handleCarouselNext}
-                className="bg-primary text-primary-foreground border-2 border-primary h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
+                className="bg-primary text-primary-foreground border-primary text-label-bold flex h-12 items-center justify-center rounded-none border-2 px-6"
               >
                 <Text className="text-label-bold text-primary-foreground">
                   {isLastCarouselSlide ? "Create profile" : "Next"}
@@ -272,9 +272,7 @@ export default function Onboarding() {
                         >
                           <Text
                             className={`text-label-bold text-center ${
-                              selected
-                                ? "text-background"
-                                : "text-foreground"
+                              selected ? "text-background" : "text-foreground"
                             }`}
                           >
                             {roleOption.label}
@@ -446,17 +444,15 @@ export default function Onboarding() {
                       </View>
                     ) : null}
 
-                    {(role === "fighter" || role === "both") &&
-                    weightClass ? (
+                    {(role === "fighter" || role === "both") && weightClass ? (
                       <View className="flex-row justify-between">
                         <Text className="text-label-bold text-foreground">
                           Weight Class
                         </Text>
                         <Text className="text-body-md text-foreground">
                           {
-                            weightClasses.find(
-                              (wc) => wc.value === weightClass,
-                            )?.label
+                            weightClasses.find((wc) => wc.value === weightClass)
+                              ?.label
                           }
                         </Text>
                       </View>
@@ -498,7 +494,7 @@ export default function Onboarding() {
             </ScrollView>
 
             {/* Navigation buttons */}
-            <View className="border-border border-t bg-background p-6">
+            <View className="border-border bg-background border-t p-6">
               <View className="flex-row items-center justify-between">
                 {currentStep > 1 ? (
                   <Pressable onPress={handleBack}>
@@ -513,7 +509,7 @@ export default function Onboarding() {
                   <Pressable
                     onPress={handleNext}
                     disabled={isLoading}
-                    className="bg-primary text-primary-foreground border-2 border-primary h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
+                    className="bg-primary text-primary-foreground border-primary text-label-bold flex h-12 items-center justify-center rounded-none border-2 px-6"
                   >
                     <Text className="text-label-bold text-primary-foreground">
                       {currentStep === 4 ? "Review" : "Next"}
@@ -523,10 +519,12 @@ export default function Onboarding() {
                   <Pressable
                     onPress={handleSubmit}
                     disabled={updateProfile.isPending || isLoading}
-                    className="bg-primary text-primary-foreground border-2 border-primary h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
+                    className="bg-primary text-primary-foreground border-primary text-label-bold flex h-12 items-center justify-center rounded-none border-2 px-6"
                   >
                     <Text className="text-label-bold text-primary-foreground">
-                      {updateProfile.isPending ? "Creating..." : "Create Profile"}
+                      {updateProfile.isPending
+                        ? "Creating..."
+                        : "Create Profile"}
                     </Text>
                   </Pressable>
                 )}

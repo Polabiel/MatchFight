@@ -18,14 +18,14 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           headerStyle: {
-            backgroundColor: 'var(--color-foreground)',
+            backgroundColor: "var(--color-foreground)",
           },
-          headerTintColor: 'var(--color-background)',
+          headerTintColor: "var(--color-background)",
           headerTitleStyle: {
-            color: 'var(--color-background)',
+            color: "var(--color-background)",
           },
           contentStyle: {
-            backgroundColor: 'var(--color-background)',
+            backgroundColor: "var(--color-background)",
           },
         }}
       />

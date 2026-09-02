@@ -47,17 +47,19 @@ function FightRow({
             {fighter1Name} <Text className="text-muted-foreground">vs</Text>{" "}
             {fighter2Name}
           </Text>
-          <Text
-            className={`rounded-none px-3 py-1 text-label-sm ${style}`}
-          >
+          <Text className={`text-label-sm rounded-none px-3 py-1 ${style}`}>
             {statusLabels[status] ?? status}
           </Text>
         </View>
         <View className="gap-1">
           {location ? (
-            <Text className="text-body-md text-muted-foreground">LOCAL {location}</Text>
+            <Text className="text-body-md text-muted-foreground">
+              LOCAL {location}
+            </Text>
           ) : null}
-          <Text className="text-body-md text-muted-foreground">DATA {scheduled}</Text>
+          <Text className="text-body-md text-muted-foreground">
+            DATA {scheduled}
+          </Text>
         </View>
       </Pressable>
     </Link>
@@ -83,7 +85,9 @@ function FightSection({
     <View className="gap-4">
       <Text className="text-headline-md">
         {title}{" "}
-        <Text className="text-body-md text-muted-foreground">({fights.length})</Text>
+        <Text className="text-body-md text-muted-foreground">
+          ({fights.length})
+        </Text>
       </Text>
       {fights.map((fight) => (
         <FightRow
@@ -140,10 +144,11 @@ export default function Fights() {
                 Swipe and match with other fighters to schedule your first
                 fight.
               </Text>
-              <Link href="/" className="bg-primary text-primary-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center">
-                <Text className="text-label-bold">
-                  Find opponents
-                </Text>
+              <Link
+                href="/"
+                className="bg-primary text-primary-foreground text-label-bold flex h-12 items-center justify-center rounded-none px-6"
+              >
+                <Text className="text-label-bold">Find opponents</Text>
               </Link>
             </View>
           ) : (

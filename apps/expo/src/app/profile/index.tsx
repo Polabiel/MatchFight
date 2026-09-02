@@ -40,11 +40,9 @@ export default function Profile() {
             </Text>
             <Link
               href="/profile/edit"
-              className="bg-primary text-primary-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
+              className="bg-primary text-primary-foreground text-label-bold flex h-12 items-center justify-center rounded-none px-6"
             >
-              <Text className="text-label-bold">
-                Create your profile
-              </Text>
+              <Text className="text-label-bold">Create your profile</Text>
             </Link>
           </View>
         ) : (
@@ -58,7 +56,7 @@ export default function Profile() {
                 <Text className="text-body-lg font-semibold">
                   "{profile.nickname}"
                 </Text>
-                <View className="bg-foreground text-background rounded-none px-3 py-1 text-label-sm">
+                <View className="bg-foreground text-background text-label-sm rounded-none px-3 py-1">
                   {profile.role === "fighter"
                     ? "FIGHTER"
                     : profile.role === "judge"
@@ -72,28 +70,36 @@ export default function Profile() {
               {profile.bio ? (
                 <View className="gap-1">
                   <Text className="text-label-bold">Bio</Text>
-                  <Text className="text-body-md text-muted-foreground">{profile.bio}</Text>
+                  <Text className="text-body-md text-muted-foreground">
+                    {profile.bio}
+                  </Text>
                 </View>
               ) : null}
               <View className="gap-2">
                 <Text className="text-label-bold">Details</Text>
                 {profile.weightClass ? (
                   <View className="flex-row justify-between">
-                    <Text className="text-body-md text-muted-foreground">Weight class:</Text>
+                    <Text className="text-body-md text-muted-foreground">
+                      Weight class:
+                    </Text>
                     <Text className="text-body-md">
                       {weightLabel(profile.weightClass)}
                     </Text>
                   </View>
                 ) : null}
                 <View className="flex-row justify-between">
-                  <Text className="text-body-md text-muted-foreground">Record:</Text>
+                  <Text className="text-body-md text-muted-foreground">
+                    Record:
+                  </Text>
                   <Text className="text-body-md">
                     {profile.wins}-{profile.losses}
                   </Text>
                 </View>
                 {profile.location ? (
                   <View className="flex-row justify-between">
-                    <Text className="text-body-md text-muted-foreground">Location:</Text>
+                    <Text className="text-body-md text-muted-foreground">
+                      Location:
+                    </Text>
                     <Text className="text-body-md">{profile.location}</Text>
                   </View>
                 ) : null}
@@ -102,7 +108,7 @@ export default function Profile() {
 
             <Link
               href="/profile/edit"
-              className="bg-background border-2 border-foreground text-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
+              className="bg-background border-foreground text-foreground text-label-bold flex h-12 items-center justify-center rounded-none border-2 px-6"
             >
               <Text className="text-label-bold">Edit Profile</Text>
             </Link>

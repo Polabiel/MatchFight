@@ -77,7 +77,9 @@ export function ChatView({ fightId }: { fightId: string }) {
         {messages.length === 0 ? (
           <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-2 text-center">
             <div className="text-headline-lg">CHAT</div>
-            <p className="text-headline-md text-foreground">Nenhuma mensagem ainda</p>
+            <p className="text-headline-md text-foreground">
+              Nenhuma mensagem ainda
+            </p>
             <p className="text-body-md text-muted-foreground">
               Envie a primeira mensagem para coordenar sua luta.
             </p>
@@ -105,10 +107,11 @@ export function ChatView({ fightId }: { fightId: string }) {
                 className={`flex flex-col ${mine ? "items-end" : "items-start"}`}
               >
                 <div
-                  className={`text-body-md max-w-[80%] rounded-none px-4 py-2 ${mine
+                  className={`text-body-md max-w-[80%] rounded-none px-4 py-2 ${
+                    mine
                       ? "bg-foreground text-background border-foreground border"
                       : "bg-background border-foreground text-foreground border-2"
-                    }`}
+                  }`}
                 >
                   <p className="wrap-break-word whitespace-pre-wrap">
                     {msg.content}

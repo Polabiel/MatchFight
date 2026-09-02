@@ -8,17 +8,17 @@
  * - Se ausente ou inválido, usa o fallback.
  */
 export function resolveCallbackUrl(
- raw: string | null | undefined,
- fallback = "/swipe",
+  raw: string | null | undefined,
+  fallback = "/swipe",
 ): string {
- if (
-  raw &&
-  raw.startsWith("/") &&
-  !raw.startsWith("//") &&
-  raw !== "/" &&
-  !/^\/[^/]+:/.test(raw)
- ) {
-  return raw;
- }
- return fallback;
+  if (
+    raw &&
+    raw.startsWith("/") &&
+    !raw.startsWith("//") &&
+    raw !== "/" &&
+    !/^\/[^/]+:/.test(raw)
+  ) {
+    return raw;
+  }
+  return fallback;
 }

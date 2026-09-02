@@ -144,7 +144,7 @@ export function FightDetail({ fightId }: { fightId: string }) {
                 className="border-border h-24 w-24 rounded-none border-2 object-cover"
               />
             ) : (
-              <div className="bg-foreground text-background text-headline-lg flex h-24 w-24 items-center justify-center rounded-none border-2 border-foreground">
+              <div className="bg-foreground text-background text-headline-lg border-foreground flex h-24 w-24 items-center justify-center rounded-none border-2">
                 {fighter.name.charAt(0)}
               </div>
             )}
@@ -240,10 +240,7 @@ export function FightDetail({ fightId }: { fightId: string }) {
                     </FieldContent>
                   </Field>
                   <div className="flex gap-3">
-                    <Button
-                      type="submit"
-                      disabled={propose.isPending}
-                    >
+                    <Button type="submit" disabled={propose.isPending}>
                       {propose.isPending ? "Enviando..." : "Enviar proposta"}
                     </Button>
                     <Button
@@ -329,7 +326,7 @@ export function FightDetail({ fightId }: { fightId: string }) {
       )}
 
       {!isParticipant && (
-        <p className="border-border bg-background border-t p-4 text-center text-body-md">
+        <p className="border-border bg-background text-body-md border-t p-4 text-center">
           Você não é participante desta luta.
         </p>
       )}

@@ -81,7 +81,9 @@ export default function FightDetail() {
     return (
       <SafeAreaView className="bg-background flex-1">
         <View className="flex-1 items-center justify-center p-6">
-          <Text className="text-body-md text-muted-foreground">Fight not found</Text>
+          <Text className="text-body-md text-muted-foreground">
+            Fight not found
+          </Text>
         </View>
       </SafeAreaView>
     );
@@ -111,12 +113,8 @@ export default function FightDetail() {
       <Stack.Screen options={{ title: "Fight" }} />
       <View className="bg-background flex-1 gap-5 p-4">
         <View className="flex-row items-center justify-between">
-          <Text className="text-headline-lg">
-            Fight
-          </Text>
-          <Text
-            className={`rounded-none px-3 py-1 text-label-sm ${style}`}
-          >
+          <Text className="text-headline-lg">Fight</Text>
+          <Text className={`text-label-sm rounded-none px-3 py-1 ${style}`}>
             {statusLabels[fight.status] ?? fight.status}
           </Text>
         </View>
@@ -146,7 +144,9 @@ export default function FightDetail() {
             <Text className="text-body-md">{fight.location ?? "TBD"}</Text>
           </View>
           <View className="flex-row justify-between">
-            <Text className="text-body-md text-muted-foreground">Scheduled</Text>
+            <Text className="text-body-md text-muted-foreground">
+              Scheduled
+            </Text>
             <Text className="text-body-md">
               {fight.scheduledAt
                 ? new Date(fight.scheduledAt).toLocaleString()
@@ -179,7 +179,7 @@ export default function FightDetail() {
                 {!hasProposal && (isFighter1 || isFighter2) ? (
                   <Pressable
                     onPress={() => setShowPropose((v) => !v)}
-                    className="bg-primary text-primary-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
+                    className="bg-primary text-primary-foreground text-label-bold flex h-12 items-center justify-center rounded-none px-6"
                   >
                     <Text className="text-label-bold">
                       Propose fight details
@@ -206,7 +206,7 @@ export default function FightDetail() {
                     <Pressable
                       onPress={handlePropose}
                       disabled={propose.isPending}
-                      className="bg-primary text-primary-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
+                      className="bg-primary text-primary-foreground text-label-bold flex h-12 items-center justify-center rounded-none px-6"
                     >
                       {propose.isPending ? "Sending..." : "Send proposal"}
                     </Pressable>
@@ -217,7 +217,7 @@ export default function FightDetail() {
                   <Pressable
                     onPress={() => confirm.mutate({ fightId: fight.id })}
                     disabled={confirm.isPending}
-                    className="bg-primary text-primary-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
+                    className="bg-primary text-primary-foreground text-label-bold flex h-12 items-center justify-center rounded-none px-6"
                   >
                     {confirm.isPending ? "Confirming..." : "Confirm fight"}
                   </Pressable>
@@ -227,11 +227,9 @@ export default function FightDetail() {
                   <Pressable
                     onPress={() => acceptJudge.mutate({ fightId: fight.id })}
                     disabled={acceptJudge.isPending}
-                    className="bg-muted text-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
+                    className="bg-muted text-foreground text-label-bold flex h-12 items-center justify-center rounded-none px-6"
                   >
-                    {acceptJudge.isPending
-                      ? "Accepting..."
-                      : "Accept as judge"}
+                    {acceptJudge.isPending ? "Accepting..." : "Accept as judge"}
                   </Pressable>
                 ) : null}
               </>
@@ -250,7 +248,7 @@ export default function FightDetail() {
                           })
                         }
                         disabled={complete.isPending}
-                        className="bg-background border-foreground text-foreground flex-1 h-12 px-6 text-label-bold rounded-none border-2 items-center justify-center"
+                        className="bg-background border-foreground text-foreground text-label-bold h-12 flex-1 items-center justify-center rounded-none border-2 px-6"
                       >
                         <Text className="text-label-bold">
                           {fight.fighter1.name} wins
@@ -264,7 +262,7 @@ export default function FightDetail() {
                           })
                         }
                         disabled={complete.isPending}
-                        className="bg-background border-foreground text-foreground flex-1 h-12 px-6 text-label-bold rounded-none border-2 items-center justify-center"
+                        className="bg-background border-foreground text-foreground text-label-bold h-12 flex-1 items-center justify-center rounded-none border-2 px-6"
                       >
                         <Text className="text-label-bold">
                           {fight.fighter2.name} wins
@@ -280,7 +278,7 @@ export default function FightDetail() {
               <Pressable
                 onPress={() => cancel.mutate({ fightId: fight.id })}
                 disabled={cancel.isPending}
-                className="text-destructive h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
+                className="text-destructive text-label-bold flex h-12 items-center justify-center rounded-none px-6"
               >
                 {cancel.isPending ? "Cancelling..." : "Cancel fight"}
               </Pressable>
@@ -301,7 +299,9 @@ export default function FightDetail() {
             <Text className="text-body-md text-foreground">CHAT</Text>
           </Link>
           <Link href="/fights" className="py-2">
-            <Text className="text-body-md text-muted-foreground">← Back to fights</Text>
+            <Text className="text-body-md text-muted-foreground">
+              ← Back to fights
+            </Text>
           </Link>
         </View>
       </View>

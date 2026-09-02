@@ -5,8 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@acme/ui/button";
 
-import { authClient } from "~/auth/client";
 import { resolveCallbackUrl } from "~/auth/callback-url";
+import { authClient } from "~/auth/client";
 import { useSession } from "~/auth/hooks";
 
 export default function SignUpPage() {
@@ -45,7 +45,7 @@ function SignUpContent() {
 
       <Button
         variant="action"
-        className="w-full max-w-xs h-12 px-6"
+        className="h-12 w-full max-w-xs px-6"
         onClick={() =>
           authClient.signIn.social({
             provider: "discord",
@@ -58,7 +58,10 @@ function SignUpContent() {
 
       <p className="text-muted-foreground text-body-md">
         Já tem conta?{" "}
-        <a href="/sign-in" className="text-foreground underline hover:no-underline">
+        <a
+          href="/sign-in"
+          className="text-foreground underline hover:no-underline"
+        >
           Entrar
         </a>
       </p>

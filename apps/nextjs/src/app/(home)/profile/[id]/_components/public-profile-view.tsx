@@ -3,10 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
+import { Button } from "@acme/ui/button";
 import { Separator } from "@acme/ui/separator";
 
 import { useTRPC } from "~/trpc/react";
-import { Button } from "@acme/ui/button";
 
 export function PublicProfileView({ userId }: { userId: string }) {
   const trpc = useTRPC();
@@ -50,12 +50,12 @@ export function PublicProfileView({ userId }: { userId: string }) {
               className="border-foreground h-20 w-20 rounded-none border-2 object-cover"
             />
           ) : (
-            <div className="bg-foreground text-background text-headline-md flex h-20 w-20 items-center justify-center rounded-none border-2 border-foreground">
+            <div className="bg-foreground text-background text-headline-md border-foreground flex h-20 w-20 items-center justify-center rounded-none border-2">
               {profile.user.name.substring(0, 2) || "JJ"}
             </div>
           )}
         </div>
-        <div className="space-y-2 flex-1">
+        <div className="flex-1 space-y-2">
           <h1 className="text-headline-lg">{profile.user.name}</h1>
           <p className="text-body-md text-muted-foreground">
             {profile.nickname}
@@ -72,7 +72,7 @@ export function PublicProfileView({ userId }: { userId: string }) {
 
       <Separator className="my-4" />
 
-      <div className="border-border border-2 p-6 space-y-4">
+      <div className="border-border space-y-4 border-2 p-6">
         {profile.bio && (
           <div>
             <h3 className="text-label-bold mb-1">Bio</h3>
@@ -81,7 +81,7 @@ export function PublicProfileView({ userId }: { userId: string }) {
         )}
         <div className="space-y-2">
           <h3 className="text-label-bold">Detalhes</h3>
-          <div className="grid gap-2 text-body-md">
+          <div className="text-body-md grid gap-2">
             {profile.weightClass && (
               <div className="flex items-center gap-2">
                 <span className="text-label-sm">Categoria:</span>

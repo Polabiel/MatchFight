@@ -104,7 +104,7 @@ export default function FightChat() {
                       className={`max-w-[80%] rounded-none px-4 py-2 ${
                         mine
                           ? "bg-foreground text-background"
-                          : "bg-background border-2 border-foreground"
+                          : "bg-background border-foreground border-2"
                       }`}
                     >
                       <Text

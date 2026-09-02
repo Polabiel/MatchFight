@@ -59,11 +59,9 @@ function AuthGate({ children }: { children: React.ReactNode }) {
           onPress={() =>
             authClient.signIn.social({ provider: "discord", callbackURL: "/" })
           }
-          className="bg-primary text-primary-foreground border-2 border-primary h-12 px-6 text-label-bold flex items-center justify-center"
+          className="bg-primary text-primary-foreground border-primary text-label-bold flex h-12 items-center justify-center border-2 px-6"
         >
-          <Text className="text-label-bold">
-            Sign in with Discord
-          </Text>
+          <Text className="text-label-bold">Sign in with Discord</Text>
         </Pressable>
       </View>
     );
@@ -182,7 +180,7 @@ function SwipeCard() {
                 trpc.swipe.candidates.pathFilter(),
               );
             }}
-            className="bg-background border-2 border-foreground text-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
+            className="bg-background border-foreground text-foreground text-label-bold flex h-12 items-center justify-center rounded-none border-2 px-6"
           >
             <Text className="text-label-bold">Refresh</Text>
           </Pressable>
@@ -190,7 +188,7 @@ function SwipeCard() {
       ) : (
         <>
           <View className="border-border bg-card w-full overflow-hidden rounded-none border">
-            <View className="bg-muted w-full h-48 overflow-hidden">
+            <View className="bg-muted h-48 w-full overflow-hidden">
               {current.image ? (
                 <Image
                   source={{ uri: current.image }}
@@ -212,18 +210,17 @@ function SwipeCard() {
               ) : null}
               <View className="flex-row flex-wrap gap-2">
                 {current.weightClass ? (
-                  <View className="rounded-none px-3 py-1 bg-primary text-primary-foreground text-label-sm">
+                  <View className="bg-primary text-primary-foreground text-label-sm rounded-none px-3 py-1">
                     {current.weightClass
                       .replace("_", " ")
-                      .replace(/\b\w/g, (c) => c.toUpperCase())
-                    }
+                      .replace(/\b\w/g, (c) => c.toUpperCase())}
                   </View>
                 ) : null}
-                <View className="rounded-none px-3 py-1 bg-foreground text-background text-label-sm">
+                <View className="bg-foreground text-background text-label-sm rounded-none px-3 py-1">
                   {current.wins}-{current.losses}
                 </View>
                 {current.location ? (
-                  <View className="rounded-none px-3 py-1 bg-foreground text-background text-label-sm">
+                  <View className="bg-foreground text-background text-label-sm rounded-none px-3 py-1">
                     LOCAL {current.location}
                   </View>
                 ) : null}
@@ -233,14 +230,14 @@ function SwipeCard() {
                 <Pressable
                   onPress={() => pass.mutate({ targetId: current.id })}
                   disabled={pass.isPending || like.isPending}
-                  className="bg-background border-2 border-foreground text-foreground h-12 w-12 rounded-none flex items-center justify-center"
+                  className="bg-background border-foreground text-foreground flex h-12 w-12 items-center justify-center rounded-none border-2"
                 >
                   <Text>✕</Text>
                 </Pressable>
                 <Pressable
                   onPress={() => like.mutate({ targetId: current.id })}
                   disabled={pass.isPending || like.isPending}
-                  className="bg-foreground text-background h-12 w-12 rounded-none flex items-center justify-center"
+                  className="bg-foreground text-background flex h-12 w-12 items-center justify-center rounded-none"
                 >
                   <Text>✓</Text>
                 </Pressable>
@@ -250,28 +247,21 @@ function SwipeCard() {
 
           {/* Match modal */}
           {matched ? (
-            <View
-              className="absolute inset-0 z-50 items-center justify-center bg-foreground/50 p-4"
-            >
+            <View className="bg-foreground/50 absolute inset-0 z-50 items-center justify-center p-4">
               <View className="border-border bg-card w-full max-w-sm items-center gap-4 rounded-none border p-8">
                 <View className="bg-foreground flex h-16 w-16 items-center justify-center rounded-none">
                   <Text className="text-background text-label-bold">MATCH</Text>
                 </View>
                 <Text className="text-headline-lg">It's a Match!</Text>
                 <Text className="text-body-md text-muted-foreground text-center">
-                  You and{" "}
-                  <Text className="text-body-md">
-                    {matched.name}
-                  </Text>{" "}
-                  ({matched.nickname}) liked each other.
+                  You and <Text className="text-body-md">{matched.name}</Text> (
+                  {matched.nickname}) liked each other.
                 </Text>
                 <Link
                   href={`/fights/${matched.fightId}`}
-                  className="bg-background border-2 border-foreground text-foreground h-12 px-6 text-label-bold rounded-none flex items-center justify-center"
+                  className="bg-background border-foreground text-foreground text-label-bold flex h-12 items-center justify-center rounded-none border-2 px-6"
                 >
-                  <Text className="text-label-bold">
-                    View fight
-                  </Text>
+                  <Text className="text-label-bold">View fight</Text>
                 </Link>
                 <Pressable onPress={() => setMatched(null)}>
                   <Text className="text-body-md text-muted-foreground">
@@ -298,14 +288,10 @@ export default function Index() {
           </Text>
           <View className="flex-row gap-4">
             <Link href="/fights">
-              <Text className="text-body-md text-foreground">
-                Fights
-              </Text>
+              <Text className="text-body-md text-foreground">Fights</Text>
             </Link>
             <Link href="/profile">
-              <Text className="text-body-md text-foreground">
-                Profile
-              </Text>
+              <Text className="text-body-md text-foreground">Profile</Text>
             </Link>
           </View>
         </View>
